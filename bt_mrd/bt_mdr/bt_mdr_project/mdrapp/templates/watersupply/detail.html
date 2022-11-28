@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}View Water Supply Detail{% endblock %}
+{% block content %}
+<form class="form-horizontal">
+    <div class="form-group row">
+        <label class="control-label col-md-2">Type</label>
+        <label class="col-md-4">{{ watersupply.water_supply_type_id.name_en }}</label>
+        <label class="control-label col-md-2">Code</label>
+        <label class="col-md-4">{{ watersupply.water_supply_code }}</label>
+    </div>
+    <div class="form-group row">
+        <label class="control-label col-md-2">Province</label>
+        <label class="col-md-4">{{ watersupply.province_id.name_en }}</label>
+        <label class="control-label col-md-2">District</label>
+        <label class="col-md-4">{{ watersupply.district_id.name_en }}</label>
+    </div>
+</form>
+{% endblock %}

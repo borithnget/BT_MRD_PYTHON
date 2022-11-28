@@ -1,0 +1,20 @@
+<!-- templates/home.html -->
+
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+      
+{% if user.is_authenticated %}
+  {% trans "Hi" %} {{ user.username }}!
+  <p><a href="{% url 'logout' %}"> {% trans 'logout' %} </a></p>
+{% else %}
+  <p>You are not logged in</p>
+  <a href="{% url 'login' %}">Log In</a>
+{% endif %}
+{% endblock %}
+
+{% load i18n %}

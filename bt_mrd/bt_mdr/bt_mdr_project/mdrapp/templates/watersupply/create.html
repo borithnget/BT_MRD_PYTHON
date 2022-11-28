@@ -1,0 +1,214 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+<form method="post">
+    {% csrf_token %}
+    <div class="form-group row">
+        <label class='col-md-2 control-label'>{% trans 'province' %} </label>
+        <div class="col-md-4">
+            <select class='form-control' id="province" name="province">
+                {% for province in provinces %}
+                    <option value="{{ province.id }}">{{ province.name_kh }}
+                {% endfor %}
+            </select>
+        </div>
+        <label class='col-md-2 control-label'>{% trans 'district' %} </label>
+        <div class="col-md-4">
+            <select class='form-control' id="district" name="district">
+                
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class='col-md-2 control-label'>{% trans 'commune' %} </label>
+        <div class="col-md-4">
+            <select class='form-control' id="commune" name="commune">
+                
+            </select>
+        </div>
+        <label class='col-md-2 control-label'>{% trans 'village' %} </label>
+        <div class="col-md-4">
+            <select class='form-control' id="village" name="village">
+                
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class='col-md-2 control-label'>{% trans 'total_family' %} </label>
+        <div class="col-md-4">
+            <input type="number" class="form-control" name="total_family" id="total_family" value="0" min="0"/> 
+        </div>
+        <label class='col-md-2 control-label'>{% trans 'water_supply_code' %} </label>
+        <div class="col-md-4">
+            <input type="text" class="form-control" name="water_supply_code" id="water_supply_code" /> 
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class='col-md-2 control-label'>{% trans 'utm_x' %} </label>
+        <div class="col-md-4">
+            <input type="number" class="form-control" name="utm_x" id="utm_x" value="0" min="0"/> 
+        </div>
+        <label class='col-md-2 control-label'>{% trans 'utm_y' %} </label>
+        <div class="col-md-4">
+            <input type="number" class="form-control" name="utm_y" id="utm_y" value="0" min="0"/>  
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class='col-md-2 control-label'>{% trans 'is_risk_enviroment_area' %} </label>
+        <div class="col-md-8">
+            <label class="radio-inline">
+                <input type="radio" name="is_risk_enviroment_area" value='true' checked> {% trans 'is_risk'%}
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="is_risk_enviroment_area" value='false'>{% trans 'is_not_risk' %}
+              </label>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class='col-md-2 control-label'>{% trans 'is_risk_enviroment_area' %} </label>
+        <div class="col-md-4">
+            <div class="input-group date" data-provide="datepicker">
+                <input type="text" class="form-control" name="construction_date">
+                <div class="input-group-addon">
+                    <span class="glyphicon glyphicon-th"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <button class="btn btn-primary" type="submit">Submit</button>
+    </div>
+
+{% comment %} {% for item in watersupplytypeoptions %}
+
+<div class="form-group row">
+    <label class='col-md-2 control-label'>{{ item.water_supply_option_id.name_kh }} </label>
+    <div class="col-md-10">
+
+    </div>
+</div>
+{% endfor %} {% endcomment %}
+
+</form>
+{% endblock %}
+
+{% block script %}
+
+    <script type="text/javascript">
+        $(function(){
+
+            $('.date').datepicker({
+                format: 'yyyy-mm-dd',
+                //startDate: '-3d'
+            });
+            
+            inititalDistrictDropdownList($('#province').val());
+
+            $('#province').change(function(e){
+                var province_id = $(this).val();
+                inititalDistrictDropdownList(province_id);
+
+            });   
+            
+            $('#district').change(function(e){
+                initialCommuneDropdownList(); 
+            });
+
+            $('#commune').change(function(e){
+                intialVillageDropdownList();
+            });
+
+        });
+
+        function inititalDistrictDropdownList(province_id){
+            
+            $('#district').empty().append('<option value="0">Select Disctrict </option>');
+            $('#commune').empty();
+            $('#village').empty();
+
+            $.ajax({
+                type: 'GET',
+                url: "{% url 'ajax_get_district' %}",
+                data: {"province_id":province_id },
+                success: function (response) {
+                    
+                    if(!response["valid"]){
+                        console.log(response);
+                        $.each(response.district,function(ind,dis){
+                            $('#district').append("<option value='"+dis.id+"'>"+dis.name_kh+"</option>");
+
+
+                        });
+                        //alert("You cannot create a friend with same nick name");   
+                                            
+                    }
+                },
+                error: function (response) {
+                    console.log(response)
+                }
+            });
+
+
+        }
+
+        function initialCommuneDropdownList(){
+            var district_id=$('#district').val();
+            $('#commune').empty().append('<option value="0">Select Commune </option>');
+            $('#village').empty();
+            $.ajax({
+                type: 'GET',
+                url: "{% url 'ajax_get_commune_list' %}",
+                data: {"district_id":district_id },
+                success: function (response) {
+                    
+                    if(!response["valid"]){
+                        console.log(response);
+                        $.each(response.communes,function(ind,commune){
+                            $('#commune').append("<option value='"+commune.id+"'>"+commune.name_kh+"</option>");
+
+
+                        });
+                        //alert("You cannot create a friend with same nick name");                        
+                    }
+                },
+                error: function (response) {
+                    console.log(response)
+                }
+            });
+        }
+
+        function intialVillageDropdownList(){
+            var commune_id=$('#commune').val();
+            $('#village').empty().append('<option value="0">Select village </option>');
+
+            $.ajax({
+                type: 'GET',
+                url: "{% url 'ajax_get_village_list' %}",
+                data: {"commune_id":commune_id },
+                success: function (response) {
+                    
+                    if(!response["valid"]){
+                        console.log(response);
+                        $.each(response.villages,function(ind,village){
+                            $('#village').append("<option value='"+village.id+"'>"+village.name_kh+"</option>");
+
+
+                        });
+                        //alert("You cannot create a friend with same nick name");                        
+                    }
+                },
+                error: function (response) {
+                    console.log(response)
+                }
+            });
+        }
+
+    </script>
+{% endblock %}

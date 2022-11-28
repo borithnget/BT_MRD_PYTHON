@@ -1,0 +1,21 @@
+Activate env
+   go to dir bt_mrd 
+  source venv/scripts/activate
+Run
+  cd bt_mdr/bt_mdr_project
+  python manage.py runserver
+
+python manage.py compilemessages
+
+http://127.0.0.1:8000/en/api/v2/watersupply/
+{
+"water_supply_type_id":1,
+"province_id":1,
+"district_id":1,
+"created_by":1,
+"is_active":true
+}
+
+winpty python manage.py createsuperuser
+
+Consolas, 'Courier New', monospace
