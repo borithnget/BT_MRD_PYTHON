@@ -5,9 +5,9 @@
 {% block content %}
 <form class="form-horizontal">
     <div class="form-group row">
-        <label class="control-label col-md-2">Type</label>
+        <label class="control-label col-md-2">{% trans 'water_supply_type' %}</label>
         <label class="col-md-4">{{ watersupply.water_supply_type_id.name_en }}</label>
-        <label class="control-label col-md-2">Code</label>
+        <label class="control-label col-md-2">{% trans 'water_supply_code' %}</label>
         <label class="col-md-4">{{ watersupply.water_supply_code }}</label>
     </div>
     <div class="form-group row">
@@ -16,5 +16,57 @@
         <label class="control-label col-md-2">District</label>
         <label class="col-md-4">{{ watersupply.district_id.name_en }}</label>
     </div>
+
+    {% if watersupply.watersupplywell_watersupply|length > 0 %}
+    <div class="form-group row">
+        <label class="control-label col-md-2">{% trans 'well_type' %}</label>
+        {% if watersupply.watersupplywell_watersupply.0.well_type_obj|length > 0 %}
+            <label class="col-md-4">{{ watersupply.watersupplywell_watersupply.0.well_type_obj.0.name_en }} </label>
+        {% else %}
+            <label class="col-md-4"></label>
+        {% endif %}
+        <label class="control-label col-md-2">{% trans 'well_height' %}</label>
+        <label class="col-md-4">{{ watersupply.watersupplywell_watersupply.0.well_height }} </label>
+    </div>
+    <div class="form-group row">
+        <label class="control-label col-md-2">{% trans 'well_filter_height' %}</label>
+        <label class="col-md-4">{{ watersupply.watersupplywell_watersupply.0.well_filter_height }} </label>
+        <label class="control-label col-md-2">{% trans 'well_water_supply' %}</label>
+        <label class="col-md-4">{{ watersupply.watersupplywell_watersupply.0.well_water_supply }} </label>
+    </div>
+    <div class="form-group row">
+        <label class="control-label col-md-2">{% trans 'well_nirostatic' %}</label>
+        <label class="col-md-4">{{ watersupply.watersupplywell_watersupply.0.well_nirostatic }} </label>
+        <label class="control-label col-md-2">{% trans 'well_nirodynamic' %}</label>
+        <label class="col-md-4">{{ watersupply.watersupplywell_watersupply.0.well_nirodynamic }} </label>
+    </div>
+    <div class="form-group row">
+        <label class="control-label col-md-2">{% trans 'well_watar_quality' %}</label>
+
+        {% if watersupply.watersupplywell_watersupply.0.well_watar_quality_obj|length > 0 %}
+            <label class="col-md-4">{{ watersupply.watersupplywell_watersupply.0.well_watar_quality_obj.0.name_en }} </label>
+        {% else %}
+            <label class="col-md-4"></label>
+        {% endif %}
+        <label class="control-label col-md-2">{% trans 'well_water_quality_check' %}</label>
+        {% if watersupply.watersupplywell_watersupply.0.well_water_quality_check_obj|length > 0 %}
+            <label class="col-md-4">{{ watersupply.watersupplywell_watersupply.0.well_water_quality_check_obj.0.name_en }} </label>
+        {% else %}
+            <label class="col-md-4"></label>
+        {% endif %}
+    </div>
+    <div class="form-group row">
+        <label class="control-label col-md-2">{% trans 'well_status' %}</label>
+        {% if watersupply.watersupplywell_watersupply.0.well_status_obj|length > 0 %}
+            <label class="col-md-4">{{ watersupply.watersupplywell_watersupply.0.well_status_obj.0.name_en }} </label>
+        {% else %}
+            <label class="col-md-4"></label>
+        {% endif %}
+        <label class="control-label col-md-2">{% trans 'well_status_reason' %}</label>
+        <label class="col-md-4">{{ watersupply.watersupplywell_watersupply.0.well_status_reason }} </label>
+    </div>
+        
+    {% endif %}
+
 </form>
 {% endblock %}

@@ -17,6 +17,7 @@ router.register(r'watersupplyoption', views.WaterSupplyOptionViewSet)
 router.register(r'watersupplyoptionValue', views.WaterSupplyOptionValueViewSet)
 router.register(r'watersupplytypeoption', views.WaterSupplyTypeOptionViewSet)
 router.register(r'watersupply', views.WaterSupplyViewSet, basename='watersupply'),
+router.register(r'watersupplywell', views.WaterSupplyWellViewSet)
 #router.register(r'v2/watersupply', views.WaterSupplyViewSet_2)
 
 # Wire up our API using automatic URL routing.

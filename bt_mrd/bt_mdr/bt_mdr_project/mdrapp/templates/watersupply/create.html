@@ -50,17 +50,17 @@
     <div class="form-group row">
         <label class='col-md-2 control-label'>{% trans 'utm_x' %} </label>
         <div class="col-md-4">
-            <input type="number" class="form-control" name="utm_x" id="utm_x" value="0" min="0"/> 
+            <input type="number" class="form-control" name="utm_x" id="utm_x" value="0" min="0" step="any"/> 
         </div>
         <label class='col-md-2 control-label'>{% trans 'utm_y' %} </label>
         <div class="col-md-4">
-            <input type="number" class="form-control" name="utm_y" id="utm_y" value="0" min="0"/>  
+            <input type="number" class="form-control" name="utm_y" id="utm_y" value="0" min="0" step="any"/>  
         </div>
     </div>
 
     <div class="form-group row">
         <label class='col-md-2 control-label'>{% trans 'is_risk_enviroment_area' %} </label>
-        <div class="col-md-8">
+        <div class="col-md-4">
             <label class="radio-inline">
                 <input type="radio" name="is_risk_enviroment_area" value='true' checked> {% trans 'is_risk'%}
               </label>
@@ -68,10 +68,7 @@
                 <input type="radio" name="is_risk_enviroment_area" value='false'>{% trans 'is_not_risk' %}
               </label>
         </div>
-    </div>
-
-    <div class="form-group row">
-        <label class='col-md-2 control-label'>{% trans 'is_risk_enviroment_area' %} </label>
+        <label class='col-md-2 control-label'>{% trans 'construction_date' %} </label>
         <div class="col-md-4">
             <div class="input-group date" data-provide="datepicker">
                 <input type="text" class="form-control" name="construction_date">
@@ -83,18 +80,102 @@
     </div>
 
     <div class="form-group row">
+        
+        <label class="col-md-2 control-label">{% trans 'source_budget' %}</label>
+        <div class="col-md-4">
+            <select class="form-control" id="source_budget" name="source_budget">
+                <option value="-1">{% trans 'select_option' %}</option>
+                <option value="0">{% trans 'source_budget_state' %}</option>
+                <option value="0">{% trans 'source_budget_organization' %}</option>
+                <option value="0">{% trans 'source_budget_charity' %}</option>
+            </select>
+        </div>
+        <label class="control-label col-md-2">{% trans 'constructed_by' %}</label>
+        <div class="col-md-4">
+            <input type="text" class="form-control" id="constructed_by" name="constructed_by"/>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class='col-md-2 control-label'>{% trans 'management_type' %} </label>
+        <div class="col-md-4">
+            <label class="radio-inline">
+                <input type="radio" name="management_type" value='0' checked> {% trans 'management_type_community'%}
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="management_type" value='1'>{% trans 'management_type_personal' %}
+              </label>
+        </div>
+        <label class="control-label col-md-2">{% trans 'managed_by' %}</label>
+        <div class="col-md-4">
+            <input type="text" class="form-control" id="managed_by" name="managed_by"/>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="control-label col-md-2">{% trans 'beneficiary_total_people' %}</label>
+        <div class="col-md-4">
+            <input type="text" class="form-control" id="beneficiary_total_people" name="beneficiary_total_people" min="0" value="0"/>
+        </div>
+        <label class="control-label col-md-2">{% trans 'beneficiary_total_women' %}</label>
+        <div class="col-md-4">
+            <input type="text" class="form-control" id="beneficiary_total_women" name="beneficiary_total_women" min="0" value="0"/>
+        </div>
+        
+    </div>
+    <div class="form-group row">
+        <label class="control-label col-md-2">{% trans 'beneficiary_total_family' %}</label>
+        <div class="col-md-4">
+            <input type="text" class="form-control" id="beneficiary_total_family" name="beneficiary_total_family" min="0" value="0"/>
+        </div>
+        <label class="control-label col-md-2">{% trans 'beneficiary_total_family_poor_1' %}</label>
+        <div class="col-md-4">
+            <input type="text" class="form-control" id="beneficiary_total_family_poor_1" name="beneficiary_total_family_poor_1" min="0" value="0"/>
+        </div>      
+    </div>
+    <div class="form-group row">
+        <label class="control-label col-md-2">{% trans 'beneficiary_total_family_poor_2' %}</label>
+        <div class="col-md-4">
+            <input type="text" class="form-control" id="beneficiary_total_family_poor_2" name="beneficiary_total_family_poor_2" min="0" value="0"/>
+        </div>
+        <label class="control-label col-md-2">{% trans 'beneficiary_total_family_vulnerable' %}</label>
+        <div class="col-md-4">
+            <input type="text" class="form-control" id="beneficiary_total_family_vulnerable" name="beneficiary_total_family_vulnerable" min="0" value="0"/>
+        </div>      
+    </div>
+    <div class="form-group row">
+        <label class="control-label col-md-2">{% trans 'beneficiary_total_family_indigenous' %}</label>
+        <div class="col-md-4">
+            <input type="text" class="form-control" id="beneficiary_total_family_indigenous" name="beneficiary_total_family_indigenous" min="0" value="0"/>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        {% for item in watersupplytypeoptions %}
+       
+       
+           <label class='col-md-2 control-label'>{{ item.water_supply_option_id.name_kh }} </label>
+           <div class="col-md-4 " style="margin-bottom: 1rem !important;">
+               {% if item.water_supply_option_id.watersupplyoption_value|length > 1 %}
+                   <select class="form-control" id="{{ item.water_supply_option_id.field_name }}" name="{{ item.water_supply_option_id.field_name }}">
+                    <option value="-1">{% trans 'select_option' %}</option>
+                        {% for ov in item.water_supply_option_id.watersupplyoption_value %}
+                            <option value="{{ ov.id }}">{{ ov.code }} - {{ ov.name_en }}</option>
+                        {% endfor %}
+                   </select>
+               {% else %}
+                   <input type="text" class="form-control" id="{{ item.water_supply_option_id.field_name }}" name="{{ item.water_supply_option_id.field_name }}"/>
+               {% endif %}
+           </div>
+       
+       {% endfor %}
+    </div>
+
+    <div class="form-group row">
         <button class="btn btn-primary" type="submit">Submit</button>
     </div>
 
-{% comment %} {% for item in watersupplytypeoptions %}
 
-<div class="form-group row">
-    <label class='col-md-2 control-label'>{{ item.water_supply_option_id.name_kh }} </label>
-    <div class="col-md-10">
-
-    </div>
-</div>
-{% endfor %} {% endcomment %}
 
 </form>
 {% endblock %}

@@ -54,6 +54,28 @@ class ProvinceSerializer(serializers.HyperlinkedModelSerializer):
         model = Province
         # fields = '__all__'
         fields = ('id' ,'code_en', 'code_kh', 'name_en', 'name_kh', 'description' ,'provincedistrict')
+
+class ProvinceSerializer_v2(serializers.ModelSerializer):
+    class Meta:
+        model = Province
+        fields = '__all__'
+
+class DistrictSerializer_v2(serializers.ModelSerializer):
+    
+    class Meta:
+        model = District
+        fields = '__all__'
+
+class CommuneSerializer_v2(serializers.ModelSerializer):
+    class Meta:
+        model = Commune
+        fields = '__all__'
+
+class VillageSerializer_v2(serializers.ModelSerializer):
+    #commune_id = CommuneSerializer(many=False, read_only=True)
+    class Meta:
+        model = Village
+        fields = '__all__'
         
         
 class WaterSupplyTypeSerializer(serializers.ModelSerializer):
@@ -64,16 +86,16 @@ class WaterSupplyTypeSerializer(serializers.ModelSerializer):
 class WaterSupplyOptionValueSerializer(serializers.ModelSerializer):
     class Meta:
         model = WaterSupplyOptionValue
-        fields = '__all__'
+        fields = ('id', 'code', 'name_en', 'name_kh', 'description', 'is_active', 'water_supply_option_id')
         
 class WaterSupplyOptionSerializer(serializers.ModelSerializer):
     
-    values = WaterSupplyOptionValueSerializer(read_only=True, many=True)
+    watersupplyoption_value = WaterSupplyOptionValueSerializer(read_only=True, many=True)
     
     class Meta:
         model = WaterSupplyOption
-        fields = '__all__'
-        #fields=('id', 'values')
+        #fields = '__all__'
+        fields=('id', 'name_en', 'name_kh', 'data_type', 'is_active', 'watersupplyoption_value', 'field_name')
         
 
         
@@ -87,23 +109,56 @@ class WaterSupplyTypeOptionSerializer(serializers.ModelSerializer):
         model = models.WaterSupplyTypeOption
         # fields = '__all__'
         fields = ('id', 'ordering', 'water_supply_type_id', 'water_supply_option_id')
-        
+
+class WaterSupplyWellSerializer(serializers.ModelSerializer):
+
+    well_type_obj = serializers.SerializerMethodField()
+    well_watar_quality_obj = serializers.SerializerMethodField()
+    well_water_quality_check_obj = serializers.SerializerMethodField()
+    well_status_obj = serializers.SerializerMethodField()
+
+    class Meta:
+        model = models.WaterSupplyWell
+        fields = ['id', 'watersupply_id', 'well_type', 'well_height', 'well_filter_height', 'well_water_supply', 'well_nirostatic', 'well_watar_quality', 'well_water_quality_check', 
+        'well_status', 'well_status_reason', 'is_active', 'well_nirodynamic', 'well_type_obj', 'well_watar_quality_obj', 'well_water_quality_check_obj', 'well_status_obj']
+
+    def get_well_type_obj(self, obj):
+            customer_account_query = models.WaterSupplyOptionValue.objects.filter(id=int(obj.well_type))
+            serializer = WaterSupplyOptionValueSerializer(customer_account_query, many=True)
+            return serializer.data    
+    
+    def get_well_watar_quality_obj(self, obj):
+            customer_account_query = models.WaterSupplyOptionValue.objects.filter(id=int(obj.well_watar_quality))
+            serializer = WaterSupplyOptionValueSerializer(customer_account_query, many=True)
+            return serializer.data   
+    def get_well_water_quality_check_obj(self, obj):
+            customer_account_query = models.WaterSupplyOptionValue.objects.filter(id=int(obj.well_water_quality_check))
+            serializer = WaterSupplyOptionValueSerializer(customer_account_query, many=True)
+            return serializer.data   
+    def get_well_status_obj(self, obj):
+            customer_account_query = models.WaterSupplyOptionValue.objects.filter(id=int(obj.well_status))
+            serializer = WaterSupplyOptionValueSerializer(customer_account_query, many=True)
+            return serializer.data   
+    
 class WaterSupplySerializer(serializers.HyperlinkedModelSerializer):
     created_by = UserSerializer(read_only=True)
     updated_by = UserSerializer(read_only=True)
     water_supply_type_id = WaterSupplyTypeSerializer(many=False, read_only=True)
-    province_id = ProvinceSerializer(many=False, read_only=True)
-    district_id = DistrictSerializer(many=False, read_only=True)
-    commune_id = CommuneSerializer(many=False, read_only=True)
-    village_id = VillageSerializer(many=False, read_only=True)
-    
+    province_id = ProvinceSerializer_v2(many=False, read_only=True)
+    district_id = DistrictSerializer_v2(many=False, read_only=True)
+    commune_id = CommuneSerializer_v2(many=False, read_only=True)
+    village_id = VillageSerializer_v2(many=False, read_only=True)
+    watersupplywell_watersupply = WaterSupplyWellSerializer(many=True, read_only = True)
     
     class Meta:
         model = models.WaterSupply
-        fields = ('id', 'water_supply_type_id', 'province_id', 'district_id', 'created_by', 'updated_by', 'created_at', 'updated_at', 'commune_id', 'village_id', 'water_supply_code', 'total_family', 'utm_x', 'utm_y', 'is_risk_enviroment_area', 'construction_date')
+        fields = ('id', 'water_supply_type_id', 'province_id', 'district_id', 'created_by', 'updated_by', 'created_at', 'updated_at', 'commune_id', 'village_id', 'water_supply_code', 'total_family', 'utm_x', 'utm_y', 'is_risk_enviroment_area', 'construction_date', 'source_budget', 'constructed_by', 
+        'management_type', 'managed_by', 'beneficiary_total_people', 'beneficiary_total_women', 'beneficiary_total_family', 'beneficiary_total_family_poor_1', 'beneficiary_total_family_poor_2', 'beneficiary_total_family_vulnerable', 'beneficiary_total_family_indigenous', 'watersupplywell_watersupply')
         
 class WaterSupplySerializer_v2(serializers.ModelSerializer):
     created_at = serializers.DateTimeField(default=datetime.now())
     class Meta:
         model = models.WaterSupply
-        fields = ['id','water_supply_type_id', 'province_id', 'district_id', 'created_by', 'updated_by', 'created_at', 'updated_at', 'is_active', 'commune_id', 'village_id', 'water_supply_code', 'total_family', 'utm_x', 'utm_y', 'is_risk_enviroment_area', 'construction_date']
+        fields = ['id','water_supply_type_id', 'province_id', 'district_id', 'created_by', 'updated_by', 'created_at', 'updated_at', 'is_active', 'commune_id', 'village_id', 'water_supply_code', 'total_family', 'utm_x', 'utm_y', 'is_risk_enviroment_area', 'construction_date', 'source_budget', 'constructed_by', 
+        'management_type', 'managed_by', 'beneficiary_total_people', 'beneficiary_total_women', 'beneficiary_total_family', 'beneficiary_total_family_poor_1', 'beneficiary_total_family_poor_2', 'beneficiary_total_family_vulnerable', 'beneficiary_total_family_indigenous']
+

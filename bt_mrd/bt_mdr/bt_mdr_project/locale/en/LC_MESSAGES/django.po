@@ -52,3 +52,79 @@ msgstr "Commune"
 
 msgid "village"
 msgstr "Village"
+
+msgid "total_family"
+msgstr "គ្រួសារសរុប"
+
+msgid "water_supply_code"
+msgstr "លេខកូដសំនង់"
+
+msgid "utm_x"
+msgstr "កូអរដោនេ UTMX"
+
+msgid "utm_y"
+msgstr "កូអរដោនេ UTMY"
+
+msgid "is_risk_enviroment_area"
+msgstr "តំបន់ប្រឈមផ្នែកបរិស្ថាន"
+
+msgid "is_risk"
+msgstr "០.ប្រឈម"
+
+msgid "is_not_risk"
+msgstr "១.មិនប្រឈម"
+
+msgid "construction_date"
+msgstr "កាលបរិច្ឆេទសាងសង់"
+
+msgid "source_budget"
+msgstr "ប្រភពថវិកា"
+
+msgid "select_option"
+msgstr "ជ្រើសរើសជម្រើស"
+
+msgid "source_budget_state"
+msgstr "០.រដ្ឋ"
+
+msgid "source_budget_organization"
+msgstr "១.អង្គការ"
+
+msgid "source_budget_charity"
+msgstr "២.សប្បុរស"
+
+msgid "constructed_by"
+msgstr "សាងសង់ដោយក្រុមហ៊ុន"
+
+msgid "management_type"
+msgstr "ប្រភេទនៃការគ្រប់គ្រង"
+
+msgid "management_type_community"
+msgstr "០.សហគមន៍"
+
+msgid "management_type_personal"
+msgstr "១.ឯកជន"
+
+msgid "managed_by"
+msgstr "ឈ្មោះអ្នកគ្រប់គ្រង"
+
+msgid "beneficiary_total_people"
+msgstr "អ្នកទទួលផលសរុប"
+
+msgid "beneficiary_total_women"
+msgstr "អ្នកទទួលផលសរុបស្រី"
+
+msgid "beneficiary_total_family"
+msgstr "អ្នកទទួលផលគ្រួសារសរុប"
+
+msgid "beneficiary_total_family_poor_1"
+msgstr "អ្នកទទួលផលគ្រួសារក្រ១"
+
+msgid "beneficiary_total_family_poor_2"
+msgstr "អ្នកទទួលផលគ្រួសារក្រ២"
+
+msgid "beneficiary_total_family_vulnerable"
+msgstr "អ្នកទទួលផលគ្រួសារជនងាយរងគ្រោះ"
+
+msgid "beneficiary_total_family_indigenous"
+msgstr "អ្នកទទួលផលគ្រួសារជនជាតិដើមភាគតិច"
+

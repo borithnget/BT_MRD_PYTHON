@@ -5,7 +5,7 @@
 
 {% block content %}
     {% for watersupplytype in watersupplytypes %}
-        <a href="{% url 'watersupply_create' id=watersupplytype.id %}">{{ watersupplytype.name_kh }}</a>
+        <a href="{% url 'watersupply_create' id=watersupplytype.id %}">{{ watersupplytype.name_en }}</a>
     {% endfor %}
 
     <div class="table-responsive">

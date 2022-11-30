@@ -10,7 +10,7 @@ from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
 from rest_framework.views import APIView
 
-from mdrapp.models import Commune, Province, District, Village, WaterSupplyType, WaterSupplyOption, WaterSupplyOptionValue, WaterSupplyTypeOption, WaterSupply
+from mdrapp.models import Commune, Province, District, Village, WaterSupplyType, WaterSupplyOption, WaterSupplyOptionValue, WaterSupplyTypeOption, WaterSupply, WaterSupplyWell
 from .serializers import CommuneSerializer, HeroSerializer, UserSerializer, RegisterSerializer, ProvinceSerializer, DistrictSerializer, VillageSerializer, WaterSupplyOptionSerializer, WaterSupplyOptionValueSerializer, WaterSupplyTypeSerializer, WaterSupplySerializer
 from .models import Hero
 from django.contrib.auth import login
@@ -123,6 +123,11 @@ class WaterSupplyCreateAPIView(generics.CreateAPIView):
             'message': 'Testimonials fetched',
             'data': response.data
         })
+
+class WaterSupplyWellViewSet(viewsets.ModelViewSet):
+    model= WaterSupplyWell
+    queryset = WaterSupplyWell.objects.all().filter(is_active=True)
+    serializer_class = serializers.WaterSupplyWellSerializer
 
 class UserListViewSet(generics.ListAPIView):
     User = get_user_model()

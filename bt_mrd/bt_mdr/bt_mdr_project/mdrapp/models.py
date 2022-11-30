@@ -72,6 +72,7 @@ class WaterSupplyOption(models.Model):
     data_type = models.CharField(default='', null=True, blank=True, max_length=255)
     description = models.CharField(max_length=1000, default='', null=True, blank=True)
     is_active = models.BooleanField(default=True)
+    field_name = models.CharField(max_length=255 , default='', null=True, blank=True)
     
     def __str__(self):
         return self.name_kh
@@ -82,7 +83,7 @@ class WaterSupplyOptionValue(models.Model):
     name_kh = models.TextField(default='', null=True, blank=True)
     description = models.CharField(max_length=1000, default='', null=True, blank=True)
     is_active = models.BooleanField(default=True)
-    water_supply_option_id = models.ForeignKey(WaterSupplyOption, on_delete=models.CASCADE)
+    water_supply_option_id = models.ForeignKey(WaterSupplyOption, on_delete=models.CASCADE, related_name='watersupplyoption_value')
     
     def __str__(self):
         return self.name_kh
@@ -113,4 +114,34 @@ class WaterSupply(models.Model):
     utm_y = models.DecimalField(max_digits=12, decimal_places=6, default=0, null=True, blank=True)
     is_risk_enviroment_area = models.BooleanField(default=True)
     construction_date = models.DateField(null=True, blank=True)
-    
+    source_budget = models.IntegerField(default=0, null=True, blank=True)
+    constructed_by = models.TextField(default='', null=True, blank=True)
+    management_type = models.IntegerField(default=0, null=True, blank=True)
+    managed_by = models.TextField(default='', null=True, blank=True)
+    beneficiary_total_people = models.IntegerField(default=0, null=True, blank=True)
+    beneficiary_total_women = models.IntegerField(default=0, null=True, blank=True)
+    beneficiary_total_family = models.IntegerField(default=0, null=True, blank=True)
+    beneficiary_total_family_poor_1 = models.IntegerField(default=0, null=True, blank=True)
+    beneficiary_total_family_poor_2 = models.IntegerField(default=0, null=True, blank=True)
+    beneficiary_total_family_vulnerable = models.IntegerField(default=0, null=True, blank=True)
+    beneficiary_total_family_indigenous = models.IntegerField(default=0, null=True, blank=True)
+
+class WaterSupplyValue(models.Model):
+    watersupply_id = models.ForeignKey(WaterSupply, on_delete=models.CASCADE, related_name= "watersupplyoptionvalue_watersupply")
+    water_supply_option_id = models.ForeignKey(WaterSupplyOption, on_delete=models.CASCADE, related_name='watersupplyoptionvalue_option')
+    water_supply_option_value = models.TextField(default='', null=True, blank=True)
+    is_active = models.BooleanField(default=True)
+
+class WaterSupplyWell(models.Model):
+    watersupply_id = models.ForeignKey(WaterSupply, on_delete=models.CASCADE, related_name= "watersupplywell_watersupply")
+    well_type = models.CharField(max_length=255, default='', null=True, blank=True)
+    well_height = models.CharField(max_length=255, default='0', null=True, blank=True)
+    well_filter_height = models.CharField(max_length=255, default='0', null=True, blank=True)
+    well_water_supply = models.CharField(max_length=255, default='0', null=True, blank=True)
+    well_nirostatic = models.CharField(max_length=255, default='0', null=True, blank=True)
+    well_nirodynamic = models.CharField(max_length=255, default='0', null=True, blank=True)
+    well_watar_quality = models.CharField(max_length=255, default='0', null=True, blank=True)
+    well_water_quality_check = models.CharField(max_length=255, default='0', null=True, blank=True)
+    well_status = models.CharField(max_length=255, default='0', null=True, blank=True)
+    well_status_reason = models.TextField(default='', null=True, blank=True)
+    is_active = models.BooleanField(default=True)
