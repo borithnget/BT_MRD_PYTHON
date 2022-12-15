@@ -87,6 +87,23 @@ def create_watersupply(request, id):
                 }
                 response_well = requests.post(ws_well_url, json=payload_well, headers=headers)
                 well_res_json = response_well.json()
+            elif id == 2:
+                ws_pipe_url = "http://127.0.0.1:8000/en/api/watersupplypipe/"
+                payload_pipe = {
+                    "watersupply_id" : res_json['data']['id'],
+                    "is_active": True,
+                    "source_type_of_water": request.POST["source_type_of_water"],
+                    "abilty_of_produce_water":request.POST["abilty_of_produce_water"],
+                    "underground_pool_storage": request.POST["underground_pool_storage"],
+                    "pool_air": request.POST["pool_air"],
+                    "pool_filter": request.POST["pool_filter"],
+                    "number_of_link": request.POST["number_of_link"],
+                    "water_quality_check": request.POST["water_quality_check"],
+                    "status": request.POST["status"],
+                    "status_no_reason":request.POST["status_no_reason"]                  
+                }
+                response_pipe_json = requests.post(ws_pipe_url, json=payload_pipe, headers=headers).json()
+                
             return redirect('index')
     
     return render(request, 'watersupply/create.html', 

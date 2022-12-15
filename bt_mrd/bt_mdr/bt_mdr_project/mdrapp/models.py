@@ -145,3 +145,48 @@ class WaterSupplyWell(models.Model):
     well_status = models.CharField(max_length=255, default='0', null=True, blank=True)
     well_status_reason = models.TextField(default='', null=True, blank=True)
     is_active = models.BooleanField(default=True)
+    
+class WaterSupplyPipe(models.Model):
+    watersupply_id = models.ForeignKey(WaterSupply, on_delete=models.CASCADE, related_name= "watersupplypipe_watersupply")
+    is_active = models.BooleanField(default=True)
+    source_type_of_water = models.CharField(max_length=255, default='', null=True, blank=True)
+    abilty_of_produce_water = models.CharField(max_length=255, default='', null=True, blank=True)
+    underground_pool_storage = models.CharField(max_length=255, default='', null=True, blank=True)
+    pool_air = models.CharField(max_length=255, default='', null=True, blank=True)
+    pool_filter = models.CharField(max_length=255, default='', null=True, blank=True)
+    number_of_link = models.CharField(max_length=255, default='', null=True, blank=True)
+    water_quality_check = models.CharField(max_length=255, default='0', null=True, blank=True)
+    status = models.CharField(max_length=255, default='0', null=True, blank=True)
+    status_no_reason = models.TextField(default='', null=True, blank=True)
+    
+class WaterSupplyKiosk(models.Model):
+    watersupply_id = models.ForeignKey(WaterSupply, on_delete=models.CASCADE, related_name= "watersupplyKiosk_watersupply")
+    is_active = models.BooleanField(default=True)
+    source_type_of_water = models.CharField(max_length=255, default='', null=True, blank=True)
+    abilty_of_produce_water = models.CharField(max_length=255, default='', null=True, blank=True)
+    filter_system = models.CharField(max_length=255, default='', null=True, blank=True)
+    status = models.CharField(max_length=255, default='0', null=True, blank=True)
+    status_no_reason = models.TextField(default='', null=True, blank=True)
+    
+class WaterSupplyCommunityPond(models.Model):
+    watersupply_id = models.ForeignKey(WaterSupply, on_delete=models.CASCADE, related_name= "watersupplyCommunityPond_watersupply")
+    is_active = models.BooleanField(default=True)
+    width = models.CharField(max_length=255, default='0', null=True, blank=True)
+    length = models.CharField(max_length=255, default='0', null=True, blank=True)
+    height = models.CharField(max_length=255, default='0', null=True, blank=True)
+    pool_filter = models.CharField(max_length=255, default='0', null=True, blank=True)
+    type_of_pond = models.CharField(max_length=255, default='0', null=True, blank=True)
+    is_summer_has_water = models.CharField(max_length=255, default='0', null=True, blank=True)
+    status = models.CharField(max_length=255, default='0', null=True, blank=True)
+    status_no_reason = models.TextField(default='', null=True, blank=True)
+    
+class WaterSupplyRainWaterHarvesting(models.Model):
+    watersupply_id = models.ForeignKey(WaterSupply, on_delete=models.CASCADE, related_name= "watersupplyRainWaterHarvesting_watersupply")
+    is_active = models.BooleanField(default=True)
+    type_of_using = models.CharField(max_length=255, default='0', null=True, blank=True)
+    capacity_35m3 = models.CharField(max_length=255, default='0', null=True, blank=True)
+    capacity_4m3 = models.CharField(max_length=255, default='0', null=True, blank=True)
+    capacity_of_rain_water_harvesting = models.CharField(max_length=255, default='0', null=True, blank=True)
+    status = models.CharField(max_length=255, default='0', null=True, blank=True)
+    status_no_reason = models.TextField(default='', null=True, blank=True)
+    

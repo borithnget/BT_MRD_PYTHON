@@ -10,7 +10,7 @@ from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
 from rest_framework.views import APIView
 
-from mdrapp.models import Commune, Province, District, Village, WaterSupplyType, WaterSupplyOption, WaterSupplyOptionValue, WaterSupplyTypeOption, WaterSupply, WaterSupplyWell
+from mdrapp.models import Commune, Province, District, Village, WaterSupplyType, WaterSupplyOption, WaterSupplyOptionValue, WaterSupplyTypeOption, WaterSupply, WaterSupplyWell, WaterSupplyPipe, WaterSupplyKiosk, WaterSupplyCommunityPond, WaterSupplyRainWaterHarvesting
 from .serializers import CommuneSerializer, HeroSerializer, UserSerializer, RegisterSerializer, ProvinceSerializer, DistrictSerializer, VillageSerializer, WaterSupplyOptionSerializer, WaterSupplyOptionValueSerializer, WaterSupplyTypeSerializer, WaterSupplySerializer
 from .models import Hero
 from django.contrib.auth import login
@@ -129,6 +129,11 @@ class WaterSupplyWellViewSet(viewsets.ModelViewSet):
     queryset = WaterSupplyWell.objects.all().filter(is_active=True)
     serializer_class = serializers.WaterSupplyWellSerializer
 
+class WaterSupplyPipeViewSet(viewsets.ModelViewSet):
+    model = WaterSupplyPipe
+    queryset = WaterSupplyPipe.objects.all().filter(is_active=True)
+    serializer_class = serializers.WaterSupplyPipeSerializer
+
 class UserListViewSet(generics.ListAPIView):
     User = get_user_model()
     queryset = User.objects.all()
@@ -143,14 +148,11 @@ class UserListViewSet(generics.ListAPIView):
   
 
 # class WaterSupplyAPIView(APIView):
-    
 #     http_method_names = ['get', 'head', 'post']
-    
 #     def get(self, request, *args, **kwargs):
 #         queryset = WaterSupply.objects.all().order_by('created_at').filter(is_active=True)
 #         serializer = serializers.WaterSupplySerializer_v2(queryset, many=True)
 #         return Response(serializer.data, status=status.HTTP_200_OK)
-    
 #     def post(self, request, *args, **kwargs):
 #         data = {
 #             'water_supply_type_id': request.data.get('water_supply_type_id'),

@@ -139,6 +139,12 @@ class WaterSupplyWellSerializer(serializers.ModelSerializer):
             customer_account_query = models.WaterSupplyOptionValue.objects.filter(id=int(obj.well_status))
             serializer = WaterSupplyOptionValueSerializer(customer_account_query, many=True)
             return serializer.data   
+        
+class WaterSupplyPipeSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = models.WaterSupplyPipe
+        fields = ['id', 'watersupply_id', 'is_active', 'source_type_of_water', 'abilty_of_produce_water', 'underground_pool_storage', 'pool_air', 'pool_filter', 'number_of_link', 'water_quality_check', 'status', 'status_no_reason']
     
 class WaterSupplySerializer(serializers.HyperlinkedModelSerializer):
     created_by = UserSerializer(read_only=True)
@@ -149,11 +155,12 @@ class WaterSupplySerializer(serializers.HyperlinkedModelSerializer):
     commune_id = CommuneSerializer_v2(many=False, read_only=True)
     village_id = VillageSerializer_v2(many=False, read_only=True)
     watersupplywell_watersupply = WaterSupplyWellSerializer(many=True, read_only = True)
+    watersupplypipe_watersupply = WaterSupplyPipeSerializer(many=True, read_only=True)
     
     class Meta:
         model = models.WaterSupply
         fields = ('id', 'water_supply_type_id', 'province_id', 'district_id', 'created_by', 'updated_by', 'created_at', 'updated_at', 'commune_id', 'village_id', 'water_supply_code', 'total_family', 'utm_x', 'utm_y', 'is_risk_enviroment_area', 'construction_date', 'source_budget', 'constructed_by', 
-        'management_type', 'managed_by', 'beneficiary_total_people', 'beneficiary_total_women', 'beneficiary_total_family', 'beneficiary_total_family_poor_1', 'beneficiary_total_family_poor_2', 'beneficiary_total_family_vulnerable', 'beneficiary_total_family_indigenous', 'watersupplywell_watersupply')
+        'management_type', 'managed_by', 'beneficiary_total_people', 'beneficiary_total_women', 'beneficiary_total_family', 'beneficiary_total_family_poor_1', 'beneficiary_total_family_poor_2', 'beneficiary_total_family_vulnerable', 'beneficiary_total_family_indigenous', 'watersupplywell_watersupply', 'watersupplypipe_watersupply')
         
 class WaterSupplySerializer_v2(serializers.ModelSerializer):
     created_at = serializers.DateTimeField(default=datetime.now())
