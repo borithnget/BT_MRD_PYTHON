@@ -8,4 +8,5 @@ urlpatterns = [
     path('create/<int:id>', views.create_watersupply, name= 'watersupply_create'),
     path('detail/<int:id>', views.detail, name= 'watersupply_detail'),
     path('userlist/', views.user_index, name='user_index'),
+    path('register/', views.user_register, name='user_register'),
 ]

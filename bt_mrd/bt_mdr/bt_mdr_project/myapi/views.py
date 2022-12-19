@@ -11,7 +11,7 @@ from django.http.response import JsonResponse
 from rest_framework.views import APIView
 
 from mdrapp.models import Commune, Province, District, Village, WaterSupplyType, WaterSupplyOption, WaterSupplyOptionValue, WaterSupplyTypeOption, WaterSupply, WaterSupplyWell, WaterSupplyPipe, WaterSupplyKiosk, WaterSupplyCommunityPond, WaterSupplyRainWaterHarvesting
-from .serializers import CommuneSerializer, HeroSerializer, UserSerializer, RegisterSerializer, ProvinceSerializer, DistrictSerializer, VillageSerializer, WaterSupplyOptionSerializer, WaterSupplyOptionValueSerializer, WaterSupplyTypeSerializer, WaterSupplySerializer
+from .serializers import CommuneSerializer, HeroSerializer, UserSerializer, RegisterSerializer, ProvinceSerializer, DistrictSerializer, VillageSerializer, WaterSupplyOptionSerializer, WaterSupplyOptionValueSerializer, WaterSupplyTypeSerializer, WaterSupplySerializer, UserDetailSerializer
 from .models import Hero
 from django.contrib.auth import login
 from knox.views import LoginView as KnoxLoginView
@@ -137,13 +137,13 @@ class WaterSupplyPipeViewSet(viewsets.ModelViewSet):
 class UserListViewSet(generics.ListAPIView):
     User = get_user_model()
     queryset = User.objects.all()
-    serializer_class = UserSerializer
+    serializer_class = UserDetailSerializer
     #permission_classes = [IsAuthenticated]
 
     def list(self, request):
         # Note the use of `get_queryset()` instead of `self.queryset`
         queryset = self.get_queryset()
-        serializer = UserSerializer(queryset, many=True)
+        serializer = UserDetailSerializer(queryset, many=True)
         return Response(serializer.data)
   
 
