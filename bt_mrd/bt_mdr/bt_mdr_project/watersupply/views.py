@@ -126,28 +126,4 @@ def user_index(request):
     users = requests.get(user_list_url).json()
     return render(request, 'users/index.html' , {'users': users})
 
-def user_register(request):
-    
-    if request.method == "POST":
-        
-        url = "http://127.0.0.1:8000/en/api/register/"
-        is_data_entry = request.POST.get('is_data_entry', False)
-        
-        payload = {
-            "username": request.POST["username"],
-            "email": request.POST["email"],
-            "password": request.POST["password"],
-            "is_data_entry": is_data_entry
-        }       
-        print(payload)
-        headers = {'Content-Type': 'application/json'}
-        #response = requests.post(url1, json=payload, headers=headers)
-        response = requests.post(url, json=payload, headers=headers)
-        res_json  = response.json()
-        print(res_json)
-        
-        return redirect("user_index")
-        
-    return render(request, 'users/register.html')
-
 #END USER SECTION
