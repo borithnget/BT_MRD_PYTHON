@@ -146,11 +146,113 @@ class WaterSupplyWellSerializer(serializers.ModelSerializer):
             return serializer.data   
         
 class WaterSupplyPipeSerializer(serializers.ModelSerializer):
+
+    source_type_of_water_obj = serializers.SerializerMethodField()
+    pool_filter_obj = serializers.SerializerMethodField()
+    water_quality_check_obj = serializers.SerializerMethodField()
+    status_obj = serializers.SerializerMethodField()
     
     class Meta:
         model = models.WaterSupplyPipe
-        fields = ['id', 'watersupply_id', 'is_active', 'source_type_of_water', 'abilty_of_produce_water', 'underground_pool_storage', 'pool_air', 'pool_filter', 'number_of_link', 'water_quality_check', 'status', 'status_no_reason']
+        fields = ['id', 'watersupply_id', 'is_active', 'source_type_of_water', 'abilty_of_produce_water', 'underground_pool_storage', 'pool_air', 'pool_filter', 'number_of_link', 
+        'water_quality_check', 'status', 'status_no_reason', 'source_type_of_water_obj', 'pool_filter_obj', 'water_quality_check_obj', 'status_obj']
     
+    def get_source_type_of_water_obj(self, obj):
+        customer_account_query = models.WaterSupplyOptionValue.objects.filter(id=int(obj.source_type_of_water))
+        serializer = WaterSupplyOptionValueSerializer(customer_account_query, many=True)
+        return serializer.data  
+
+    def get_pool_filter_obj(self, obj):
+        customer_account_query = models.WaterSupplyOptionValue.objects.filter(id=int(obj.pool_filter))
+        serializer = WaterSupplyOptionValueSerializer(customer_account_query, many=True)
+        return serializer.data  
+
+    def get_water_quality_check_obj(self, obj):
+        customer_account_query = models.WaterSupplyOptionValue.objects.filter(id=int(obj.water_quality_check))
+        serializer = WaterSupplyOptionValueSerializer(customer_account_query, many=True)
+        return serializer.data  
+
+    def get_status_obj(self, obj):
+        customer_account_query = models.WaterSupplyOptionValue.objects.filter(id=int(obj.status))
+        serializer = WaterSupplyOptionValueSerializer(customer_account_query, many=True)
+        return serializer.data   
+    
+class WaterSupplyKioskSerializer(serializers.ModelSerializer):
+
+    source_type_of_water_obj = serializers.SerializerMethodField()
+    filter_system_obj = serializers.SerializerMethodField()
+    status_obj = serializers.SerializerMethodField()
+    water_quality_checking_obj = serializers.SerializerMethodField()
+
+    class Meta:
+        model = models.WaterSupplyKiosk
+        fields = ['watersupply_id', 'is_active', 'source_type_of_water', 'abilty_of_produce_water', 'filter_system', 'water_quality_checking', 'status', 'status_no_reason', 'source_type_of_water_obj', 'filter_system_obj', 'status_obj', 'water_quality_checking_obj']
+
+    def get_source_type_of_water_obj(self, obj):
+        customer_account_query = models.WaterSupplyOptionValue.objects.filter(id=int(obj.source_type_of_water))
+        serializer = WaterSupplyOptionValueSerializer(customer_account_query, many=True)
+        return serializer.data 
+    def get_filter_system_obj(self, obj):
+        customer_account_query = models.WaterSupplyOptionValue.objects.filter(id=int(obj.filter_system))
+        serializer = WaterSupplyOptionValueSerializer(customer_account_query, many=True)
+        return serializer.data 
+    def get_water_quality_checking_obj(self, obj):
+        customer_account_query = models.WaterSupplyOptionValue.objects.filter(id=int(obj.water_quality_checking))
+        serializer = WaterSupplyOptionValueSerializer(customer_account_query, many=True)
+        return serializer.data 
+    def get_status_obj(self, obj):
+        customer_account_query = models.WaterSupplyOptionValue.objects.filter(id=int(obj.status))
+        serializer = WaterSupplyOptionValueSerializer(customer_account_query, many=True)
+        return serializer.data 
+
+class WaterSupplyCommuniryPondSerializer(serializers.ModelSerializer):
+
+    pool_filter_obj = serializers.SerializerMethodField()
+    type_of_pond_obj = serializers.SerializerMethodField()
+    is_summer_has_water_obj = serializers.SerializerMethodField()
+    status_obj = serializers.SerializerMethodField()
+
+    class Meta:
+        model = models.WaterSupplyCommunityPond
+        fields = ['watersupply_id', 'is_active', 'width', 'length', 'height', 'pool_filter', 
+        'type_of_pond', 'is_summer_has_water', 'status', 'status_no_reason', 'pool_filter_obj', 'type_of_pond_obj', 'is_summer_has_water_obj', 'status_obj']
+    
+    def get_type_of_pond_obj(self, obj):
+        customer_account_query = models.WaterSupplyOptionValue.objects.filter(id=int(obj.type_of_pond))
+        serializer = WaterSupplyOptionValueSerializer(customer_account_query, many=True)
+        return serializer.data  
+    def get_pool_filter_obj(self, obj):
+        customer_account_query = models.WaterSupplyOptionValue.objects.filter(id=int(obj.pool_filter))
+        serializer = WaterSupplyOptionValueSerializer(customer_account_query, many=True)
+        return serializer.data  
+    def get_is_summer_has_water_obj(self, obj):
+        customer_account_query = models.WaterSupplyOptionValue.objects.filter(id=int(obj.is_summer_has_water))
+        serializer = WaterSupplyOptionValueSerializer(customer_account_query, many=True)
+        return serializer.data  
+    def get_status_obj(self, obj):
+        customer_account_query = models.WaterSupplyOptionValue.objects.filter(id=int(obj.status))
+        serializer = WaterSupplyOptionValueSerializer(customer_account_query, many=True)
+        return serializer.data  
+
+class WaterSupplyRainWaterHarvestingSerializer(serializers.ModelSerializer):
+
+    type_of_using_obj = serializers.SerializerMethodField()
+    status_obj = serializers.SerializerMethodField()
+
+    class Meta:
+        model = models.WaterSupplyRainWaterHarvesting
+        fields = ['watersupply_id', 'is_active', 'type_of_using', 'capacity_35m3', 'capacity_4m3', 'capacity_of_rain_water_harvesting', 'status', 'status_no_reason', 
+        'type_of_using_obj', 'status_obj']
+
+    def get_type_of_using_obj(self, obj):
+        customer_account_query = models.WaterSupplyOptionValue.objects.filter(id=int(obj.type_of_using))
+        serializer = WaterSupplyOptionValueSerializer(customer_account_query, many=True)
+        return serializer.data  
+    def get_status_obj(self, obj):
+        customer_account_query = models.WaterSupplyOptionValue.objects.filter(id=int(obj.status))
+        serializer = WaterSupplyOptionValueSerializer(customer_account_query, many=True)
+        return serializer.data  
+
 class WaterSupplySerializer(serializers.HyperlinkedModelSerializer):
     created_by = UserSerializer(read_only=True)
     updated_by = UserSerializer(read_only=True)
@@ -161,11 +263,15 @@ class WaterSupplySerializer(serializers.HyperlinkedModelSerializer):
     village_id = VillageSerializer_v2(many=False, read_only=True)
     watersupplywell_watersupply = WaterSupplyWellSerializer(many=True, read_only = True)
     watersupplypipe_watersupply = WaterSupplyPipeSerializer(many=True, read_only=True)
-    
+    watersupplyKiosk_watersupply = WaterSupplyKioskSerializer(many=True, read_only=True)
+    watersupplyCommunityPond_watersupply = WaterSupplyCommuniryPondSerializer(many=True, read_only=True)
+    watersupplyRainWaterHarvesting_watersupply = WaterSupplyRainWaterHarvestingSerializer(many=True, read_only=True)
+
     class Meta:
         model = models.WaterSupply
         fields = ('id', 'water_supply_type_id', 'province_id', 'district_id', 'created_by', 'updated_by', 'created_at', 'updated_at', 'commune_id', 'village_id', 'water_supply_code', 'total_family', 'utm_x', 'utm_y', 'is_risk_enviroment_area', 'construction_date', 'source_budget', 'constructed_by', 
-        'management_type', 'managed_by', 'beneficiary_total_people', 'beneficiary_total_women', 'beneficiary_total_family', 'beneficiary_total_family_poor_1', 'beneficiary_total_family_poor_2', 'beneficiary_total_family_vulnerable', 'beneficiary_total_family_indigenous', 'watersupplywell_watersupply', 'watersupplypipe_watersupply')
+        'management_type', 'managed_by', 'beneficiary_total_people', 'beneficiary_total_women', 'beneficiary_total_family', 'beneficiary_total_family_poor_1', 'beneficiary_total_family_poor_2', 'beneficiary_total_family_vulnerable', 'beneficiary_total_family_indigenous', 
+        'watersupplywell_watersupply', 'watersupplypipe_watersupply', 'watersupplyKiosk_watersupply', 'watersupplyCommunityPond_watersupply', 'watersupplyRainWaterHarvesting_watersupply')
         
 class WaterSupplySerializer_v2(serializers.ModelSerializer):
     created_at = serializers.DateTimeField(default=datetime.now())

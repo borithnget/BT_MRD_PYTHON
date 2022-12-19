@@ -103,7 +103,47 @@ def create_watersupply(request, id):
                     "status_no_reason":request.POST["status_no_reason"]                  
                 }
                 response_pipe_json = requests.post(ws_pipe_url, json=payload_pipe, headers=headers).json()
-                
+            elif id == 3:
+                ws_kiosk_url = "http://127.0.0.1:8000/en/api/watersupplykiosk/"
+                payload_kiosk = {               
+                    "watersupply_id": res_json['data']['id'],
+                    "is_active": True,
+                    "source_type_of_water": request.POST["source_type_of_water"],
+                    "abilty_of_produce_water": request.POST["abilty_of_produce_water"],
+                    "filter_system": request.POST["filter_system"],
+                    "water_quality_checking": request.POST["water_quality_checking"],
+                    "status": request.POST["status"],
+                    "status_no_reason": request.POST["status_no_reason"]                      
+                }
+                response_kiosk_json = requests.post(ws_kiosk_url, json=payload_kiosk, headers=headers).json()
+            elif id == 4:
+                ws_community_pond_url = "http://127.0.0.1:8000/en/api/watersupplycommunitypond/"
+                payload_community_pond = {
+                    "watersupply_id": res_json['data']['id'],
+                    "is_active": True,
+                    "width": request.POST["width"],
+                    "length": request.POST["length"],
+                    "height": request.POST["height"],
+                    "pool_filter": request.POST["pool_filter"],
+                    "type_of_pond": request.POST["type_of_pond"],
+                    "is_summer_has_water": request.POST["is_summer_has_water"],
+                    "status": request.POST["status"],
+                    "status_no_reason": request.POST["status_no_reason"]  
+                }
+                response_community_pond_json = requests.post(ws_community_pond_url, json=payload_community_pond, headers=headers).json()
+            elif id == 5:
+                ws_rain_water_harvesting_url = "http://127.0.0.1:8000/en/api/watersupplyrainwaterharvesting/"
+                payload_rain_water_harvesting = {
+                    "watersupply_id": res_json['data']['id'],
+                    "is_active": True,
+                    "type_of_using": request.POST["type_of_using"],
+                    "capacity_35m3": request.POST["capacity_35m3"],
+                    "capacity_4m3": request.POST["capacity_4m3"],
+                    "capacity_of_rain_water_harvesting": request.POST["capacity_of_rain_water_harvesting"],
+                    "status": request.POST["status"],
+                    "status_no_reason": request.POST["status_no_reason"]  
+                }
+                response_rain_water_harvesting_json = requests.post(ws_rain_water_harvesting_url, json=payload_rain_water_harvesting, headers=headers).json()
             return redirect('index')
     
     return render(request, 'watersupply/create.html', 

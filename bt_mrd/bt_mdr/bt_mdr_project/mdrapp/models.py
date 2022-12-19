@@ -165,6 +165,7 @@ class WaterSupplyKiosk(models.Model):
     source_type_of_water = models.CharField(max_length=255, default='', null=True, blank=True)
     abilty_of_produce_water = models.CharField(max_length=255, default='', null=True, blank=True)
     filter_system = models.CharField(max_length=255, default='', null=True, blank=True)
+    water_quality_checking  = models.CharField(max_length=255, default='', null=True, blank=True)
     status = models.CharField(max_length=255, default='0', null=True, blank=True)
     status_no_reason = models.TextField(default='', null=True, blank=True)
     

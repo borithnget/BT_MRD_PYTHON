@@ -134,6 +134,21 @@ class WaterSupplyPipeViewSet(viewsets.ModelViewSet):
     queryset = WaterSupplyPipe.objects.all().filter(is_active=True)
     serializer_class = serializers.WaterSupplyPipeSerializer
 
+class WaterSupplyKioskViewSet(viewsets.ModelViewSet):
+    model = WaterSupplyKiosk
+    queryset = WaterSupplyKiosk.objects.all().filter(is_active=True)
+    serializer_class = serializers.WaterSupplyKioskSerializer
+
+class WaterSupplyCommunityPondViewSet(viewsets.ModelViewSet):
+    model = WaterSupplyCommunityPond
+    queryset = WaterSupplyCommunityPond.objects.all().filter(is_active=True)
+    serializer_class = serializers.WaterSupplyCommuniryPondSerializer
+
+class WaterSupplyRainWaterHarvestingViewSet(viewsets.ModelViewSet):
+    model = WaterSupplyRainWaterHarvesting
+    queryset = WaterSupplyRainWaterHarvesting.objects.all().filter(is_active=True)
+    serializer_class = serializers.WaterSupplyRainWaterHarvestingSerializer
+
 class UserListViewSet(generics.ListAPIView):
     User = get_user_model()
     queryset = User.objects.all()
