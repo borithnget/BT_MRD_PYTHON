@@ -177,14 +177,14 @@ def user_register(request):
             "username": request.POST["username"],
             "email": request.POST["email"],
             "password": request.POST["password"],
-            "is_data_entry": is_data_entry
+            "is_data_entry": bool(is_data_entry)
         }       
         print(payload)
         headers = {'Content-Type': 'application/json'}
         #response = requests.post(url1, json=payload, headers=headers)
-        response = requests.post(url, json=payload, headers=headers)
-        res_json  = response.json()
-        print(res_json)
+        response = requests.post(url, json=payload, headers=headers).json()
+        
+        print(response)
         
         return redirect("user_index")
         
