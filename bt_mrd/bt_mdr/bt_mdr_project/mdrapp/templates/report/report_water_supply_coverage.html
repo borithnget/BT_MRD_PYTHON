@@ -1,0 +1,481 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'menu_report_water_supply_coverage' %}{% endblock %}
+{% block first_breadcrums %}
+<li class="breadcrumb-item">{% trans 'menu_report' %}</li>
+<li class="breadcrumb-item active" aria-current="page">{% trans 'menu_report_water_supply_coverage' %}</li>
+{% endblock %}
+{% block style %}
+    <style>
+
+    </style>
+{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="card" style="width: 100%;">
+        <div class="card-header"><h4>{% trans 'menu_report_water_supply_coverage' %}</h4></div>
+        <div class="card-body">
+            <form method="post" id="myForm">
+                {% csrf_token %}
+                <div class="form-group row">
+                                     
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-sm btn-outline-primary" id="btnGenerate"><i class="fa fa-filter" aria-hidden="true"></i></button>
+                        <button type="button" class="btn btn-sm btn-outline-primary" id="btnExportExcel"><i class="fa fa-file-excel-o" aria-hidden="true"></i></button>
+                        <button type="button" class="btn btn-sm btn-outline-primary" id="btnPDFExport" onclick="printDiv('report_panel','Water Supply Coverage')"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></button>
+                        <button type="button" class="btn btn-sm btn-outline-primary" id="btnExportCSV">{% trans 'CSV' %}</button>
+                    </div>
+                </div>
+                <div class="row" id="report_panel">
+                    <div class="table-responsive" id="table_panel">
+                        <table class="table table-bordered" id="table_coverage">
+                            
+                        </table>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Approve -->
+<div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">{% trans 'title_filter_condition' %}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        
+        <div class="modal-body">
+
+            <div class="form-group row">
+                <label class="control-label col-md-4">{% trans 'CoverageBy' %}</label>
+                    <div class="col-md-8">
+                        <select class="form-control" id="coverage_by">
+                            <option value="0">{% trans 'select_option' %}</option>
+                            <option value="1">{% trans 'Country' %}</option>
+                            <option value="2">{% trans 'province' %}</option>
+                            <option value="3">{% trans 'district' %}</option>
+                            <option value="4">{% trans 'commune' %}</option>
+                            <option value="5">{% trans 'village' %}</option>
+                        </select>
+                    </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="control-label col-md-4">{% trans 'water_supply_type' %}</label>
+                <div class="col-md-8">
+                    <select class="form-control" id="md_ws_type">
+                        <option value="0">{% trans 'all' %}</option>
+                        {% for watersupplytype in watersupplytypelist %}
+                            <option value="{{ watersupplytype.id }}">{{ watersupplytype.name_kh }}</option>
+                            
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group row" id="province_panel">
+                <label class='col-md-4 control-label'>{% trans 'province' %} <strong class="text-danger">*</strong></label>
+                <div class="col-md-8">
+                    <select class='form-control select2' id="province" name="province"​​ style="width: 100% !important;">
+                        {% for province in provinces %}
+                            <option value="{{ province.id }}" data-population="{{ province.total_population }}">{{ province.name_kh }}
+                        {% endfor %}
+                    </select>
+                </div>             
+            </div>
+            <div class="form-group row" id="district_panel">
+                <label class='col-md-4 control-label'>{% trans 'district' %} <strong class="text-danger">*</strong></label>
+                <div class="col-md-8">
+                    <select class='form-control select2' id="district" name="district" style="width: 100% !important;">
+                        
+                    </select>
+                </div>
+            </div>     
+            <div class="form-group row" id="commune_panel">
+                <label class='col-md-4 control-label'>{% trans 'commune' %} <strong class="text-danger">*</strong></label>
+                <div class="col-md-8">
+                    <select class='form-control select2' id="commune" name="commune" style="width: 100% !important;">
+                        
+                    </select>
+                </div>                            
+            </div>
+            <div class="form-group row" id="village_panel">
+                <label class='col-md-4 control-label'>{% trans 'village' %} <strong class="text-danger">*</strong></label>
+                <div class="col-md-8">
+                    <select class='form-control select2' id="village" name="village" style="width: 100% !important;">
+                        
+                    </select>
+                </div>
+            </div>
+            
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans 'btn_close' %}</button>
+          <button type="button" class="btn btn-primary"​ id="btn_modal_filter">{% trans 'btn_filter' %}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+
+{% block script %}
+<script src="//cdn.rawgit.com/rainabba/jquery-table2excel/1.1.0/dist/jquery.table2excel.min.js"></script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js"></script>
+<script type="text/javascript">
+
+    $(function(){
+
+        $('.select2').select2();
+
+        $('#btnGenerate').click(function(e){
+            $('#filterModal').modal('show');
+            enablegeoinformation($('#coverage_by').val());
+        });
+
+        $('#province').change(function(e){
+            var province_id = $(this).val();
+            inititalDistrictDropdownList(province_id);
+
+        });   
+            
+        $('#district').change(function(e){
+            initialCommuneDropdownList(); 
+        });
+
+        $('#commune').change(function(e){
+            intialVillageDropdownList();
+        });
+
+        $('#coverage_by').change(function(e){
+            var id = $(this).val();
+            enablegeoinformation(id);
+        });
+
+        $("#btn_modal_filter").click(function(e){
+
+            $('#filterModal').modal('hide');
+
+            var id=$('#coverage_by').val();
+            var ws_type = $('#md_ws_type').val();
+            var ws_type_text = $("#md_ws_type option:selected").text();
+            
+
+
+            $('#table_coverage').empty();
+
+            //Country Coverage
+            if(id==1){
+                $('#table_coverage').append("<thead>"+
+                                "<tr>"+
+                                    "<th>RSW Types</th>"+
+                                    "<th>Beneficiary</th>"+
+                                    "<th>Total Population</th>"+
+                                    "<th>Percentage %</th>"+
+                                "</tr>"+
+                            "</thead><tbody>"+
+                                "<tr>"+
+                                    "<td>"+ws_type_text+"</td>"+
+                                    "<td></td>"+
+                                    "<td></td>"+
+                                    "<td></td>"+
+                                    "</tr>"+
+                                "</tbody>");                            
+            }else if (id==2){
+                //Province Coverage
+                var province=$('#province').select2('data');
+                var total_population = $("#province option:selected").attr('data-population');
+                console.log(total_population);
+
+                $.ajax({
+                    type: 'GET',
+                    url: "{% url 'ajax_get_beneficiarytotalpeople' %}",
+                    data: {
+                        "ws_type" : ws_type,
+                        "province_id":province[0].id,
+                        
+                    },
+                    success: function (response) {
+                        
+                        if(!response["valid"]){
+                            console.log(response);
+                            var data=response.data;
+                            beneficiary_total_people = data.beneficiary_total_people==null?0: parseFloat(data.beneficiary_total_people);
+                            var beneficiary_percentage = (beneficiary_total_people*100)/total_population;
+                            $('#table_coverage').append("<thead>"+
+                                "<tr>"+
+                                    "<th>{% trans 'no' %}</th>"+
+                                    "<th>{% trans 'province' %}</th>"+
+                                    "<th>{% trans 'water_supply_type' %}</th>"+
+                                    "<th>{% trans 'beneficiary_total_people' %}</th>"+
+                                    "<th>{% trans 'total_population' %}</th>"+
+                                    "<th>{% trans 'percentage' %}</th>"+
+                                "</tr>"+
+                            "</thead><tbody>"+
+                                "<tr>"+
+                                    "<td class='text-center'>1</td>"+
+                                    "<td>"+province[0].text+"</td>"+
+                                    "<td>"+ws_type_text+"</td>"+
+                                    "<td class='text-center'>"+beneficiary_total_people+"</td>"+
+                                    "<td class='text-center'>"+total_population+"</td>"+
+                                    "<td class='text-center'>"+ parseFloat(beneficiary_percentage).toFixed(2)+"</td>"+
+                                    "</tr>"+
+                                "</tbody>"
+                                ); 
+                            //alert("You cannot create a friend with same nick name");   
+                                                
+                        }
+                    },
+                    error: function (response) {
+                        console.log(response)
+                    }
+                });
+
+
+                 
+            
+                            }else if(id==3){
+                //District Coverage
+                $('#table_coverage').append("<thead>"+
+                                "<tr>"+
+                                    "<th>No.</th>"+
+                                    "<th>Province</th>"+
+                                    "<th>District</th>"+
+                                    "<th>RSW Types</th>"+
+                                    "<th>Beneficiary</th>"+
+                                    "<th>Total Population</th>"+
+                                    "<th>Percentage %</th>"+
+                                "</tr>"+
+                            "</thead><tbody></tbody>");
+            }else if (id==4){
+                //Commune
+                $('#table_coverage').append("<thead>"+
+                                "<tr>"+
+                                    "<th>No.</th>"+
+                                    "<th>Province</th>"+
+                                    "<th>District</th>"+
+                                    "<th>Commnue</th>"+
+                                    "<th>RSW Types</th>"+
+                                    "<th>Beneficiary</th>"+
+                                    "<th>Total Population</th>"+
+                                    "<th>Percentage %</th>"+
+                                "</tr>"+
+                            "</thead><tbody></tbody>");
+            }else if(id==5){
+                $('#table_coverage').append("<thead>"+
+                                "<tr>"+
+                                    "<th>No.</th>"+
+                                    "<th>Province</th>"+
+                                    "<th>District</th>"+
+                                    "<th>Commnue</th>"+
+                                    "<th>Village</th>"+
+                                    "<th>RSW Types</th>"+
+                                    "<th>Beneficiary</th>"+
+                                    "<th>Total Population</th>"+
+                                    "<th>Percentage %</th>"+
+                                "</tr>"+
+                            "</thead><tbody></tbody>");
+            }
+
+        });
+
+            $('#btnExportCSV').click(function(){
+                var html = document.querySelector("table").outerHTML;
+	            export_table_to_csv(html, "{% trans 'menu_report_water_supply_coverage' %}.csv");
+            });
+
+            $('#btnExportExcel').click(function(){
+                $("#table_coverage").table2excel({
+                    exclude: ".noExport",
+                    filename: "{% trans 'menu_report_water_supply_coverage' %}",
+                });
+            });
+
+            var doc = new jsPDF();
+            var specialElementHandlers = {
+                '#editor': function (element, renderer) {
+                    return true;
+                }
+            };
+
+    });
+
+    function inititalDistrictDropdownList(province_id){
+            
+            $('#district').empty().append('<option value="0">{% trans "select_option" %} </option>');
+            $('#commune').empty();
+            $('#village').empty();
+
+            $.ajax({
+                type: 'GET',
+                url: "{% url 'ajax_get_district' %}",
+                data: {"province_id":province_id },
+                success: function (response) {
+                    
+                    if(!response["valid"]){
+                        console.log(response);
+                        $.each(response.district,function(ind,dis){
+                            $('#district').append("<option value='"+dis.id+"'>"+dis.name_kh+"</option>");
+                        });
+                        //alert("You cannot create a friend with same nick name");   
+                                            
+                    }
+                },
+                error: function (response) {
+                    console.log(response)
+                }
+            });
+
+        }
+
+        function initialCommuneDropdownList(){
+            var district_id=$('#district').val();
+            $('#commune').empty().append('<option value="0">{% trans "select_option" %}</option>');
+            $('#village').empty();
+            $.ajax({
+                type: 'GET',
+                url: "{% url 'ajax_get_commune_list' %}",
+                data: {"district_id":district_id },
+                success: function (response) {
+                    
+                    if(!response["valid"]){
+                        console.log(response);
+                        $.each(response.communes,function(ind,commune){
+                            $('#commune').append("<option value='"+commune.id+"'>"+commune.name_kh+"</option>");
+
+
+                        });
+                        //alert("You cannot create a friend with same nick name");                        
+                    }
+                },
+                error: function (response) {
+                    console.log(response)
+                }
+            });
+        }
+
+        function intialVillageDropdownList(){
+            var commune_id=$('#commune').val();
+            $('#village').empty().append('<option value="0">{% trans "select_option" %}</option>');
+
+            $.ajax({
+                type: 'GET',
+                url: "{% url 'ajax_get_village_list' %}",
+                data: {"commune_id":commune_id },
+                success: function (response) {
+                    
+                    if(!response["valid"]){
+                        console.log(response);
+                        $.each(response.villages,function(ind,village){
+                            $('#village').append("<option value='"+village.id+"'>"+village.name_kh+"</option>");
+                        });
+                        //alert("You cannot create a friend with same nick name");                        
+                    }
+                },
+                error: function (response) {
+                    console.log(response)
+                }
+            });
+        }
+
+        function enablegeoinformation(coverage_by){
+            $('#province_panel').hide();
+            $('#district_panel').hide();
+            $('#commune_panel').hide();
+            $('#village_panel').hide();
+            coverage_by=parseFloat(coverage_by);
+
+            if(coverage_by==2){
+                $('#province_panel').show();
+            }else if (coverage_by==3){
+                $('#province_panel').show();
+                $('#district_panel').show();
+            }else if(coverage_by==4){
+                $('#province_panel').show();
+                $('#district_panel').show();
+                $('#commune_panel').show();
+            }else if(coverage_by==5){
+                $('#province_panel').show();
+                $('#district_panel').show();
+                $('#commune_panel').show();
+                $('#village_panel').show();
+            }
+
+        }
+
+        //EXPORT TO CSV
+        function download_csv(csv, filename) {
+        var csvFile;
+        var downloadLink;
+        var BOM = "\uFEFF"; 
+        // CSV FILE
+                csvFile = new Blob([BOM+csv], {type: "text/csv;charset=utf-8;"});
+                // Download link
+                downloadLink = document.createElement("a");
+                // File name
+                downloadLink.download = filename;
+
+                // We have to create a link to the file
+                downloadLink.href = window.URL.createObjectURL(csvFile);
+
+                // Make sure that the link is not displayed
+                downloadLink.style.display = "none";
+
+                // Add the link to your DOM
+                document.body.appendChild(downloadLink);
+
+                // Lanzamos
+                downloadLink.click();
+            }
+
+            function export_table_to_csv(html, filename) {
+                var csv = [];
+                var rows = document.querySelectorAll("table tr");
+                
+                for (var i = 0; i < rows.length; i++) {
+                    var row = [], cols = rows[i].querySelectorAll("td, th");
+                    
+                    for (var j = 0; j < cols.length; j++) 
+                        row.push(cols[j].innerText);
+                    
+                    csv.push(row.join(","));		
+                }
+
+                // Download CSV
+                download_csv(csv.join("\n"), filename);
+            }
+
+            function saveDiv(divId, title) {
+            doc.fromHTML(`<html><head><title>${title}</title></head><body>` + document.getElementById(divId).innerHTML + `</body></html>`);
+            doc.save('div.pdf');
+            }
+
+            function printDiv(divId,title) {
+
+                let mywindow = window.open('', 'PRINT', 'height=650,width=900,top=100,left=150');
+
+                mywindow.document.write(`<html><head><title>${title}</title>`);
+                mywindow.document.write('</head><body >');
+                mywindow.document.write(document.getElementById(divId).innerHTML);
+                mywindow.document.write('</body></html>');
+
+                mywindow.document.close(); // necessary for IE >= 10
+                mywindow.focus(); // necessary for IE >= 10*/
+
+                mywindow.print();
+                mywindow.close();
+
+                return true;
+            }
+
+
+</script>
+{% endblock %}

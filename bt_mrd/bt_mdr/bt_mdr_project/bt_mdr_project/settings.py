@@ -43,11 +43,18 @@ INSTALLED_APPS = [
     'mdrapp',
     'myapi',
     'knox',
+    'report',
     'rosetta',  # NEW
     'parler',
     # 'django_filters',
     'django_filters',
+    
     # 'django-advanced-filters',
+    'django_google_maps',
+    #'qrcodeapp',
+    # 'mapwidgets',
+    'easy_maps',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -59,6 +66,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.locale.LocaleMiddleware', # new
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     
 ]
 
@@ -96,12 +105,20 @@ DATABASES = {
     # }
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'bt_mrd',
+        'NAME': 'br_mrd',
         'USER': 'postgres',
         'PASSWORD': 'rootuser',
         'HOST': '127.0.0.1', 
         'PORT': '5432',
     }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'NAME': 'br_mrd',
+    #     'USER': 'postgres',
+    #     'PASSWORD': 'myPassword',
+    #     'HOST': '52.14.59.145', 
+    #     'PORT': '5432',
+    # }
 }
 
 
@@ -129,11 +146,23 @@ REST_FRAMEWORK = {
         # 'rest_framework.authentication.SessionAuthentication',
         'knox.auth.TokenAuthentication',
     ],
+    # 'DEFAULT_AUTHENTICATION_CLASSES': [
+    #     'rest_framework.authentication.TokenAuthentication',
+    #     'rest_framework.authentication.BasicAuthentication',
+    #     'rest_framework.authentication.SessionAuthentication',
+    # ],
+    # 'DEFAULT_PERMISSION_CLASSES': [
+    #     'rest_framework.permissions.IsAuthenticated',
+    # ],
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
         )
 }
 
+CSRF_COOKIE_SAMESITE = 'Strict'
+SESSION_COOKIE_SAMESITE = 'Strict'
+CSRF_COOKIE_HTTPONLY = False  # False since we will grab it via universal-cookies
+SESSION_COOKIE_HTTPONLY = True
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
@@ -172,7 +201,6 @@ PARLER_LANGUAGES = {
     }
 }
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -186,3 +214,23 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = "home"
 LOGOUT_REDIRECT_URL = "home"
+
+# Map settings
+GOOGLE_API_KEY = 'AIzaSyB3_FbMwrwR--w2MO21lE39MolKf0AmGx8'
+EASY_MAPS_GOOGLE_KEY = 'AIzaSyB3_FbMwrwR--w2MO21lE39MolKf0AmGx8'
+EASY_MAPS_CENTER = (-41.3, 32)
+# MAP_WIDGETS = {
+#     "GooglePointFieldWidget": (
+#         ("zoom", 15),
+#         ("mapCenterLocationName", "amsterdam"),
+#         ("GooglePlaceAutocompleteOptions", {'componentRestrictions': {'country': 'nl'}}),
+#         ("markerFitZoom", 12),
+#     ),
+#     "GOOGLE_MAP_API_KEY": GOOGLE_MAP_API_KEY
+# }
+
+#CORS_ALLOWED_ORIGINS = ['*']
+CORS_ORIGIN_ALLOW_ALL = True
+
+#API_ENDPOINT = "http://127.0.0.1:8000/en/api/"
+API_ENDPOINT = "http://52.14.59.145/en/api/"

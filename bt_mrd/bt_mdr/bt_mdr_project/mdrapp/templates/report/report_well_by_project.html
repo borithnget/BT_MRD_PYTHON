@@ -1,0 +1,366 @@
+
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'report_well_by_daterange' %}{% endblock %}
+{% block first_breadcrums %}
+<li class="breadcrumb-item">{% trans 'menu_report' %}</li>
+<li class="breadcrumb-item active" aria-current="page">{% trans 'report_well_by_daterange' %}</li>
+{% endblock %}
+{% block style %}
+    <style>
+/* .date {
+  z-index:1001 !important;
+} */
+.datepicker.dropdown-menu {
+    z-index: 9999 !important;
+}
+
+    </style>
+{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="card" style="width: 100%;">
+        <div class="card-header"><h4>{% trans 'report_well_by_daterange' %}</h4></div>
+        <div class="card-body">
+            <form method="post" id="myForm">
+                {% csrf_token %}
+                <div class="form-group row">
+                    <label class="control-label col-md-1">{% trans 'DateFrom' %}</label>
+                    <div class="col-md-2">
+                        <div class="input-group date" data-provide="datepicker">
+                            <input type="text" class="form-control" name="datefrom" id="datefrom">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-th"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <label class="control-label col-md-1">{% trans 'DateTo' %}</label>
+                    <div class="col-md-2">
+                        <div class="input-group date" data-provide="datepicker">
+                            <input type="text" class="form-control" name="dateto" id="dateto">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-th"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <label class="control-label col-md-1">{% trans 'province' %}</label>
+                    <div class="col-md-2">
+                        <select class='form-control select2' id="province" name="province select2"​​ style="width: 100% !important;">
+                            <option value="">{% trans 'all' %}</option>
+                            {% for province in provinces %}
+                                <option value="{{ province.id }}">{{ province.name_kh }}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="button" class="btn btn-sm btn-outline-primary" id="btnGenerate"><i class="fa fa-filter" aria-hidden="true"></i></button>
+                        <button type="button" class="btn btn-sm btn-outline-primary" id="btnExportExcel"><i class="fa fa-file-excel-o" aria-hidden="true"></i></button>
+                        <!-- <button type="button" class="btn btn-sm btn-outline-primary" id="btnPDFExport" onclick="printDiv('report_panel','title')"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></button> -->
+                        <button type="button" class="btn btn-sm btn-outline-primary" id="btnExportCSV">{% trans 'CSV' %}</button>
+                    </div>
+                </div>
+
+                <div class="table-responsive" id="report_panel">
+                    <table class="table table-bordered" id="table1">
+                        <thead>
+                            <tr>
+                                <th>{% trans 'No' %} </th>
+                                <th>{% trans 'province' %}</th>
+                                <th>{% trans 'district'%}</th>
+                                <th>{% trans 'commune' %}</th>
+                                <th>{% trans 'village' %}</th>
+                                <th>{% trans 'well_type' %}</th>
+                                <th>Coord_X</th>
+                                <th>Coord_Y</th>
+                                <th>{% trans 'water_supply_code' %}</th>
+                                <th>{% trans 'well_type' %}</th>
+                                <th>{% trans 'well_filter_height' %}</th>
+                                <th>{% trans 'well_water_supply' %}</th>
+                                <th>{% trans 'well_nirostatic' %}</th>
+                                <th>{% trans 'well_nirodynamic' %}</th>
+                                <th>{% trans 'well_watar_quality' %}</th>
+                                <th>{% trans 'well_water_quality_check' %}</th>
+                                <th>{% trans 'well_status' %}</th>
+                                <th>{% trans 'total_family' %}</th>
+                                <th>{% trans 'is_risk_enviroment_area' %}</th>
+                                <th>{% trans 'construction_date' %}</th>
+                                <th>{% trans 'source_budget' %}</th>
+                                <th>{% trans 'constructed_by' %}</th>
+                                <th>{% trans 'management_type' %}</th>
+                                <th>{% trans 'managed_by' %}</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div id="editor"></div>
+
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="//cdn.rawgit.com/rainabba/jquery-table2excel/1.1.0/dist/jquery.table2excel.min.js"></script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js"></script>
+    <script type="text/javascript">
+        var doc = new jsPDF();
+        $(function(){
+            $('.select2').select2();
+            $('.date').datepicker({
+                format: 'yyyy-mm-dd',
+                //startDate: '-3d'
+                "setDate": new Date(),
+                "autoclose": true
+            }).datepicker("setDate",'now');
+
+
+            initialTable();
+
+            $('#btnGenerate').click(function(e){
+                initialTable();
+            });
+
+            $('#btnExportExcel').click(function(){
+                $("#table1").table2excel({
+                    exclude: ".noExport",
+                    filename: "name-of-the-file",
+                });
+            });
+
+            $('#btnExportCSV').click(function(){
+                var html = document.querySelector("table").outerHTML;
+	            export_table_to_csv(html, "table.csv");
+            })
+
+            var doc = new jsPDF();
+            var specialElementHandlers = {
+                '#editor': function (element, renderer) {
+                    return true;
+                }
+            };
+
+            // $('#btnPDFExport').click(function(e){
+            //     doc.fromHTML($('#report_panel').html(), 15, 15, {
+            //         'width': 170,
+            //             'elementHandlers': specialElementHandlers
+            //     });
+            //     doc.save('sample-file.pdf');
+            // });
+        });
+
+        function initialTable(){
+            var sd =new Date($('#datefrom').val());
+            var ed = new Date($('#dateto').val());
+            ed.setDate(ed.getDate()+1); 
+            var new_sd= (sd.getMonth()+1)+"%2F"+sd.getDate()+"%2F"+sd.getFullYear();   
+            var new_ed= (ed.getMonth()+1)+"%2F"+ed.getDate()+"%2F"+ed.getFullYear();
+            console.log(new_sd + " "+new_ed);
+            var province=$('#province').val();
+            if(new Date($('#dateto').val()) <  sd)
+            {//compare end <=, not >=
+                //your code here
+                alert("{% trans 'validation_date_range' %}");
+                return;
+            }
+
+            $('#table1 tbody').empty();
+
+            $.ajax({
+                type: 'GET',
+                url: "{% url 'ajax_get_report_water_supply_well_daterange' %}",
+                data: {
+                    "date_start":new_sd,
+                    "date_end":new_ed,
+                    "province":province
+                 },
+                success: function (response) {
+                    
+                    if(!response["valid"]){
+                        //console.log(response);
+                        if(response.data.length==0){
+                            $('#table1 tbody').append("<tr><td class='text-center' colspan='21'>{% trans 'NoData' %}</td></tr>")
+                        }else{
+                            $.each(response.data,function(index,item){
+                                //console.log(item);
+                                var coordinate="";
+                                if(item.map_unit == 1){
+                                    coordinate="<td>"+parseFloat(item.utm_x)+"</td>"+
+                                    "<td>"+parseFloat(item.utm_y)+"</td>";
+                                }else if (item.map_unit==2){
+                                    coordinate="<td>"+parseFloat(item.decimal_degress_lat)+"</td>"+
+                                    "<td>"+parseFloat(item.decimal_degress_lng)+"</td>";
+                                }else if (item.map_unit==3){
+                                    coordinate="<td>"+item.mds_x_degress+"&#8451 "+ item.mds_x_minute +"'"+item.mds_x_second+"\"</td>"+
+                                    "<td>"+item.mds_y_degress+"&#8451 "+ item.mds_y_minute +"'"+item.mds_y_second+"\"</td>";
+                                }else {
+                                    coordinate="<td></td><td></td>";
+                                }
+
+                                var is_risk_enviroment_area="";
+                                if(item.is_risk_enviroment_area){
+                                    is_risk_enviroment_area="{% trans 'is_risk'%}";
+                                }else{
+                                    is_risk_enviroment_area="{% trans 'is_not_risk'%}";
+                                }
+
+                                var source_budget = "";
+                                if(item.source_budget==0){
+                                    source_budget="{% trans 'source_budget_state' %}";
+                                }else if (item.source_budget==1){
+                                    source_budget="{% trans 'source_budget_organization' %}";
+                                }else if (item.source_budget==2){
+                                    source_budget="{% trans 'source_budget_charity' %}";
+                                }
+
+                                var management_type="";
+                                if(item.management_type==0){
+                                    management_type="{% trans 'management_type_community'%}";
+                                }else if (item.management_type==1){
+                                    management_type="{% trans 'management_type_personal' %}";
+                                }
+
+                                var well_depth="<td></td>";
+                                var well_screen = "<td></td>";
+                                var well_supply="<td></td>";
+                                var well_nirostatic="<td></td>";
+                                var well_nirodynamic="<td></td>";
+                                var well_watar_quality="<td></td>";
+                                var well_water_quality_check_obj="<td></td>";
+                                var well_status="<td></td>";
+                                var well_type="<td></td>";
+
+                                if (item.watersupplywell_watersupply.length>0){
+                                    
+                                    var well = item.watersupplywell_watersupply[0];
+                                    var well_type="<td>";
+
+                                    console.log(well.well_type_obj);
+                                    $.each(well.well_type_obj,function(wtind,wtitem){
+                                        well_type=well_type+wtitem.value_obj[0].name_kh+",";
+                                    });
+                                    well_type=well_type+"</td>";
+
+                                    well_depth="<td>"+well.well_height+"</td>";
+                                    well_screen = "<td>"+well.well_filter_height+ "</td>";
+                                    well_supply="<td>"+well.well_water_supply+"</td>";
+                                    well_nirostatic="<td>"+well.well_nirostatic+"</td>";
+                                    well_nirodynamic="<td>"+well.well_nirodynamic+"</td>";
+                                    well_watar_quality="<td>"+well.well_watar_quality_obj[0].name_kh+"</td>";
+                                    well_water_quality_check_obj="<td>"+well.well_water_quality_check_obj[0].name_kh+"</td>";
+                                    well_status="<td>"+well.well_status_obj[0].name_kh+"</td>";
+                                }
+                                $('#table1 tbody').append("<tr>"+
+                                    "<td>"+Number(index+1)+"</td>"+
+                                    "<td>"+item.province_id.name_kh + "</td>"+
+                                    "<td>"+item.district_id.name_kh + "</td>"+
+                                    "<td>"+item.commune_id.name_kh + "</td>"+
+                                    "<td>"+item.village_id.name_kh + "</td>"+
+                                    well_type+
+                                    //coordinate
+                                    coordinate+
+                                    "<td>"+item.water_supply_code+"</td>"+
+                                    well_depth+
+                                    well_screen+
+                                    well_supply+
+                                    well_nirostatic+
+                                    well_nirodynamic+
+                                    well_watar_quality+
+                                    well_water_quality_check_obj+
+                                    well_status+
+                                    "<td>"+item.total_family+"</td>"+
+                                    "<td>"+is_risk_enviroment_area+"</td>"+
+                                    "<td>"+item.construction_date+"</td>"+
+                                    "<td>"+source_budget+"</td>"+
+                                    "<td>"+item.constructed_by+"</td>"+
+                                    "<td>"+management_type+"</td>"+
+                                    "<td>"+item.managed_by+"</td>"+
+                                    
+                                    "</tr>");
+                            });
+                        }
+
+                        //alert("You cannot create a friend with same nick name");   
+                                            
+                    }
+                },
+                error: function (response) {
+                    console.log(response)
+                }
+            });
+
+        }
+
+        function saveDiv(divId, title) {
+            doc.fromHTML(`<html><head><title>${title}</title></head><body>` + document.getElementById(divId).innerHTML + `</body></html>`);
+            doc.save('div.pdf');
+            }
+
+            function printDiv(divId,title) {
+
+                let mywindow = window.open('', 'PRINT', 'height=650,width=900,top=100,left=150');
+
+                mywindow.document.write(`<html><head><title>${title}</title>`);
+                mywindow.document.write('</head><body >');
+                mywindow.document.write(document.getElementById(divId).innerHTML);
+                mywindow.document.write('</body></html>');
+
+                mywindow.document.close(); // necessary for IE >= 10
+                mywindow.focus(); // necessary for IE >= 10*/
+
+                mywindow.print();
+                mywindow.close();
+
+                return true;
+            }
+
+            //EXPORT TO CSV
+            function download_csv(csv, filename) {
+                var csvFile;
+                var downloadLink;
+                var BOM = "\uFEFF"; 
+                // CSV FILE
+                csvFile = new Blob([BOM+csv], {type: "text/csv;charset=utf-8;"});
+                // Download link
+                downloadLink = document.createElement("a");
+                // File name
+                downloadLink.download = filename;
+
+                // We have to create a link to the file
+                downloadLink.href = window.URL.createObjectURL(csvFile);
+
+                // Make sure that the link is not displayed
+                downloadLink.style.display = "none";
+
+                // Add the link to your DOM
+                document.body.appendChild(downloadLink);
+
+                // Lanzamos
+                downloadLink.click();
+            }
+
+            function export_table_to_csv(html, filename) {
+                var csv = [];
+                var rows = document.querySelectorAll("table tr");
+                
+                for (var i = 0; i < rows.length; i++) {
+                    var row = [], cols = rows[i].querySelectorAll("td, th");
+                    
+                    for (var j = 0; j < cols.length; j++) 
+                        row.push(cols[j].innerText);
+                    
+                    csv.push(row.join(","));		
+                }
+
+                // Download CSV
+                download_csv(csv.join("\n"), filename);
+            }
+
+
+        </script>
+
+
+{% endblock %}

@@ -3,38 +3,63 @@
 
 {% block title %}Water Supply{% endblock %}
 
+{% block first_breadcrums %}
+{% if watersupplytype_id == 0 %}
+<li class="breadcrumb-item active" aria-current="page">{% trans 'menu_water_supply' %}</li>
+{% else %}
+<li class="breadcrumb-item active" aria-current="page">{{ watersupplytype.name_kh }}</li>
+{% endif %}
+{% endblock %}
+
 {% block content %}
-    {% for watersupplytype in watersupplytypes %}
-        <a href="{% url 'watersupply_create' id=watersupplytype.id %}">{{ watersupplytype.name_en }}</a>
-    {% endfor %}
+
+    <!-- {% for watersupplytype in watersupplytypes %}
+        <a href="{% url 'watersupply_create' id=watersupplytype.id %}">{{ watersupplytype.name_en }}</a> |
+    {% endfor %} -->
+    {% if watersupplytype_id > 0 %}       
+            <div class="btn-group btn-group-sm" role="group" aria-label="" style="margin-bottom: 10px !important;">
+                <a href="{% url 'watersupply_create' id=watersupplytype_id %}" class="btn btn-primary"><i class="fa fa-plus-circle" aria-hidden="true"></i> {% trans 'btn_create_new_request' %}</a>
+            </div>
+        
+    {% endif %}
 
     <div class="table-responsive">
         <table class='table table-bordered' id="table_1">
             <thead>
                 <tr>
+                    <th>{% trans 'water_supply_code' %}</th>
+                    <th>{% trans 'province' %}</th>
+                    <th>{% trans 'district' %}</th>
+                    <th>{% trans 'commune' %}</th>
+                    <th>{% trans 'village' %}</th>
+                    <th>{% trans 'created_at' %}</th>
+                    <th>{% trans 'water_supply_type' %}</th>
+                    <th>{% trans 'created_by' %}</th>
+                    <th>{% trans 'ws_status' %}</th>
                     <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th>Created Date</th>
-                    <th>Type</th>
-                        <th>Created By</th>
-                        <th></th>
                 </tr>
             </thead>
             <tbody>
+                {% if watersupplylist %}
                 {% for ws in watersupplylist %}
+                {% if ws %}
                     <tr>
+                        <td>{{ ws.watersupply_id.water_supply_code }}</td>
                         <td>{{ ws.province_id.name_en}}</td>
                         <td>{{ ws.district_id.name_en}}</td>
                         <td>{{ ws.commune_id.name_en}}</td>
                         <td>{{ ws.village_id.name_en}}</td>
                         <td>{{ ws.created_at }}</td>
                         <td>{{ ws.water_supply_type_id.name_kh }}</td>
-                            <td>{{ ws.created_by.username }}</td>
-                            <td><a href="{% url 'watersupply_detail' id=ws.id %}">View Detail</a></td>
+                        <td>{{ ws.created_by.username }}</td>
+                        <td class="text-center"><span class="badge badge-warning">{{ ws.main_status.status_name_kh }}</span></td>
+                        <td class="text-center">
+                            <a href="{% url 'watersupply_detail' id=ws.id %}" class="btn btn-sm btn-outline-primary"><i class="fa fa-eye"></i> {% trans 'btn_view_detail' %}</a>
+                        </td>
                     </tr>
+                    {% endif %}
                 {% endfor %}
+                {% endif %}
             </tbody>
         </table>
     </div>

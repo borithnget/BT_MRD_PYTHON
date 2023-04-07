@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% trans 'menu_report_water_supply_coverage' %}{% endblock %}
+{% block first_breadcrums %}
+<li class="breadcrumb-item">{% trans 'menu_report' %}</li>
+<li class="breadcrumb-item active" aria-current="page">{% trans 'menu_report_well_sum_by_province' %}</li>
+{% endblock %}
+{% block style %}
+    <style>
+#map {
+        height: 1000px !important;
+        width: 100% !important;
+        /* position: inherit !important; */
+        overflow: hidden !important;
+    }
+
+    .gm-style-iw-d div{
+        color: black !important;
+    }
+    </style>
+{% endblock %}
+{% block content %}
+
+<div class="container-fluid">
+    <div class="card" style="width: 100%;">
+        <div class="card-header"><h4>{% trans 'menu_report_well_sum_by_province' %}</h4></div>
+        <div class="card-body">
+            <form method="post" id="myForm">
+                {% csrf_token %}
+                <div class="form-group row">
+                    <label class="control-label col-md-1">{% trans 'DateFrom' %}</label>
+                    <div class="col-md-2">
+                        <div class="input-group date" data-provide="datepicker">
+                            <input type="text" class="form-control" name="datefrom" id="datefrom">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-th"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <label class="control-label col-md-1">{% trans 'DateTo' %}</label>
+                    <div class="col-md-2">
+                        <div class="input-group date" data-provide="datepicker">
+                            <input type="text" class="form-control" name="dateto" id="dateto">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-th"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <label class="control-label col-md-1">{% trans 'province' %}</label>
+                    <div class="col-md-2">
+                        <select class='form-control select2' id="province" name="province select2"​​ style="width: 100% !important;">
+                            <option value="">{% trans 'all' %}</option>
+                            {% for province in provinces %}
+                                <option value="{{ province.id }}">{{ province.name_kh }}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="button" class="btn btn-sm btn-outline-primary" id="btnGenerate"><i class="fa fa-filter" aria-hidden="true"></i></button>
+                        <button type="button" class="btn btn-sm btn-outline-primary" id="btnExportExcel"><i class="fa fa-file-excel-o" aria-hidden="true"></i></button>
+                        <!-- <button type="button" class="btn btn-sm btn-outline-primary" id="btnPDFExport" onclick="printDiv('report_panel','title')"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></button> -->
+                        <button type="button" class="btn btn-sm btn-outline-primary" id="btnExportCSV">{% trans 'CSV' %}</button>
+                    </div>
+                </div>
+
+                <div class="table-responsive" id="report_panel">
+                    <table class="table table-bordered" id="table1">
+                        <thead>
+                            <tr><th>{% trans 'No' %} </th>
+                                <th>{% trans 'province' %}</th>
+                                <th>{% trans 'no_district'%}</th>
+                                <th>{% trans 'no_commune' %}</th>
+                                <th>{% trans 'no_village' %}</th>
+                                <th>{% trans 'no_motor' %}</th>
+                                <th>{% trans 'no_afridev' %}</th>
+                                <th>{% trans 'no_markII' %}</th>
+                                <th>{% trans 'no_markIII' %}</th>
+                                <th>{% trans 'no_no6' %}</th>
+                                <th>{% trans 'no_combinewell' %}</th>
+                                <th>{% trans 'no_dugwell' %}</th>
+                                <th>{% trans 'no_hhuse' %}</th>
+                                <th>{% trans 'no_user' %}</th>
+                                <th>{% trans 'percentage_of_user' %}</th>                               
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div id="editor"></div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block script %}
+<script type="text/javascript">
+    $(function(){
+        $('.select2').select2();
+        $('.date').datepicker({
+            format: 'yyyy-mm-dd',
+            //startDate: '-3d'
+            "setDate": new Date(),
+            "autoclose": true
+        }).datepicker("setDate",'now');
+    });
+</script>
+{% endblock %}

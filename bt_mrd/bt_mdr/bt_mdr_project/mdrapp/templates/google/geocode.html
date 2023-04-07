@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans 'menu_my_pending_approval_task' %}{% endblock %}
+
+{% block first_breadcrums %}
+{% if watersupplytype_id == 0 %}
+<li class="breadcrumb-item active" aria-current="page">{% trans 'menu_water_supply' %}</li>
+{% else %}
+<li class="breadcrumb-item active" aria-current="page">{% trans 'menu_my_pending_approval_task' %}</li>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="pageholder">
+    <div class="titleholder"> 
+        <div class="title"><i class="fas fa-compass mr-2"></i> Google       Maps #1: Geocoding </div>
+    </div>
+
+    <div class="linkholder">
+        {{result}}
+    </div>
+</div>
+{% endblock %}

@@ -1,312 +1,1169 @@
 {% extends 'base.html' %}
 {% load i18n %}
 
-{% block title %}View Water Supply Detail{% endblock %}
+{% block first_breadcrums %}
+<li class="breadcrumb-item">{{ watersupply.water_supply_type_id.name_en }}</li>
+<li class="breadcrumb-item active" aria-current="page">{% trans 'view_detail_title' %}</li>
+{% endblock %}
+
+{% block title %}{% trans 'view_detail_title' %}{% endblock %}
+
+{% block style %}
+<style type="text/css">
+    /* .mapholder{
+    height: 100px !important;
+    width: 100px !important;
+} */
+
+#map {
+    height: 350px !important;
+    width: 500px !important;
+    /* position: inherit !important; */
+    overflow: hidden !important;
+  }
+</style>
+{% endblock %}
+
 {% block content %}
-<form class="form-horizontal">
-    <div class="form-group row">
-        <label class="control-label col-md-2">{% trans 'water_supply_type' %}</label>
-        <label class="col-md-4">{{ watersupply.water_supply_type_id.name_en }}</label>
-        <label class="control-label col-md-2">{% trans 'water_supply_code' %}</label>
-        <label class="col-md-4">{{ watersupply.water_supply_code }}</label>
+<div class="card" style="width: 100%;">
+    <div class="card-header">
+        <div class="btn-group" role="group" aria-label="Basic example" style="float: right !important;">
+            {% if watersupply.main_status.id == 3 %}
+                <a class="btn btn-primary btn-sm" href="{% url 'watersupply_edit' id=watersupply.id %}"><i class="fa fa-edit"></i> {% trans 'btn_edit' %}</a>
+                <button class="btn btn-primary btn-sm" type="button" id="btn_submit_water_supply"><i class="fa fa-save"></i> {% trans 'btn_submit' %}</button>
+                <button class="btn btn-primary btn-sm" type="button" id="btn_delete_water_supply"><i class="fa fa-trash"></i> {% trans 'btn_delete' %}</button>
+                {% endif %}
+            <button type="button" class="btn btn-secondary btn-sm" id="btn_view_workflow_history"><i class="fa fa-history" aria-hidden="true"></i> {% trans 'btn_view_workflow' %}</button>
+            <!-- <button type="button" class="btn btn-secondary btn-sm">Middle</button> -->
+          </div>
     </div>
-    <div class="form-group row">
-        <label class="control-label col-md-2">Province</label>
-        <label class="col-md-4">{{ watersupply.province_id.name_en }}</label>
-        <label class="control-label col-md-2">District</label>
-        <label class="col-md-4">{{ watersupply.district_id.name_en }}</label>
-    </div>
+    <div class="card-body">
+        <form class="form-horizontal">
+            <input type="hidden" id="water_supply_id" value="{{ watersupply.id }}" />
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group row">
+                        <label class="control-label col-md-4 col-sm-4 col-xs-4">{% trans 'water_supply_type' %}</label>              
+                        <label class="col-md-8 col-sm-8 col-xs-8">: {{ watersupply.water_supply_type_id.name_en }}</label>                     
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-md-4">{% trans 'water_supply_code' %}</label>              
+                        <label class="col-md-8">: {{ watersupply.water_supply_code }}</label>
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-md-4">{% trans 'province' %} </label>
+                        <label class="col-md-8">: {{ watersupply.province_id.name_en }}</label>                      
+                    </div>
+                    <div class="form-group row">
+                        <label class="control-label col-md-4">{% trans 'district'%}</label>
+                        <label class="col-md-8">: {{ watersupply.district_id.name_en }}</label>
+                    </div>
+                    <div class="form-group row">
+                        <label class='col-md-4 control-label'>{% trans 'commune' %} </label>
+                        <label class="col-md-8">: {{ watersupply.commune_id.name_en }}</label>          
+                    </div>
+                    <div class="form-group row">
+                        <label class='col-md-4 control-label'>{% trans 'village' %} </label>
+                        <label class="col-md-8">: {{ watersupply.village_id.name_en }}</label>
+                    </div>
 
-    <div class="form-group row">
-        <label class='col-md-2 control-label'>{% trans 'commune' %} </label>
-        <label class="col-md-4">{{ watersupply.commune_id.name_en }}</label>
-        <label class='col-md-2 control-label'>{% trans 'village' %} </label>
-        <label class="col-md-4">{{ watersupply.village_id.name_en }}</label>
-    </div>
-
-    <div class="form-group row">
-        <label class='col-md-2 control-label'>{% trans 'total_family' %} </label>
-        <label class="col-md-4">{{ watersupply.total_family }}</label>
-        <label class='col-md-2 control-label'>{% trans 'water_supply_code' %} </label>
-        <label class="col-md-4">{{ watersupply.water_supply_code }}</label>
-    </div>
-
-    <div class="form-group row">
-        <label class='col-md-2 control-label'>{% trans 'utm_x' %} </label>
-        <label class="col-md-4">{{ watersupply.utm_x }}</label>
-        <label class='col-md-2 control-label'>{% trans 'utm_y' %} </label>
-        <label class="col-md-4">{{ watersupply.utm_y }}</label>
-    </div>
-
-    <div class="form-group row">
-        <label class='col-md-2 control-label'>{% trans 'is_risk_enviroment_area' %} </label>
-        <label class="col-md-4">{{ watersupply.is_risk_enviroment_area }}</label>
-        <label class='col-md-2 control-label'>{% trans 'construction_date' %} </label>
-        <label class="col-md-4">{{ watersupply.construction_date }}</label>
-    </div>
-
-    <div class="form-group row">
+                    <div class="form-group row">
+                        <label class="control-label col-md-4">ខ្នាតផែនទី</label>
+                        {% if watersupply.map_unit == 2 %}
+                        <label class="col-md-8">Decimal Degress</label>
+                        {% elif watersuupply.map_unit == 3 %}
+                        <label class="col-md-8">Degree Minute Seconds</label>
+                        {% else %}
+                        <label class="col-md-8">UTM</label>
+                        {% endif %}
+                        <input type="hidden" id="map_unit" value="{{ watersupply.map_unit }}" />
+                    </div>
+                    {% if watersupply.map_unit == 1 %}
+                    <div id="map_unit_utm_panel">
+                        <div class="form-group row">
+                            <label class='col-md-4 control-label'>{% trans 'utm_x' %} </label>
+                            <label class="col-md-8">: {{ watersupply.utm_x }}</label>  
+                           
+                        </div>
+                        <div class="form-group row">
+                            <label class='col-md-4 control-label'>{% trans 'utm_y' %} </label>
+                            <label class="col-md-8">: {{ watersupply.utm_y }}</label>  
+                        </div>
+                    </div>
+                    {% elif watersupply.map_unit == 2 %}
+                    <div id="map_unit_dd_panel">
+                        <div class="form-group row">
+                            <label class='col-md-4 control-label'>{% trans 'decimal_degree_x' %} </label>
+                            <label class="col-md-8">: {{ watersupply.decimal_degress_lat }}</label>  
+                           
+                        </div>
+                        <div class="form-group row">
+                            <label class='col-md-4 control-label'>{% trans 'decimal_degree_y' %} </label>
+                            <label class="col-md-8">: {{ watersupply.decimal_degress_lng }}</label>  
+                        </div>
+                    </div>
+                    {% elif watersupply.map_unit == 3 %}
+                    <div id="map_unit_mds_panel">
+                        <div class="form-group row">
+                            <label class="col-md-4 control-label">{% trans 'decimal_degree_x' %}</label>
+                            <div class="col-md-2">
+                                <label class="col-md-8">: {{ watersupply.mds_x_degress }}</label>  
+                                <small>Degree</small>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="col-md-8">: {{ watersupply.mds_x_minute }}</label>  
+                                <small>Minute (')</small>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="col-md-8">: {{ watersupply.mds_x_second }}</label>  
+                                <small>Second ('')</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-4 control-label">{% trans 'decimal_degree_y' %}</label>
+                            <div class="col-md-2">
+                                <label class="col-md-8">: {{ watersupply.mds_y_degress }}</label>  
+                                <small>Degree</small>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="col-md-8">: {{ watersupply.mds_y_minute }}</label>  
+                                <small>Minute (')</small>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="col-md-8">: {{ watersupply.mds_y_second }}</label>  
+                                <small>Second ('')</small>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                
+                </div>
+                <div class="col-md-6">
+                    <div class="pageholder">
+                        <div class="linkholder">
+                            <div id="map"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>           
         
-        <label class="col-md-2 control-label">{% trans 'source_budget' %}</label>
-        <label class="col-md-4">{{ watersupply.source_budget }}</label>
-        <label class="control-label col-md-2">{% trans 'constructed_by' %}</label>
-        <label class="col-md-4">{{ watersupply.constructed_by }}</label>
-    </div>
-
-    <div class="form-group row">
-        <label class='col-md-2 control-label'>{% trans 'management_type' %} </label>
-        <label class="col-md-4">{{ watersupply.management_type }}</label>
-        <label class="control-label col-md-2">{% trans 'managed_by' %}</label>
-        <label class="col-md-4">{{ watersupply.managed_by }}</label>
-    </div>
-
-    <div class="form-group row">
-        <label class="control-label col-md-2">{% trans 'beneficiary_total_people' %}</label>
-        <label class="col-md-4">{{ watersupply.beneficiary_total_people }}</label>
-        <label class="control-label col-md-2">{% trans 'beneficiary_total_women' %}</label>
-        <label class="col-md-4">{{ watersupply.beneficiary_total_women }}</label>
+            <div class="form-group row">
+                <label class='col-md-2 control-label'>{% trans 'total_family' %} </label>
+                <label class="col-md-4">: {{ watersupply.total_family }}</label>
+                <label class='col-md-2 control-label'>{% trans 'water_supply_code' %} </label>
+                <label class="col-md-4">: {{ watersupply.water_supply_code }}</label>
+            </div>
+                    
+            <div class="form-group row">
+                <label class='col-md-2 control-label'>{% trans 'is_risk_enviroment_area' %} </label>
+                {% if watersupply.is_risk_enviroment_area == True %}
+                <label class="col-md-4">: {% trans 'is_risk'%}</label>
+                {% else %}
+                <label class="col-md-4">: {% trans 'is_not_risk'%}</label>
+                {% endif %}
+                <label class='col-md-2 control-label'>{% trans 'construction_date' %} </label>
+                <label class="col-md-4">: {{ watersupply.construction_date }}</label>
+            </div>
         
-    </div>
-    <div class="form-group row">
-        <label class="control-label col-md-2">{% trans 'beneficiary_total_family' %}</label>
-        <label class="col-md-4">{{ watersupply.beneficiary_total_family }}</label>
-        <label class="control-label col-md-2">{% trans 'beneficiary_total_family_poor_1' %}</label>
-        <label class="col-md-4">{{ watersupply.beneficiary_total_family_poor_1 }}</label>     
-    </div>
-    <div class="form-group row">
-        <label class="control-label col-md-2">{% trans 'beneficiary_total_family_poor_2' %}</label>
-        <label class="col-md-4">{{ watersupply.beneficiary_total_family_poor_2 }}</label>
-        <label class="control-label col-md-2">{% trans 'beneficiary_total_family_vulnerable' %}</label>
-        <label class="col-md-4">{{ watersupply.beneficiary_total_family_vulnerable }}</label>     
-    </div>
-    <div class="form-group row">
-        <label class="control-label col-md-2">{% trans 'beneficiary_total_family_indigenous' %}</label>
-        <label class="col-md-4">{{ watersupply.beneficiary_total_family_indigenous }}</label>
-    </div>
+            <div class="form-group row">
+                
+                <label class="col-md-2 control-label">{% trans 'source_budget' %}</label>
+                {% if watersupply.source_budget == 0 %}
+                <label class="col-md-4">: {% trans 'source_budget_state' %}</label>
+                {% elif watersupply.source_budget == 1 %}
+                <label class="col-md-4">: {% trans 'source_budget_organization' %}</label>
+                {% elif watersupply.source_budget == 2 %}
+                <label class="col-md-4">: {% trans 'source_budget_charity' %}</label>
+                {% endif %}
 
-    
-    <!-- START WELL -->
-
-    {% if watersupply.watersupplywell_watersupply|length > 0 %}
-    <div class="form-group row">
-        <label class="control-label col-md-2">{% trans 'well_type' %}</label>
-        {% if watersupply.watersupplywell_watersupply.0.well_type_obj|length > 0 %}
-            <label class="col-md-4">{{ watersupply.watersupplywell_watersupply.0.well_type_obj.0.name_en }} </label>
-        {% else %}
-            <label class="col-md-4"></label>
-        {% endif %}
-        <label class="control-label col-md-2">{% trans 'well_height' %}</label>
-        <label class="col-md-4">{{ watersupply.watersupplywell_watersupply.0.well_height }} </label>
-    </div>
-    <div class="form-group row">
-        <label class="control-label col-md-2">{% trans 'well_filter_height' %}</label>
-        <label class="col-md-4">{{ watersupply.watersupplywell_watersupply.0.well_filter_height }} </label>
-        <label class="control-label col-md-2">{% trans 'well_water_supply' %}</label>
-        <label class="col-md-4">{{ watersupply.watersupplywell_watersupply.0.well_water_supply }} </label>
-    </div>
-    <div class="form-group row">
-        <label class="control-label col-md-2">{% trans 'well_nirostatic' %}</label>
-        <label class="col-md-4">{{ watersupply.watersupplywell_watersupply.0.well_nirostatic }} </label>
-        <label class="control-label col-md-2">{% trans 'well_nirodynamic' %}</label>
-        <label class="col-md-4">{{ watersupply.watersupplywell_watersupply.0.well_nirodynamic }} </label>
-    </div>
-    <div class="form-group row">
-        <label class="control-label col-md-2">{% trans 'well_watar_quality' %}</label>
-
-        {% if watersupply.watersupplywell_watersupply.0.well_watar_quality_obj|length > 0 %}
-            <label class="col-md-4">{{ watersupply.watersupplywell_watersupply.0.well_watar_quality_obj.0.name_en }} </label>
-        {% else %}
-            <label class="col-md-4"></label>
-        {% endif %}
-        <label class="control-label col-md-2">{% trans 'well_water_quality_check' %}</label>
-        {% if watersupply.watersupplywell_watersupply.0.well_water_quality_check_obj|length > 0 %}
-            <label class="col-md-4">{{ watersupply.watersupplywell_watersupply.0.well_water_quality_check_obj.0.name_en }} </label>
-        {% else %}
-            <label class="col-md-4"></label>
-        {% endif %}
-    </div>
-    <div class="form-group row">
-        <label class="control-label col-md-2">{% trans 'well_status' %}</label>
-        {% if watersupply.watersupplywell_watersupply.0.well_status_obj|length > 0 %}
-            <label class="col-md-4">{{ watersupply.watersupplywell_watersupply.0.well_status_obj.0.name_en }} </label>
-        {% else %}
-            <label class="col-md-4"></label>
-        {% endif %}
-        <label class="control-label col-md-2">{% trans 'well_status_reason' %}</label>
-        <label class="col-md-4">{{ watersupply.watersupplywell_watersupply.0.well_status_reason }} </label>
-    </div>
+                <label class="control-label col-md-2">{% trans 'constructed_by' %}</label>
+                <label class="col-md-4">: {{ watersupply.constructed_by }}</label>
+            </div>
         
-    {% endif %}
+            <div class="form-group row">
+                <label class='col-md-2 control-label'>{% trans 'management_type' %} </label>
+                {% if watersupply.management_type == 0 %}
+                <label class="col-md-4">: {% trans 'management_type_community'%}</label>
+                {% elif watersupply.management_type == 1 %}
+                <label class="col-md-4">: {% trans 'management_type_personal' %}</label>
+                {% endif %}
+                <label class="control-label col-md-2">{% trans 'managed_by' %}</label>
+                <label class="col-md-4">: {{ watersupply.managed_by }}</label>
+            </div>
+        
+            <div class="form-group row">
+                <label class="control-label col-md-2">{% trans 'beneficiary_total_people' %}</label>
+                <label class="col-md-4">: {{ watersupply.beneficiary_total_people }}</label>
+                <label class="control-label col-md-2">{% trans 'beneficiary_total_women' %}</label>
+                <label class="col-md-4">: {{ watersupply.beneficiary_total_women }}</label>
+                
+            </div>
+            <div class="form-group row">
+                <label class="control-label col-md-2">{% trans 'beneficiary_total_family' %}</label>
+                <label class="col-md-4">: {{ watersupply.beneficiary_total_family }}</label>
+                <label class="control-label col-md-2">{% trans 'beneficiary_total_family_poor_1' %}</label>
+                <label class="col-md-4">: {{ watersupply.beneficiary_total_family_poor_1 }}</label>     
+            </div>
+            <div class="form-group row">
+                <label class="control-label col-md-2">{% trans 'beneficiary_total_family_poor_2' %}</label>
+                <label class="col-md-4">: {{ watersupply.beneficiary_total_family_poor_2 }}</label>
+                <label class="control-label col-md-2">{% trans 'beneficiary_total_family_vulnerable' %}</label>
+                <label class="col-md-4">: {{ watersupply.beneficiary_total_family_vulnerable }}</label>     
+            </div>
+            <div class="form-group row">
+                <label class="control-label col-md-2">{% trans 'beneficiary_total_family_indigenous' %}</label>
+                <label class="col-md-4">: {{ watersupply.beneficiary_total_family_indigenous }}</label>
+            </div>
+          
+            <!-- START WELL -->
+        
+            {% if watersupply.watersupplywell_watersupply|length > 0 %}
+            <div class="form-group row">
+                <label class="control-label col-md-2">{% trans 'well_type' %}</label>
+                <div class="col-md-4"> : 
+                    {% for well_type in watersupply.watersupplywell_watersupply.0.well_type_obj %}
+                        <label>{{ well_type.value_obj.0.code }} - {{ well_type.value_obj.0.name_en }} </label>
+                        <br/>
+                    {% endfor %}
+                </div>
+                
+                <label class="control-label col-md-2">{% trans 'well_type' %}</label>
+                <label class="col-md-4">: {{ watersupply.watersupplywell_watersupply.0.well_height }} </label>
+            </div>
+            <div class="form-group row">
+                <label class="control-label col-md-2">{% trans 'well_filter_height' %}</label>
+                <label class="col-md-4">: {{ watersupply.watersupplywell_watersupply.0.well_filter_height }} </label>
+                <label class="control-label col-md-2">{% trans 'well_water_supply' %}</label>
+                <label class="col-md-4">: {{ watersupply.watersupplywell_watersupply.0.well_water_supply }} </label>
+            </div>
+            <div class="form-group row">
+                <label class="control-label col-md-2">{% trans 'well_nirostatic' %}</label>
+                <label class="col-md-4">: {{ watersupply.watersupplywell_watersupply.0.well_nirostatic }} </label>
+                <label class="control-label col-md-2">{% trans 'well_nirodynamic' %}</label>
+                <label class="col-md-4">: {{ watersupply.watersupplywell_watersupply.0.well_nirodynamic }} </label>
+            </div>
+            <div class="form-group row">
+                <label class="control-label col-md-2">{% trans 'well_watar_quality' %}</label>
+        
+                {% if watersupply.watersupplywell_watersupply.0.well_watar_quality_obj|length > 0 %}
+                    <label class="col-md-4">: {{ watersupply.watersupplywell_watersupply.0.well_watar_quality_obj.0.name_en }} </label>
+                {% else %}
+                    <label class="col-md-4"></label>
+                {% endif %}
+                <label class="control-label col-md-2">{% trans 'well_water_quality_check' %}</label>
+                {% if watersupply.watersupplywell_watersupply.0.well_water_quality_check_obj|length > 0 %}
+                    <label class="col-md-4">: {{ watersupply.watersupplywell_watersupply.0.well_water_quality_check_obj.0.name_en }} </label>
+                {% else %}
+                    <label class="col-md-4">: </label>
+                {% endif %}
+            </div>
+            <div class="form-group row">
+                <label class="control-label col-md-2">{% trans 'well_status' %}</label>
+                {% if watersupply.watersupplywell_watersupply.0.well_status_obj|length > 0 %}
+                    <label class="col-md-4">: {{ watersupply.watersupplywell_watersupply.0.well_status_obj.0.name_en }} </label>
+                {% else %}
+                    <label class="col-md-4">: </label>
+                {% endif %}
+                <label class="control-label col-md-2">{% trans 'status_no_reason' %}</label>
+                <label class="col-md-4">: {{ watersupply.watersupplywell_watersupply.0.well_status_reason }} </label>
+            </div>
+                
+            {% endif %}
+        
+            <!-- END WELL SECTION -->
+        
+            <!-- START PIPE SECTION -->
+            {% if watersupply.watersupplypipe_watersupply|length > 0 %}
+        
+            <div class="form-group row">
+                <label class="control-label col-md-2">{% trans 'source_type_of_water' %}</label>
+                <div class="col-md-4">
+                    {% for pipe_source_water in watersupply.watersupplypipe_watersupply.0.watersupplypipeoptionvalue_watersupplypipe %}
+                        <label>{{ pipe_source_water.value_obj.0.code }} - {{ pipe_source_water.value_obj.0.name_en }} </label>
+                        <br/>
+                    {% endfor %}
+                </div>
+                <label class="control-label col-md-2">{% trans 'abilty_of_produce_water' %}</label>
+                <label class="col-md-4">: {{ watersupply.watersupplypipe_watersupply.0.abilty_of_produce_water }} </label>
+            </div>
+            <div class="form-group row">
+                <label class="control-label col-md-2">{% trans 'underground_pool_storage' %}</label>
+                <label class="col-md-4">: {{ watersupply.watersupplypipe_watersupply.0.underground_pool_storage }} </label>
+                <label class="control-label col-md-2">{% trans 'pool_air' %}</label>
+                <label class="col-md-4">: {{ watersupply.watersupplypipe_watersupply.0.pool_air }} </label>
+            </div>
+            <div class="form-group row">
+                <label class="control-label col-md-2">{% trans 'pool_filter' %}</label>
+                {% if watersupply.watersupplypipe_watersupply.0.pool_filter_obj|length > 0 %}
+                    <label class="col-md-4">: {{ watersupply.watersupplypipe_watersupply.0.pool_filter_obj.0.name_en }} </label>
+                {% else %}
+                    <label class="col-md-4">: </label>
+                {% endif %}
+                <label class="control-label col-md-2">{% trans 'number_of_link' %}</label>
+                <label class="col-md-4">: {{ watersupply.watersupplypipe_watersupply.0.number_of_link }} </label>
+            </div>
+            <div class="form-group row">
+                <label class="control-label col-md-2">{% trans 'pipe_length' %}</label>
+                <label class="col-md-4">: {{ watersupply.watersupplypipe_watersupply.0.pipe_length }} </label>
+                <label class="control-label col-md-2">{% trans 'area_covering' %}</label>
+                <label class="col-md-4">: {{ watersupply.watersupplypipe_watersupply.0.area_covering }} </label>
+            </div>
+            <div class="form-group row">
+                <label class="control-label col-md-2">{% trans 'water_quality_check' %}</label>
+                {% if watersupply.watersupplypipe_watersupply.0.water_quality_check_obj|length > 0 %}
+                    <label class="col-md-4">: {{ watersupply.watersupplypipe_watersupply.0.water_quality_check_obj.0.name_en }} </label>
+                {% else %}
+                    <label class="col-md-4">: </label>
+                {% endif %}
+                <label class="control-label col-md-2">{% trans 'status_pipe' %}</label>
+                {% if watersupply.watersupplypipe_watersupply.0.status_obj|length > 0 %}
+                    <label class="col-md-4">: {{ watersupply.watersupplypipe_watersupply.0.status_obj.0.name_en }} </label>
+                {% else %}
+                    <label class="col-md-4">: </label>
+                {% endif %}
+            </div>
+            <div class="form-group row">
+        
+                <label class="control-label col-md-2">{% trans 'status_no_reason' %}</label>
+                <label class="col-md-4">: {{ watersupply.watersupplypipe_watersupply.0.status_no_reason }} </label>
+            </div>
+        
+            {% endif %}
+        
+            <!-- END PIPE SECTION -->
 
-    <!-- END WELL SECTION -->
+            <!-- START PIPE PRIVATE SECTION -->
+            {% if watersupply.watersupplypipeprivate_watersupply|length > 0 %}
+        
+            <div class="form-group row">
+                <label class="control-label col-md-2">{% trans 'source_type_of_water' %}</label>
+                <div class="col-md-4">
+                    {% for pipe_source_water in watersupply.watersupplypipeprivate_watersupply.0.watersupplypipeprivateoptionvalue_watersupplypipewater %}
+                        <label>{{ pipe_source_water.value_obj.0.code }} - {{ pipe_source_water.value_obj.0.name_en }} </label>
+                        <br/>
+                    {% endfor %}
+                </div>
+                <label class="control-label col-md-2">{% trans 'abilty_of_produce_water' %}</label>
+                <label class="col-md-4">: {{ watersupply.watersupplypipeprivate_watersupply.0.abilty_of_produce_water }} </label>
+            </div>
+            <div class="form-group row">
+                <label class="control-label col-md-2">{% trans 'underground_pool_storage' %}</label>
+                <label class="col-md-4">: {{ watersupply.watersupplypipeprivate_watersupply.0.underground_pool_storage }} </label>
+                <label class="control-label col-md-2">{% trans 'pool_air' %}</label>
+                <label class="col-md-4">: {{ watersupply.watersupplypipeprivate_watersupply.0.pool_air }} </label>
+            </div>
+            <div class="form-group row">
+                <label class="control-label col-md-2">{% trans 'pool_filter' %}</label>
+                {% if watersupply.watersupplypipeprivate_watersupply.0.pool_filter_obj|length > 0 %}
+                    <label class="col-md-4">: {{ watersupply.watersupplypipeprivate_watersupply.0.pool_filter_obj.0.name_en }} </label>
+                {% else %}
+                    <label class="col-md-4">: </label>
+                {% endif %}
+                <label class="control-label col-md-2">{% trans 'number_of_link' %}</label>
+                <label class="col-md-4">: {{ watersupply.watersupplypipeprivate_watersupply.0.number_of_link }} </label>
+            </div>
+            <div class="form-group row">
+                <label class="control-label col-md-2">{% trans 'pipe_length' %}</label>
+                <label class="col-md-4">: {{ watersupply.watersupplypipeprivate_watersupply.0.pipe_length }} </label>
+                <label class="control-label col-md-2">{% trans 'area_covering' %}</label>
+                <label class="col-md-4">: {{ watersupply.watersupplypipeprivate_watersupply.0.area_covering }} </label>
+            </div>
+            <div class="form-group row">
+                <label class="control-label col-md-2">{% trans 'water_quality_check' %}</label>
+                {% if watersupply.watersupplypipeprivate_watersupply.0.water_quality_check_obj|length > 0 %}
+                    <label class="col-md-4">: {{ watersupply.watersupplypipeprivate_watersupply.0.water_quality_check_obj.0.name_en }} </label>
+                {% else %}
+                    <label class="col-md-4">: </label>
+                {% endif %}
+                <label class="control-label col-md-2">{% trans 'label_is_has_license' %}</label>
+                {% if watersupply.watersupplypipeprivate_watersupply.0.is_has_license_obj|length > 0 %}
+                    <label class="col-md-4">: {{ watersupply.watersupplypipeprivate_watersupply.0.is_has_license_obj.0.name_en }} </label>
+                {% else %}
+                    <label class="col-md-4">: </label>
+                {% endif %}
+            </div>
+            <div class="form-group row">
+                <label class="control-label col-md-2">{% trans 'label_license_registered_date' %}</label>
+                <label class="col-md-4">{{ watersupply.watersupplypipeprivate_watersupply.0.license_registered_date }}</label>
+                <label class="control-label col-md-2">{% trans 'label_license_expired_date' %}</label>
+                <label class="col-md-4">{{ watersupply.watersupplypipeprivate_watersupply.0.license_expired_date }}</label>
+            </div>
+            <div class="form-group row">
+                <label class="control-label col-md-2">{% trans 'status_pipe' %}</label>
+                {% if watersupply.watersupplypipeprivate_watersupply.0.status_obj|length > 0 %}
+                    <label class="col-md-4">: {{ watersupply.watersupplypipeprivate_watersupply.0.status_obj.0.name_en }} </label>
+                {% else %}
+                    <label class="col-md-4">: </label>
+                {% endif %}
+                <label class="control-label col-md-2">{% trans 'status_no_reason' %}</label>
+                <label class="col-md-4">: {{ watersupply.watersupplypipeprivate_watersupply.0.status_no_reason }} </label>
+            </div>
+        
+            {% endif %}
+        
+            <!-- END PIPE PRIVATE SECTION -->
+        
+            <!-- START KIOSK SECTION -->
+            {% if watersupply.watersupplyKiosk_watersupply|length > 0 %}
+            <div class="form-group row">
+                <label class="control-label col-md-2">{% trans 'source_type_of_water' %}</label>
+                <div class="col-md-4">
+                    {% for kiosk_source_water in watersupply.watersupplyKiosk_watersupply.0.watersupplykioskoptionvalue_watersupplykiosk %}
+                        <label>{{ kiosk_source_water.value_obj.0.code }} - {{ kiosk_source_water.value_obj.0.name_en }} </label>
+                        <br/>
+                    {% endfor %}
+                </div>
 
-    <!-- START PIPE SECTION -->
-    {% if watersupply.watersupplypipe_watersupply|length > 0 %}
+                <label class="control-label col-md-2">{% trans 'abilty_of_produce_water' %}</label>
+                <label class="col-md-4">: {{ watersupply.watersupplyKiosk_watersupply.0.abilty_of_produce_water }} </label>
+            </div>
+            <div class="form-group row">
+                <label class="control-label col-md-2">{% trans 'water_quality_check' %}</label>
+                {% if watersupply.watersupplyKiosk_watersupply.0.filter_system_obj|length > 0 %}
+                    <label class="col-md-4">: {{ watersupply.watersupplyKiosk_watersupply.0.filter_system_obj.0.name_en }} </label>
+                {% else %}
+                    <label class="col-md-4">: </label>
+                {% endif %}
+                <label class="control-label col-md-2">{% trans 'water_quality_checking' %}</label>
+                {% if watersupply.watersupplyKiosk_watersupply.0.water_quality_checking_obj|length > 0 %}
+                    <label class="col-md-4">: {{ watersupply.watersupplyKiosk_watersupply.0.water_quality_checking_obj.0.name_en }} </label>
+                {% else %}
+                    <label class="col-md-4">: </label>
+                {% endif %}
+            </div>
+            <div class="form-group row">
+                <label class="control-label col-md-2">{% trans 'status_water_kiosk' %}</label>
+                {% if watersupply.watersupplyKiosk_watersupply.0.status_obj|length > 0 %}
+                    <label class="col-md-4">: {{ watersupply.watersupplyKiosk_watersupply.0.status_obj.0.name_en }} </label>
+                {% else %}
+                    <label class="col-md-4">: </label>
+                {% endif %}
+                <label class="control-label col-md-2">{% trans 'status_no_reason' %}</label>
+                <label class="col-md-4">: {{ watersupply.watersupplyKiosk_watersupply.0.status_no_reason }} </label>
+            </div>
+            {% endif %}
+            <!-- END KIOSK SECTION -->
 
-    <div class="form-group row">
-        <label class="control-label col-md-2">{% trans 'source_type_of_water' %}</label>
-        {% if watersupply.watersupplypipe_watersupply.0.source_type_of_water_obj|length > 0 %}
-            <label class="col-md-4">{{ watersupply.watersupplypipe_watersupply.0.source_type_of_water_obj.0.name_en }} </label>
-        {% else %}
-            <label class="col-md-4"></label>
-        {% endif %}
-        <label class="control-label col-md-2">{% trans 'abilty_of_produce_water' %}</label>
-        <label class="col-md-4">{{ watersupply.watersupplypipe_watersupply.0.abilty_of_produce_water }} </label>
-    </div>
-    <div class="form-group row">
-        <label class="control-label col-md-2">{% trans 'underground_pool_storage' %}</label>
-        <label class="col-md-4">{{ watersupply.watersupplypipe_watersupply.0.underground_pool_storage }} </label>
-        <label class="control-label col-md-2">{% trans 'pool_air' %}</label>
-        <label class="col-md-4">{{ watersupply.watersupplypipe_watersupply.0.pool_air }} </label>
-    </div>
-    <div class="form-group row">
-        <label class="control-label col-md-2">{% trans 'pool_filter' %}</label>
-        {% if watersupply.watersupplypipe_watersupply.0.pool_filter_obj|length > 0 %}
-            <label class="col-md-4">{{ watersupply.watersupplypipe_watersupply.0.pool_filter_obj.0.name_en }} </label>
-        {% else %}
-            <label class="col-md-4"></label>
-        {% endif %}
-        <label class="control-label col-md-2">{% trans 'number_of_link' %}</label>
-        <label class="col-md-4">{{ watersupply.watersupplypipe_watersupply.0.number_of_link }} </label>
-    </div>
-    <div class="form-group row">
-        <label class="control-label col-md-2">{% trans 'water_quality_check' %}</label>
-        {% if watersupply.watersupplypipe_watersupply.0.water_quality_check_obj|length > 0 %}
-            <label class="col-md-4">{{ watersupply.watersupplypipe_watersupply.0.water_quality_check_obj.0.name_en }} </label>
-        {% else %}
-            <label class="col-md-4"></label>
-        {% endif %}
-        <label class="control-label col-md-2">{% trans 'status' %}</label>
-        {% if watersupply.watersupplypipe_watersupply.0.status_obj|length > 0 %}
-            <label class="col-md-4">{{ watersupply.watersupplypipe_watersupply.0.status_obj.0.name_en }} </label>
-        {% else %}
-            <label class="col-md-4"></label>
-        {% endif %}
-    </div>
-    <div class="form-group row">
+            <!-- START Air to Water SECTION -->
+            {% if watersupply.watersupplyairwater_watersupply|length > 0 %}
+            <div class="form-group row">
+                <label class="control-label col-md-2">{% trans 'source_type_of_water' %}</label>
+                <div class="col-md-4">
+                    {% for kiosk_source_water in watersupply.watersupplyairwater_watersupply.0.watersupplyairwateroptionvalue_watersupplykioskwater %}
+                        <label>{{ kiosk_source_water.value_obj.0.code }} - {{ kiosk_source_water.value_obj.0.name_en }} </label>
+                        <br/>
+                    {% endfor %}
+                </div>
 
-        <label class="control-label col-md-2">{% trans 'status_no_reason' %}</label>
-        <label class="col-md-4">{{ watersupply.watersupplypipe_watersupply.0.status_no_reason }} </label>
-    </div>
+                <label class="control-label col-md-2">{% trans 'abilty_of_produce_water' %}</label>
+                <label class="col-md-4">: {{ watersupply.watersupplyairwater_watersupply.0.abilty_of_produce_water }} </label>
+            </div>
+            <div class="form-group row">
+                <label class="control-label col-md-2">{% trans 'water_quality_check' %}</label>
+                {% if watersupply.watersupplyairwater_watersupply.0.filter_system_obj|length > 0 %}
+                    <label class="col-md-4">: {{ watersupply.watersupplyairwater_watersupply.0.filter_system_obj.0.name_en }} </label>
+                {% else %}
+                    <label class="col-md-4">: </label>
+                {% endif %}
+                <label class="control-label col-md-2">{% trans 'water_quality_checking' %}</label>
+                {% if watersupply.watersupplyairwater_watersupply.0.water_quality_checking_obj|length > 0 %}
+                    <label class="col-md-4">: {{ watersupply.watersupplyairwater_watersupply.0.water_quality_checking_obj.0.name_en }} </label>
+                {% else %}
+                    <label class="col-md-4">: </label>
+                {% endif %}
+            </div>
+            <div class="form-group row">
+                <label class="control-label col-md-2">{% trans 'status_water_kiosk' %}</label>
+                {% if watersupply.watersupplyairwater_watersupply.0.status_obj|length > 0 %}
+                    <label class="col-md-4">: {{ watersupply.watersupplyairwater_watersupply.0.status_obj.0.name_en }} </label>
+                {% else %}
+                    <label class="col-md-4">: </label>
+                {% endif %}
+                {% if watersupply.watersupplyairwater_watersupply.0.status == "27" %}
+                    <label class="control-label col-md-2">{% trans 'status_no_reason' %}</label>
+                    <label class="col-md-4">: {{ watersupply.watersupplyairwater_watersupply.0.status_no_reason }} </label>
+                {% endif %}
+            </div>
+            {% endif %}
+            <!-- END Air to Water SECTION -->
+        
+            <!-- START COMMUNITY POND SECTION -->
+            {% if watersupply.watersupplyCommunityPond_watersupply|length > 0  %}
+            <div class="form-group row">
+                <label class="control-label col-md-2">{% trans 'width' %}</label>
+                <label class="col-md-4">: {{ watersupply.watersupplyCommunityPond_watersupply.0.width }} </label>
+                <label class="control-label col-md-2">{% trans 'length' %}</label>
+                <label class="col-md-4">: {{ watersupply.watersupplyCommunityPond_watersupply.0.length }} </label>
+            </div>
+            <div class="form-group row">
+                <label class="control-label col-md-2">{% trans 'height' %}</label>
+                <label class="col-md-4">: {{ watersupply.watersupplyCommunityPond_watersupply.0.height }} </label>
+                <label class="control-label col-md-2">{% trans 'pool_filter' %}</label>
+                {% if watersupply.watersupplyCommunityPond_watersupply.0.pool_filter_obj|length > 0 %}
+                    <label class="col-md-4">: {{ watersupply.watersupplyCommunityPond_watersupply.0.pool_filter_obj.0.name_en }} </label>
+                {% else %}
+                    <label class="col-md-4">: </label>
+                {% endif %}
+            </div>
+            <div class="form-group row">
+                <label class="control-label col-md-2">{% trans 'type_of_pond' %}</label>
+                {% if watersupply.watersupplyCommunityPond_watersupply.0.type_of_pond_obj|length > 0 %}
+                    <label class="col-md-4">: {{ watersupply.watersupplyCommunityPond_watersupply.0.type_of_pond_obj.0.name_en }} </label>
+                {% else %}
+                    <label class="col-md-4">: </label>
+                {% endif %}
+                <label class="control-label col-md-2">{% trans 'is_summer_has_water' %}</label>
+                {% if watersupply.watersupplyCommunityPond_watersupply.0.is_summer_has_water_obj|length > 0 %}
+                    <label class="col-md-4">: {{ watersupply.watersupplyCommunityPond_watersupply.0.is_summer_has_water_obj.0.name_en }} </label>
+                {% else %}
+                    <label class="col-md-4">: </label>
+                {% endif %}
+            </div>
+            <div class="form-group row">
+                <label class="control-label col-md-2">{% trans 'status_community_pond' %}</label>
+                {% if watersupply.watersupplyCommunityPond_watersupply.0.status_obj|length > 0 %}
+                    <label class="col-md-4">: {{ watersupply.watersupplyCommunityPond_watersupply.0.status_obj.0.name_en }} </label>
+                {% else %}
+                    <label class="col-md-4">: </label>
+                {% endif %}
+                <label class="control-label col-md-2">{% trans 'status_no_reason' %}</label>
+                <label class="col-md-4">: {{ watersupply.watersupplyCommunityPond_watersupply.0.status_no_reason }} </label>
+            </div>
+            {% endif %}
+            <!-- END COMMUNITY POND SECTION -->
+        
+            <!-- START RAIN WATER HARVESTING SECTION -->
+            {% if watersupply.watersupplyRainWaterHarvesting_watersupply|length > 0 %}
+            <div class="form-group row">
+                <label class="control-label col-md-2">{% trans 'type_of_using' %}</label>
+                {% if watersupply.watersupplyRainWaterHarvesting_watersupply.0.type_of_using_obj|length > 0 %}
+                    <label class="col-md-4">: {{ watersupply.watersupplyRainWaterHarvesting_watersupply.0.type_of_using_obj.0.name_en }} </label>
+                {% else %}
+                    <label class="col-md-4">: </label>
+                {% endif %}
+                <label class="control-label col-md-2">{% trans 'capacity_of_rain_water_harvesting' %}</label>
+                {% if watersupply.watersupplyRainWaterHarvesting_watersupply.0.capacity_of_rain_water_harvesting_obj|length > 0 %}
+                    <label class="col-md-4">: {{ watersupply.watersupplyRainWaterHarvesting_watersupply.0.capacity_of_rain_water_harvesting_obj.0.name_en }} </label>
+                {% else %}
+                    <label class="col-md-4">: </label>
+                {% endif %}
+            </div>
+            <div class="form-group row">
+                <label class="control-label col-md-2">{% trans 'water_quality_checking' %}</label>
+                
+                {% if watersupply.watersupplyRainWaterHarvesting_watersupply.0.water_quality_checking_obj|length > 0 %}
+                    <label class="col-md-4">: {{ watersupply.watersupplyRainWaterHarvesting_watersupply.0.water_quality_checking_obj.0.name_en }} </label>
+                {% else %}
+                    <label class="col-md-4">: </label>
+                {% endif %}
+                
+                <label class="control-label col-md-2">{% trans 'status_rain_water_harvesting' %}</label>
+                {% if watersupply.watersupplyRainWaterHarvesting_watersupply.0.status_obj|length > 0 %}
+                    <label class="col-md-4">: {{ watersupply.watersupplyRainWaterHarvesting_watersupply.0.status_obj.0.name_en }} </label>
+                {% else %}
+                    <label class="col-md-4">: </label>
+                {% endif %}
+                
+            </div>
+            
+            <div class="form-group row">
+                <label class="control-label col-md-2">{% trans 'status_no_reason' %}</label>
+                <label class="col-md-4">: {{ watersupply.watersupplyRainWaterHarvesting_watersupply.0.status_no_reason }} </label>
+            </div>
+            {% endif %}
+            <!-- END RAIN WATER HARVESTING SECTION -->
 
-    {% endif %}
+            <!-- START Water QTY Check -->
+            {% if watersupply.is_water_quality_check == True %}
+            <div class="table-responsive" id="panel_water_quanlity_check">
+                <table id="table_water_quanlity_check" class="table table-bordered">
+                    <thead>
+                        <tr>                        
+                            <th>{% trans 'thead_parameter_code' %}</th>
+                            <th>{% trans 'thead_parameter' %}</th>
+                            <th>{% trans 'thead_unit' %}</th>
+                            <th>{% trans 'thead_standard_drinking_water' %}</th>
+                            <th>{% trans 'thead_value' %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for water_quality_check_parameter in water_quality_check_parameters %}
+                        <tr>
+                            <td>{{ water_quality_check_parameter.parameter_code }}</td>
+                            <td>{{ water_quality_check_parameter.parameter }}</td>
+                            <td>{{ water_quality_check_parameter.unit }}</td>
+                            <td>{{ water_quality_check_parameter.standard_of_drinking_water }}</td>
+                            <td class="text-center">
+                                {% if water_quality_check_parameter.id == 1 %}
+                                    <span>{{ watersupply.wqc_param1_obj.0.value }}</span>
+                                {% elif water_quality_check_parameter.id == 2 %}
+                                    <span>{{ watersupply.wqc_param2_obj.0.value }}</span>
+                                {% elif water_quality_check_parameter.id == 3 %}
+                                    <span>{{ watersupply.wqc_param3_obj.0.value }}</span>
+                                {% elif water_quality_check_parameter.id == 4 %}
+                                <span>{{ watersupply.wqc_param4_obj.0.value }}</span>
+                                {% elif water_quality_check_parameter.id == 5 %}
+                                    <span>{{ watersupply.wqc_param5_obj.0.value }}</span>
+                                {% elif water_quality_check_parameter.id == 6 %}
+                                    <span>{{ watersupply.wqc_param6_obj.0.value }}</span>
+                                {% elif water_quality_check_parameter.id == 7 %}
+                                <span>{{ watersupply.wqc_param7_obj.0.value }}</span>
+                                    {% elif water_quality_check_parameter.id == 8 %}
+                                <span>{{ watersupply.wqc_param8_obj.0.value }}</span>
+                                {% elif water_quality_check_parameter.id == 9 %}
+                                    <span>{{ watersupply.wqc_param9_obj.0.value }}</span>
+                                {% elif water_quality_check_parameter.id == 10 %}
+                                    <span>{{ watersupply.wqc_param10_obj.0.value }}</span>
+                                {% elif water_quality_check_parameter.id == 11 %}
+                                    <span>{{ watersupply.wqc_param11_obj.0.value }}</span>
+                                {% elif water_quality_check_parameter.id == 12 %}
+                                    <span>{{ watersupply.wqc_param12_obj.0.value }}</span>
+                                {% elif water_quality_check_parameter.id == 13 %}
+                                    <span>{{ watersupply.wqc_param13_obj.0.value }}</span>
+                                {% elif water_quality_check_parameter.id == 14 %}
+                                    <span>{{ watersupply.wqc_param14_obj.0.value }}</span>
+                                {% elif water_quality_check_parameter.id == 15 %}
+                                    <span>{{ watersupply.wqc_param15_obj.0.value }}</span>
+                                {% elif water_quality_check_parameter.id == 16 %}
+                                    <span>{{ watersupply.wqc_param16_obj.0.value }}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <!-- END water QTY check -->
+            {% endif %}
 
-    <!-- END PIPE SECTION -->
+            <div class="form-group row">
+                <div class="col-md-6">
+                    <!-- START QR CODE -->
+                    {% if watersupply.watersupplyqrcode_watersupply|length > 0 %}
+                    {% if watersupply.watersupplyqrcode_watersupply.0.qr_code_image_name %}
+                        <img src="/media/{{ watersupply.watersupplyqrcode_watersupply.0.qr_code_image_name }}" alt="qr code">
+                    {% endif %}
+                    {% endif %}
+                    <!-- END QR CODE -->
+                </div>
+                <div class="col-md-6">
+                    
+                </div>
+            </div>
+            
+        
+        </form>
+    </div>
+    <div class="card-footer">
+        <div class="col-md-2"></div>
+            <div class="col-md-10">
+                
+                {% if request.session.user.is_provincial_department_head or request.session.user.is_staff %}
+                    {% if watersupply.main_status.id == 1 and request.session.user.provincial_department_head_province_id == watersupply.province_id.id %}
+                        <button class="btn btn-sm btn-outline-primary" id="btn_approve" data-statusid="2"><i class="fa fa-check-square-o" aria-hidden="true"></i> {% trans 'btn_approve' %}</button>
+                        <button class="btn btn-sm btn-outline-danger" id="btn_reject" data-statusid="4"><i class="fa fa-times" aria-hidden="true"></i> {% trans 'btn_reject' %}</button>
+                    {% endif %}
+                    {% if watersupply.main_status.id == 9 and request.session.user.provincial_department_head_province_id == watersupply.province_id.id %}
+                        <button class="btn btn-sm btn-outline-primary" id="btn_request_edit" data-statusid="2"><i class="fa fa-check-square-o" aria-hidden="true"></i> {% trans 'btn_request_edit' %}</button>
+                        
+                    {% endif %}
+                {% endif %}
 
-    <!-- START KIOSK SECTION -->
-    {% if watersupply.watersupplyKiosk_watersupply|length > 0 %}
-    <div class="form-group row">
-        <label class="control-label col-md-2">{% trans 'source_type_of_water' %}</label>
-        {% if watersupply.watersupplyKiosk_watersupply.0.source_type_of_water_obj|length > 0 %}
-            <label class="col-md-4">{{ watersupply.watersupplyKiosk_watersupply.0.source_type_of_water_obj.0.name_en }} </label>
-        {% else %}
-            <label class="col-md-4"></label>
-        {% endif %}
-        <label class="control-label col-md-2">{% trans 'abilty_of_produce_water' %}</label>
-        <label class="col-md-4">{{ watersupply.watersupplyKiosk_watersupply.0.abilty_of_produce_water }} </label>
-    </div>
-    <div class="form-group row">
-        <label class="control-label col-md-2">{% trans 'water_quality_check' %}</label>
-        {% if watersupply.watersupplyKiosk_watersupply.0.filter_system_obj|length > 0 %}
-            <label class="col-md-4">{{ watersupply.watersupplyKiosk_watersupply.0.filter_system_obj.0.name_en }} </label>
-        {% else %}
-            <label class="col-md-4"></label>
-        {% endif %}
-        <label class="control-label col-md-2">{% trans 'water_quality_checking' %}</label>
-        {% if watersupply.watersupplyKiosk_watersupply.0.water_quality_checking_obj|length > 0 %}
-            <label class="col-md-4">{{ watersupply.watersupplyKiosk_watersupply.0.water_quality_checking_obj.0.name_en }} </label>
-        {% else %}
-            <label class="col-md-4"></label>
-        {% endif %}
-    </div>
-    <div class="form-group row">
-        <label class="control-label col-md-2">{% trans 'status' %}</label>
-        {% if watersupply.watersupplyKiosk_watersupply.0.status_obj|length > 0 %}
-            <label class="col-md-4">{{ watersupply.watersupplyKiosk_watersupply.0.status_obj.0.name_en }} </label>
-        {% else %}
-            <label class="col-md-4"></label>
-        {% endif %}
-        <label class="control-label col-md-2">{% trans 'status_no_reason' %}</label>
-        <label class="col-md-4">{{ watersupply.watersupplyKiosk_watersupply.0.status_no_reason }} </label>
-    </div>
-    {% endif %}
-    <!-- END KIOSK SECTION -->
+                {% if request.session.user.is_data_verifier_1 and watersupply.main_status.id == 2 %}
+                    <button class="btn btn-sm btn-outline-primary" id="btn_approve" data-statusid="5"><i class="fa fa-check-square-o" aria-hidden="true"></i> {% trans 'btn_approve' %}</button>
+                    <button class="btn btn-sm btn-outline-danger" id="btn_reject" data-statusid="6"><i class="fa fa-times" aria-hidden="true"></i> {% trans 'btn_reject' %}</button>
+                {% endif %}
 
-    <!-- START COMMUNITY POND SECTION -->
-    {% if watersupply.watersupplyCommunityPond_watersupply|length > 0  %}
-    <div class="form-group row">
-        <label class="control-label col-md-2">{% trans 'width' %}</label>
-        <label class="col-md-4">{{ watersupply.watersupplyCommunityPond_watersupply.0.width }} </label>
-        <label class="control-label col-md-2">{% trans 'length' %}</label>
-        <label class="col-md-4">{{ watersupply.watersupplyCommunityPond_watersupply.0.length }} </label>
-    </div>
-    <div class="form-group row">
-        <label class="control-label col-md-2">{% trans 'height' %}</label>
-        <label class="col-md-4">{{ watersupply.watersupplyCommunityPond_watersupply.0.height }} </label>
-        <label class="control-label col-md-2">{% trans 'pool_filter' %}</label>
-        {% if watersupply.watersupplyCommunityPond_watersupply.0.pool_filter_obj|length > 0 %}
-            <label class="col-md-4">{{ watersupply.watersupplyCommunityPond_watersupply.0.pool_filter_obj.0.name_en }} </label>
-        {% else %}
-            <label class="col-md-4"></label>
-        {% endif %}
-    </div>
-    <div class="form-group row">
-        <label class="control-label col-md-2">{% trans 'type_of_pond' %}</label>
-        {% if watersupply.watersupplyCommunityPond_watersupply.0.type_of_pond_obj|length > 0 %}
-            <label class="col-md-4">{{ watersupply.watersupplyCommunityPond_watersupply.0.type_of_pond_obj.0.name_en }} </label>
-        {% else %}
-            <label class="col-md-4"></label>
-        {% endif %}
-        <label class="control-label col-md-2">{% trans 'is_summer_has_water' %}</label>
-        {% if watersupply.watersupplyCommunityPond_watersupply.0.is_summer_has_water_obj|length > 0 %}
-            <label class="col-md-4">{{ watersupply.watersupplyCommunityPond_watersupply.0.is_summer_has_water_obj.0.name_en }} </label>
-        {% else %}
-            <label class="col-md-4"></label>
-        {% endif %}
-    </div>
-    <div class="form-group row">
-        <label class="control-label col-md-2">{% trans 'status' %}</label>
-        {% if watersupply.watersupplyCommunityPond_watersupply.0.status_obj|length > 0 %}
-            <label class="col-md-4">{{ watersupply.watersupplyCommunityPond_watersupply.0.status_obj.0.name_en }} </label>
-        {% else %}
-            <label class="col-md-4"></label>
-        {% endif %}
-        <label class="control-label col-md-2">{% trans 'status_no_reason' %}</label>
-        <label class="col-md-4">{{ watersupply.watersupplyCommunityPond_watersupply.0.status_no_reason }} </label>
-    </div>
-    {% endif %}
-    <!-- END COMMUNITY POND SECTION -->
+                {% if request.session.user.is_data_verifier_2 and watersupply.main_status.id == 5  %}
+                    <button class="btn btn-sm btn-outline-primary" id="btn_approve" data-statusid="7"><i class="fa fa-check-square-o" aria-hidden="true"></i> {% trans 'btn_approve' %}</button>
+                    <button class="btn btn-sm btn-outline-danger" id="btn_reject" data-statusid="8"><i class="fa fa-times" aria-hidden="true"></i> {% trans 'btn_reject' %}</button>
+                {% endif %}
 
-    <!-- START RAIN WATER HARVESTING SECTION -->
-    {% if watersupply.watersupplyRainWaterHarvesting_watersupply|length > 0 %}
-    <div class="form-group row">
-        <label class="control-label col-md-2">{% trans 'capacity_35m3' %}</label>
-        <label class="col-md-4">{{ watersupply.watersupplyRainWaterHarvesting_watersupply.0.capacity_35m3 }} </label>
-        <label class="control-label col-md-2">{% trans 'capacity_4m3' %}</label>
-        <label class="col-md-4">{{ watersupply.watersupplyRainWaterHarvesting_watersupply.0.capacity_4m3 }} </label>
-    </div>
-    <div class="form-group row">
-        <label class="control-label col-md-2">{% trans 'type_of_using' %}</label>
-        {% if watersupply.watersupplyRainWaterHarvesting_watersupply.0.type_of_using_obj|length > 0 %}
-            <label class="col-md-4">{{ watersupply.watersupplyRainWaterHarvesting_watersupply.0.type_of_using_obj.0.name_en }} </label>
-        {% else %}
-            <label class="col-md-4"></label>
-        {% endif %}
-        <label class="control-label col-md-2">{% trans 'capacity_of_rain_water_harvesting' %}</label>
-        <label class="col-md-4">{{ watersupply.watersupplyRainWaterHarvesting_watersupply.0.capacity_of_rain_water_harvesting }} </label>
-    </div>
-    <div class="form-group row">
-        <label class="control-label col-md-2">{% trans 'status' %}</label>
-        {% if watersupply.watersupplyRainWaterHarvesting_watersupply.0.status_obj|length > 0 %}
-            <label class="col-md-4">{{ watersupply.watersupplyRainWaterHarvesting_watersupply.0.status_obj.0.name_en }} </label>
-        {% else %}
-            <label class="col-md-4"></label>
-        {% endif %}
-        <label class="control-label col-md-2">{% trans 'status_no_reason' %}</label>
-        <label class="col-md-4">{{ watersupply.watersupplyRainWaterHarvesting_watersupply.0.status_no_reason }} </label>
-    </div>
-    {% endif %}
-    <!-- END RAIN WATER HARVESTING SECTION -->
+                {% if request.session.user.is_head_department and watersupply.main_status.id == 7  %}
+                    <button class="btn btn-sm btn-outline-primary" id="btn_approve" data-statusid="9"><i class="fa fa-check-square-o" aria-hidden="true"></i> {% trans 'btn_approve' %}</button>
+                    <button class="btn btn-sm btn-outline-danger" id="btn_reject" data-statusid="10"><i class="fa fa-times" aria-hidden="true"></i> {% trans 'btn_reject' %}</button>
+                {% endif %}
 
-</form>
+                {% if request.session.user.is_head_department and watersupply.main_status.id == 12  %}
+                    <button class="btn btn-sm btn-outline-primary" id="btn_approve" data-statusid="13"><i class="fa fa-check-square-o" aria-hidden="true"></i> {% trans 'btn_approve' %}</button>
+                    <button class="btn btn-sm btn-outline-danger" id="btn_reject" data-statusid="14"><i class="fa fa-times" aria-hidden="true"></i> {% trans 'btn_reject' %}</button>
+                {% endif %}
+
+                <!-- <a href="javascript:history.back()" class="btn btn-default">{% trans 'btn_back' %}</a> -->
+            </div>
+    </div>
+</div>
+
+<!-- Modal Approve -->
+<div class="modal fade" id="approvalModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">{% trans 'title_confirm_approval' %}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <input type="hidden" id="md_approve_status_id" value=""/>
+        <!-- <div class="modal-body">
+          
+        </div> -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans 'btn_close' %}</button>
+          <button type="button" class="btn btn-primary"​ id="btn_modal_approval_yes">{% trans 'btn_yes' %}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Head Department Rejection -->
+  <div class="modal fade" id="provincailRejectModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">{% trans 'title_confirm_approval' %}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form class="form-horizotal">
+            <input type="hidden" id="md_reject_status_id" value=""/>
+            <div class="form-group row">
+                <label class="control-label col-md-4">{% trans 'reason' %} <strong class="text-danger">*</strong>:</label>
+                <div class="col-md-8">
+                    <textarea class="form-control" rows="5" id="md_provincial_reject_reason"></textarea>
+                </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans 'btn_close' %}</button>
+          <button type="button" class="btn btn-primary"​ id="btn_modal_reject_yes">{% trans 'btn_yes' %}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Head Department Approval Success -->
+  <div class="modal fade" id="approvalSuccessModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <!-- <div class="modal-header">
+          
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div> -->
+        <div class="modal-body">
+            <p>{% trans 'label_approval_successfully' %}</h5>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-sm" id="btn_modal_approval_close">{% trans 'btn_close' %}</button>
+          <a href="javascript:void(0)" class="btn btn-primary btn-sm" id="btn_modal_go_to_approval_history_list">{% trans 'btn_go_to_approval_history' %}</a>
+          <a href="javascript:void(0)" class="btn btn-primary btn-sm" id="btn_modal_go_to_approval_list">{% trans 'btn_go_to_approval_list' %}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Workflow History -->
+  <div class="modal fade" id="workflowHistoryModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">{% trans 'btn_view_workflow' %}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>{% trans 'created_at' %}</th>
+                        <th>{% trans 'ws_status' %}</th>
+                        <th>{% trans 'created_by' %}</th>
+                       
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ws in watersupply.watersupplyworkflow_watersupply %}
+                        <tr>
+                            <td>{{ ws.created_at }}</td>
+                            <td>{{ ws.status_id.status_name_kh }}</td>
+                            <td>{{ ws.user_id.first_name }} {{ ws.user_id.last_name }}</td>                            
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+          </div>
+        </div>
+        <!-- <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans 'btn_close' %}</button>
+          <button type="button" class="btn btn-primary"​ id="btn_modal_approval_yes">{% trans 'btn_yes' %}</button>
+        </div> -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Submit Water Supply -->
+  <div class="modal fade" id="submitWaterSupplyModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">{% trans 'title_submit_watersupply' %}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <input type="hidden" id="md_approve_status_id" value=""/>
+        <!-- <div class="modal-body">
+          
+        </div> -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans 'btn_close' %}</button>
+          <button type="button" class="btn btn-primary"​ id="btn_modal_submit_watersupply_yes">{% trans 'btn_yes' %}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal delete water supply -->
+  <div class="modal fade" id="deleteWaterSupplyModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">{% trans 'title_delete_watersupply' %}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <!-- <input type="hidden" id="md_approve_status_id" value=""/> -->
+        <!-- <div class="modal-body">
+          
+        </div> -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans 'btn_close' %}</button>
+          <button type="button" class="btn btn-primary"​ id="btn_modal_delete_watersupply_yes">{% trans 'btn_yes' %}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <!-- Modal Request Edit water supply -->
+    <div class="modal fade" id="requestWaterSupplyModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">{% trans 'title_request_edit_watersupply' %}</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <!-- <input type="hidden" id="md_approve_status_id" value=""/> -->
+            <div class="modal-body">
+                <form class="form-horizotal">
+                    <input type="hidden" id="md_request_edit_status_id" value=""/>
+                    <div class="form-group row">
+                        <label class="control-label col-md-4">{% trans 'reason' %} <strong class="text-danger">*</strong>:</label>
+                        <div class="col-md-8">
+                            <textarea class="form-control" rows="5" id="md_request_edit_reason"></textarea>
+                        </div>
+                    </div>
+                  </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans 'btn_close' %}</button>
+              <button type="button" class="btn btn-primary"​ id="btn_modal_request_edit_watersupply_yes">{% trans 'btn_yes' %}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+{% endblock %}
+
+{% block script %}
+<script src="https://maps.googleapis.com/maps/api/js?key={{key}}&callback=initMap&v=weekly&libraries=places" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.9.0/proj4.min.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    $(function(){
+
+        window.initMap = initMap;
+
+        $('#btn_approve').click(function(e){
+
+            var status_id = $(this).attr('data-statusid');
+            $('#md_approve_status_id').val(status_id);
+            $('#approvalModal').modal('show');
+
+        });
+
+        $('#btn_delete_water_supply').click(function(e){
+            $('#deleteWaterSupplyModal').modal('show');
+        });
+
+        $('#btn_view_workflow_history').click(function(e){
+            $('#workflowHistoryModal').modal('show');
+        });
+
+        $('#btn_modal_approval_yes').click(function(){
+            
+            $.ajax({
+                type: 'GET',
+                url: "{% url 'ajax_post_approval_watersupply_by_provincialheaddepartment' %}",
+                data: {
+                    "water_supply_id":$('#water_supply_id').val(),
+                    "status_id": $('#md_approve_status_id').val(),
+                    "remark":"",
+                 },
+                success: function (response) {
+                    
+                    if(!response["valid"]){
+                        console.log(response);
+                        if(response.is_success){
+                            $('#approvalModal').modal('hide');
+                            $('#approvalSuccessModal').modal('show');
+                            //window.location.reload();                        
+                        }
+                        //alert("You cannot create a friend with same nick name");   
+                                            
+                    }
+                },
+                error: function (response) {
+                    console.log(response)
+                }
+            });
+        });
+
+        $('#btn_modal_delete_watersupply_yes').click(function(){
+            $.ajax({
+                type: 'GET',
+                url: "{% url 'ajax_put_water_supply_delete' %}",
+                data: {
+                    "water_supply_id":$('#water_supply_id').val(),
+                 },
+                success: function (response) {
+                    
+                    if(!response["valid"]){
+                        console.log(response);
+                        if(response.is_success){
+                            $('#deleteWaterSupplyModal').modal('hide');
+                            //window.location.reload(); 
+                            window.location.href="{% url 'watersupply_myrequest' %}" ;                       
+                        }
+                        //alert("You cannot create a friend with same nick name");   
+                                            
+                    }
+                },
+                error: function (response) {
+                    console.log(response)
+                }
+            });
+
+
+        });
+
+        $('#btn_modal_reject_yes').click(function(e){
+            var reason= $('#md_provincial_reject_reason').val();
+            if(reason.length==0){
+                alert("Reason is required.");
+                return;
+            }
+            $.ajax({
+                type: 'GET',
+                url: "{% url 'ajax_post_approval_watersupply_by_provincialheaddepartment' %}",
+                data: {
+                    "water_supply_id":$('#water_supply_id').val(),
+                    "status_id": $('#md_reject_status_id').val(),
+                    "remark":reason,
+                 },
+                success: function (response) {
+                    
+                    if(!response["valid"]){
+                        console.log(response);
+                        if(response.is_success){
+                            $('#provincailRejectModal').modal('hide');
+                            $('#approvalSuccessModal').modal('show');
+                            
+                            //window.location.reload();                        
+                        }
+                        //alert("You cannot create a friend with same nick name");   
+                                            
+                    }
+                },
+                error: function (response) {
+                    console.log(response)
+                }
+            });
+        });
+
+        $('#btn_reject').click(function(e){
+            var status_id= $(this).attr('data-statusid');
+            $('#md_reject_status_id').val(status_id);
+            $('#md_provincial_reject_reason').val('');
+            $('#provincailRejectModal').modal('show');
+        });
+
+        $('#btn_modal_approval_close').click(function(){
+            window.location.reload();
+        });
+
+        $('#btn_modal_go_to_approval_list').click(function(){
+           window.location.href="{% url 'watersupply_myapproval' %}" ;
+        });
+
+        $('#btn_modal_go_to_approval_history_list').click(function(){
+           window.location.href="{% url 'watersupply_myapprovalhistory' %}" ;
+        });
+
+        $('#btn_submit_water_supply').click(function(e){
+            $('#submitWaterSupplyModal').modal('show');
+        });
+
+        $('#btn_modal_submit_watersupply_yes').click(function(e){
+            $.ajax({
+                type: 'GET',
+                url: "{% url 'ajax_post_approval_watersupply_by_provincialheaddepartment' %}",
+                data: {
+                    "water_supply_id":$('#water_supply_id').val(),
+                    "status_id": 1,
+                    "remark":"",
+                 },
+                success: function (response) {
+                    
+                    if(!response["valid"]){
+                        console.log(response);
+                        if(response.is_success){
+                            // $('#approvalModal').modal('hide');
+                            // $('#approvalSuccessModal').modal('show');
+                            window.location.reload();                        
+                        }
+                        //alert("You cannot create a friend with same nick name");   
+                                            
+                    }
+                },
+                error: function (response) {
+                    console.log(response)
+                }
+            });
+        });
+
+        //Request Edit
+        $("#btn_request_edit").click(function(e){
+            $("#md_request_edit_reason").val('');
+            $('#requestWaterSupplyModal').modal('show');
+        });
+
+        $('#btn_modal_request_edit_watersupply_yes').click(function(e){
+            var reason=$("#md_request_edit_reason").val();
+            if(reason.length==0){
+                alert("{% trans 'validation_required' %}");
+                return;
+            }
+
+            $.ajax({
+                type: 'GET',
+                url: "{% url 'ajax_post_approval_watersupply_by_provincialheaddepartment' %}",
+                data: {
+                    "water_supply_id":$('#water_supply_id').val(),
+                    "status_id": 12,
+                    "remark":reason,
+                 },
+                success: function (response) {
+                    
+                    if(!response["valid"]){
+                        console.log(response);
+                        if(response.is_success){
+                            // $('#approvalModal').modal('hide');
+                            // $('#approvalSuccessModal').modal('show');
+                            window.location.reload();                        
+                        }
+                        //alert("You cannot create a friend with same nick name");   
+                                            
+                    }
+                },
+                error: function (response) {
+                    console.log(response)
+                }
+            });
+
+        })
+
+    })
+  
+    let map;
+    function initMap() {
+        if($('#map_unit').val() == 2){
+            map = new google.maps.Map(document.getElementById("map"), {
+                center: { lat: parseFloat('{{ watersupply.decimal_degress_lat }}'), lng: parseFloat('{{ watersupply.decimal_degress_lng }}')},
+                zoom: 17,
+                mapTypeId: 'hybrid'
+            });
+            const marker = new google.maps.Marker({
+                position: { lat: parseFloat('{{ watersupply.decimal_degress_lat }}'), lng: parseFloat('{{ watersupply.decimal_degress_lng }}')},
+                map: map,
+            })
+        }
+        else if($('#map_unit').val()==1){
+            var utm_x = parseFloat('{{ watersupply.utm_x }}');
+            var utm_y = parseFloat('{{ watersupply.utm_y }}');
+            //console.log(utm_x+" "+utm_y);
+
+            // var utmm=new utmObj('Everest');
+            // var rs= utmm.convertUtmToLatLng(utm_x, utm_y);
+            // console.log(rs);
+
+            var utm = "+proj=utm +zone=48N";
+            var wgs84 = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
+            
+//             var firstProjection = 'PROJCS["NAD83 / Massachusetts Mainland",GEOGCS["NAD83",DATUM["North_American_Datum_1983",SPHEROID["GRS 1980",6378137,298.257222101,AUTHORITY["EPSG","7019"]],AUTHORITY["EPSG","6269"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.01745329251994328,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4269"]],UNIT["metre",1,AUTHORITY["EPSG","9001"]],PROJECTION["Lambert_Conformal_Conic_2SP"],PARAMETER["standard_parallel_1",42.68333333333333],PARAMETER["standard_parallel_2",41.71666666666667],PARAMETER["latitude_of_origin",41],PARAMETER["central_meridian",-71.5],PARAMETER["false_easting",200000],PARAMETER["false_northing",750000],AUTHORITY["EPSG","26986"],AXIS["X",EAST],AXIS["Y",NORTH]]';
+// var secondProjection = "+proj=gnom +lat_0=90 +lon_0=0 +x_0=6300000 +y_0=6300000 +ellps=WGS84 +datum=WGS84 +units=m +no_defs";
+//I'm not going to redefine those two in latter examples.
+
+            var latlng=proj4(utm,wgs84,[utm_x, utm_y]);
+            //var latlng=proj4(firstProjection,secondProjection,[utm_x, utm_y])
+            console.log(latlng);
+            map = new google.maps.Map(document.getElementById("map"), {
+                center: { lat: parseFloat(latlng[1]), lng: parseFloat(latlng[0])},
+                zoom: 17,
+                mapTypeId: 'hybrid'
+            });
+            const marker = new google.maps.Marker({
+                position: { lat: parseFloat(latlng[1]), lng: parseFloat(latlng[0])},
+                map: map,
+            })
+        }
+        else{
+            getLocation();
+        }
+        
+        
+        $("#map").css("relative", "");
+        
+    }
+    function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition);
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+            }
+            
+        function showPosition(position) {
+            var lat = position.coords.latitude;
+            var lng = position.coords.longitude;
+            map.setCenter(new google.maps.LatLng(lat, lng));
+            const marker = new google.maps.Marker({
+                position: { lat: parseFloat(lat), lng: parseFloat(lng)},
+                map: map,
+            });
+            markers.push(marker);
+            $('#utm_x').val(lat);
+            $('#utm_y').val(lng);
+        }
+
+  </script>
 {% endblock %}

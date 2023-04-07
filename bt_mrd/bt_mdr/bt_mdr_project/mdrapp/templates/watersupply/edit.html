@@ -1,0 +1,990 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block first_breadcrums %}
+<li class="breadcrumb-item">{{ watersupply.water_supply_type_id.name_en }}</li>
+<li class="breadcrumb-item active" aria-current="page">{% trans 'title_edit_water_supply' %}</li>
+{% endblock %}
+
+{% block style %}
+<style type="text/css">
+    /* .mapholder{
+    height: 100px !important;
+    width: 100px !important;
+} */
+
+#map {
+    height: 300px !important;
+    width: 500px !important;
+    /* position: inherit !important; */
+    overflow: hidden !important;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="card" style="width: 100%;">
+    <div class="card-header"><h4>{% trans 'title_edit_water_supply' %}</h4></div>
+    <div class="card-body">
+        <form method="post" id="myForm">
+            {% csrf_token %}
+            <input type="hidden" name="main_status" id="main_status" value="{{ watersupply.main_status.id }}"/>
+            <input type="hidden" id="water_supply_type" name="water_supply_type" value="{{ watersupply.water_supply_type_id.id }}"/>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group row">
+                        <label class='col-md-4 control-label'>{% trans 'province' %} <strong class="text-danger">*</strong></label>
+                        <div class="col-md-8">
+                            <select class='form-control select2' id="province" name="province"​​ style="width: 100% !important;">
+                                {% for province in provinces %}
+                                    <option value="{{ province.id }}">{{ province.name_kh }}
+                                {% endfor %}
+                            </select>
+                        </div>             
+                    </div>
+                    <div class="form-group row">
+                        <label class='col-md-4 control-label'>{% trans 'district' %} <strong class="text-danger">*</strong></label>
+                        <div class="col-md-8">
+                            <select class='form-control select2' id="district" name="district" style="width: 100% !important;">
+                                
+                            </select>
+                        </div>
+                    </div>     
+                    <div class="form-group row">
+                        <label class='col-md-4 control-label'>{% trans 'commune' %} <strong class="text-danger">*</strong></label>
+                        <div class="col-md-8">
+                            <select class='form-control select2' id="commune" name="commune" style="width: 100% !important;">
+                                
+                            </select>
+                        </div>
+                        
+                    </div>
+                    <div class="form-group row">
+                        <label class='col-md-4 control-label'>{% trans 'village' %} <strong class="text-danger">*</strong></label>
+                        <div class="col-md-8">
+                            <select class='form-control select2' id="village" name="village" style="width: 100% !important;">
+                                
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="control-label col-md-4">ខ្នាតផែនទី</label>
+                        <div class="col-md-8">
+                            <select class="form-control" id="map_unit" name="map_unit">
+                                <option value="1">UTM</option>
+                                <option value="2">Decimal Degress</option>
+                                <option value="3">Degreee Minute Seconds</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="map_unit_dd_panel">
+                        <div class="form-group row">
+                            <label class='col-md-4 control-label'>{% trans 'decimal_degree_x' %} </label>
+                            <div class="col-md-8">
+                                <input type="number" class="form-control map_number" name="decimal_degress_lat" id="utm_x" value="{{ watersupply.decimal_degress_lat }}" min="0" step="any" onblur="re_initial_map()"/> 
+                            </div>
+                           
+                        </div>
+                        <div class="form-group row">
+                            <label class='col-md-4 control-label'>{% trans 'decimal_degree_y' %} </label>
+                            <div class="col-md-8">
+                                <input type="number" class="form-control map_number" name="decimal_degress_lng" id="utm_y" value="{{ watersupply.decimal_degress_lng }}" min="0" step="any" onblur="re_initial_map()"/>  
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="map_unit_mds_panel">
+                        <div class="form-group row">
+                            <label class="col-md-4 control-label">{% trans 'decimal_degree_x' %}</label>
+                            <div class="col-md-2">
+                                <input type="number" class="form-control map_number" name="mds_x_degress" id="map_mds_x_degree" min="0" step="any" value="{{ watersupply.mds_x_degress }}"/>
+                                <small>Degree</small>
+                            </div>
+                            <div class="col-md-2">
+                                <input type="number" class="form-control map_number" name="mds_x_minute" id="map_mds_x_minute" min="0" step="any" value="{{ watersupply.mds_x_minute }}"/>
+                                <small>Minute (')</small>
+                            </div>
+                            <div class="col-md-3">
+                                <input type="number" class="form-control map_number" name="mds_x_second" id="map_mds_x_second" min="0" step="any" value="{{ watersupply.mds_x_second }}"/>
+                                <small>Second ('')</small>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-4 control-label">{% trans 'decimal_degree_y' %}</label>
+                            <div class="col-md-2">
+                                <input type="number" class="form-control map_number" name="mds_y_degress" id="map_mds_y_degress" min="0" step="any" value="{{ watersupply.mds_y_degress }}"/>
+                                <small>Degree</small>
+                            </div>
+                            <div class="col-md-2">
+                                <input type="number" class="form-control map_number" name="mds_y_minute" id="map_mds_y_minute" min="0" step="any" value="{{ watersupply.mds_y_minute }}"/>
+                                <small>Minute (')</small>
+                            </div>
+                            <div class="col-md-3">
+                                <input type="number" class="form-control map_number" name="mds_y_second" id="map_mds_y_second" min="0" step="any" value="{{ watersupply.mds_y_second }}"/>
+                                <small>Second ('')</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="map_unit_utm_panel">
+                        <div class="form-group row">
+                            <label class='col-md-4 control-label'>{% trans 'utm_x' %} </label>
+                            <div class="col-md-8">
+                                <input type="number" class="form-control map_number" name="utm_x" id="map_utm_x" value="{{ watersupply.utm_x }}" min="0" step="any" onblur="convert_utm_to_latlng()"/> 
+                            </div>
+                           
+                        </div>
+                        <div class="form-group row">
+                            <label class='col-md-4 control-label'>{% trans 'utm_y' %} </label>
+                            <div class="col-md-8">
+                                <input type="number" class="form-control map_number" name="utm_y" id="map_utm_y" value="{{ watersupply.utm_y }}" min="0" step="any" onblur="convert_utm_to_latlng()"/>  
+                            </div>
+                        </div>
+                    </div>
+                    
+
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group row">
+                        <div class="pageholder">                     
+                        
+                            <div class="linkholder">
+                                <div id="map"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+             
+        
+            <div class="form-group row">
+                <label class='col-md-2 control-label'>{% trans 'total_family' %} </label>
+                <div class="col-md-4">
+                    <input type="number" class="form-control" name="total_family" id="total_family" value="{{ watersupply.total_family }}" min="0"/> 
+                </div>
+                <label class='col-md-2 control-label'>{% trans 'water_supply_code' %} </label>
+                <div class="col-md-4">
+                    <input type="text" class="form-control" name="water_supply_code" id="water_supply_code" value="{{ watersupply.water_supply_code }}" /> 
+                </div>
+            </div>          
+        
+            <div class="form-group row">
+                <label class='col-md-2 control-label'>{% trans 'is_risk_enviroment_area' %} <strong class="text-danger">*</strong></label>
+                <div class="col-md-4">
+                    <label class="radio-inline">
+                        {% if watersupply.is_risk_enviroment_area == True %}
+                        <input type="radio" name="is_risk_enviroment_area" value='true' checked> {% trans 'is_risk'%}
+                        {% else %}
+                        <input type="radio" name="is_risk_enviroment_area" value='true'> {% trans 'is_risk'%}
+                        {% endif %}
+                    </label>
+                      <label class="radio-inline">
+                        {% if watersupply.is_risk_enviroment_area == True %}
+                        <input type="radio" name="is_risk_enviroment_area" value='false'>{% trans 'is_not_risk' %}
+                        {% else %}
+                        <input type="radio" name="is_risk_enviroment_area" value='false' checked>{% trans 'is_not_risk' %}
+                        {% endif %}
+                    </label>
+                </div>
+                <label class='col-md-2 control-label'>{% trans 'construction_date' %} <strong class="text-danger">*</strong></label>
+                <div class="col-md-4">
+                    <div class="input-group date" data-provide="datepicker">
+                        <input type="text" class="form-control" name="construction_date" value="{{ watersupply.construction_date }}">
+                        <div class="input-group-addon">
+                            <span class="glyphicon glyphicon-th"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="form-group row">
+                
+                <label class="col-md-2 control-label">{% trans 'source_budget' %} <strong class="text-danger">*</strong></label>
+                <div class="col-md-4">
+                    <!-- <div class="form-check form-check-inline">       
+                        <input class="form-check-input" name="source_budget_option" type="checkbox" id="source_budget_state" value="0">
+                        <label class="form-check-label" for="source_budget_state">{% trans 'source_budget_state' %}</label>
+                      </div> -->
+                    <select class="form-control" id="source_budget" name="source_budget">
+                        <option value="-1">{% trans 'select_option' %}</option>
+                        <option value="0">{% trans 'source_budget_state' %}</option>
+                        <option value="1">{% trans 'source_budget_organization' %}</option>
+                        <option value="2">{% trans 'source_budget_charity' %}</option>
+                    </select>
+                </div>
+                <label class="control-label col-md-2">{% trans 'constructed_by' %}</label>
+                <div class="col-md-4">
+                    <input type="text" class="form-control" id="constructed_by" name="constructed_by" value="{{ watersupply.constructed_by }}"/>
+                </div>
+            </div>
+        
+            <div class="form-group row">
+                <label class='col-md-2 control-label'>{% trans 'management_type' %} <strong class="text-danger">*</strong></label>
+                <div class="col-md-4">
+                    <label class="radio-inline">
+                        {% if watersupply.management_type == 0 %}
+                        <input type="radio" name="management_type" value='0' checked> {% trans 'management_type_community'%}
+                        {% elif watersupply.management_type == 1 %}
+                        <input type="radio" name="management_type" value='0'> {% trans 'management_type_community'%}
+                        {% endif %}
+                      </label>
+                      <label class="radio-inline">
+                        
+                        {% if watersupply.management_type == 0 %}
+                        <input type="radio" name="management_type" value='1'>{% trans 'management_type_personal' %}
+                        {% elif watersupply.management_type == 1 %}
+                        <input type="radio" name="management_type" value='1' checked>{% trans 'management_type_personal' %}
+                        {% endif %}
+                      </label>
+                </div>
+                <label class="control-label col-md-2">{% trans 'managed_by' %}</label>
+                <div class="col-md-4">
+                    <input type="text" class="form-control" id="managed_by" name="managed_by" value="{{ watersupply.managed_by }}"/>
+                </div>
+            </div>
+        
+            <div class="form-group row">
+                <label class="control-label col-md-2">{% trans 'beneficiary_total_people' %} <span class="text-danger">*</span></label>
+                <div class="col-md-4">
+                    <input type="number" class="form-control" id="beneficiary_total_people" name="beneficiary_total_people" min="0" value="{{ watersupply.beneficiary_total_people }}"/>
+                </div>
+                <label class="control-label col-md-2">{% trans 'beneficiary_total_women' %} <span class="text-danger">*</span></label>
+                <div class="col-md-4">
+                    <input type="number" class="form-control" id="beneficiary_total_women" name="beneficiary_total_women" min="0" value="{{ watersupply.beneficiary_total_women }}"/>
+                </div>
+                
+            </div>
+            <div class="form-group row">
+                <label class="control-label col-md-2">{% trans 'beneficiary_total_family' %} <span class="text-danger">*</span></label>
+                <div class="col-md-4">
+                    <input type="number" class="form-control" id="beneficiary_total_family" name="beneficiary_total_family" min="0" value="{{ watersupply.beneficiary_total_family }}"/>
+                </div>
+                <label class="control-label col-md-2">{% trans 'beneficiary_total_family_poor_1' %} <span class="text-danger">*</span></label>
+                <div class="col-md-4">
+                    <input type="number" class="form-control" id="beneficiary_total_family_poor_1" name="beneficiary_total_family_poor_1" min="0" value="{{ watersupply.beneficiary_total_family_poor_1 }}"/>
+                </div>      
+            </div>
+            <div class="form-group row">
+                <label class="control-label col-md-2">{% trans 'beneficiary_total_family_poor_2' %} <span class="text-danger">*</span></label>
+                <div class="col-md-4">
+                    <input type="number" class="form-control" id="beneficiary_total_family_poor_2" name="beneficiary_total_family_poor_2" min="0" value="{{ watersupply.beneficiary_total_family_poor_2 }}"/>
+                </div>
+                <label class="control-label col-md-2">{% trans 'beneficiary_total_family_vulnerable' %} <span class="text-danger">*</span></label>
+                <div class="col-md-4">
+                    <input type="number" class="form-control" id="beneficiary_total_family_vulnerable" name="beneficiary_total_family_vulnerable" min="0" value="{{ watersupply.beneficiary_total_family_vulnerable }}"/>
+                </div>      
+            </div>
+            <div class="form-group row">
+                <label class="control-label col-md-2">{% trans 'beneficiary_total_family_indigenous' %} <span class="text-danger">*</span></label>
+                <div class="col-md-4">
+                    <input type="number" class="form-control" id="beneficiary_total_family_indigenous" name="beneficiary_total_family_indigenous" min="0" value="{{ watersupply.beneficiary_total_family_indigenous }}"/>
+                </div>
+            </div>
+        
+            <div class="form-group row">
+                {% for item in watersupplytypeoptions %}              
+                   <label class='col-md-2 control-label' id="label_{{ item.water_supply_option_id.field_name }}">{{ item.water_supply_option_id.name_kh }} 
+                    {% if item.water_supply_option_id.is_required %}
+                    <strong class="text-danger">*</strong>
+                    {% endif %}
+
+                   </label>
+                   <div class="col-md-4 " style="margin-bottom: 1rem !important;">
+                       {% if item.water_supply_option_id.watersupplyoption_value|length > 1 %}
+
+                        {% if item.water_supply_option_id.data_type == 'choice' %}
+                            <input type="hidden" name="{{ item.water_supply_option_id.field_name }}" id="{{ item.water_supply_option_id.field_name }}"/>
+                            {% for ov in item.water_supply_option_id.watersupplyoption_value %}
+                            <div class="form-check form-check-inline">       
+                                <input class="form-check-input" name="{{ item.water_supply_option_id.field_name }}_option" type="checkbox" id="{{ ov.water_supply_option_id }}{{ov.code}}{{ov.id}}" value="{{ ov.id }}">
+                                <label class="form-check-label" for="{{ ov.water_supply_option_id }}{{ov.code}}{{ov.id}}">{{ ov.code }} - {{ ov.name_en }}</label>
+                              </div>
+                            {% endfor %}
+                        {% else %}
+                           <select class="form-control" id="{{ item.water_supply_option_id.field_name }}" name="{{ item.water_supply_option_id.field_name }}">
+                            <option value="-1">{% trans 'select_option' %}</option>
+                                {% for ov in item.water_supply_option_id.watersupplyoption_value %}
+                                    <option value="{{ ov.id }}">{{ ov.code }} - {{ ov.name_en }}</option>
+                                {% endfor %}
+                           </select>
+                        {% endif %}
+                       {% else %}
+                           {% if item.water_supply_option_id.data_type == 'integer' %}
+                           <input type="number" class="form-control" id="{{ item.water_supply_option_id.field_name }}" name="{{ item.water_supply_option_id.field_name }}"/>
+                           {% else %}
+                                <input type="text" class="form-control" id="{{ item.water_supply_option_id.field_name }}" name="{{ item.water_supply_option_id.field_name }}"/>
+                           {% endif %}
+                       {% endif %}
+                   </div>
+               
+               {% endfor %}
+            </div>
+
+            <!-- START Initial multiple selected choice -->
+            {% if watersupply.watersupplywell_watersupply|length > 0 %}
+                {% for well_type in watersupply.watersupplywell_watersupply.0.well_type_obj %}
+                    <input type="hidden" class="well_type_selected" value="{{ well_type.value_obj.0.id }}"/>
+                        
+                {% endfor %}
+            {% endif %}
+            {% if watersupply.watersupplyairwater_watersupply|length > 0 %}
+                {% for kiosk_source_water in watersupply.watersupplyairwater_watersupply.0.watersupplyairwateroptionvalue_watersupplykioskwater %}
+                    <input type="hidden" class="air_water_source_water_selected" value="{{ kiosk_source_water.value_obj.0.id }}"/>
+                {% endfor %}
+            {% endif %}
+                <!-- SMALL PIPE -->
+                {% if watersupply.watersupplypipe_watersupply|length > 0 %}
+                    {% for kiosk_source_water in watersupply.watersupplypipe_watersupply.0.watersupplypipeoptionvalue_watersupplypipe %}
+                        <input type="hidden" class="pipe_source_water_selected" value="{{ kiosk_source_water.value_obj.0.id }}"/>
+                    {% endfor %}
+                {% endif %}
+                <!-- END SMALL PIPE -->
+
+                <!-- START KIOSK -->
+                {% if watersupply.watersupplyKiosk_watersupply|length > 0 %}
+                    {% for kiosk_source_water in watersupply.watersupplyKiosk_watersupply.0.watersupplykioskoptionvalue_watersupplykiosk %}
+                        <input type="hidden" class="kiosk_source_water_selected" value="{{ kiosk_source_water.value_obj.0.id }}"/>
+                    {% endfor %}
+                {% endif %}
+                <!-- END KIOSK -->
+
+                <!-- Private PIPE -->
+                {% if watersupply.watersupplypipeprivate_watersupply|length > 0 %}
+                    {% for kiosk_source_water in watersupply.watersupplypipeprivate_watersupply.0.watersupplypipeprivateoptionvalue_watersupplypipewater %}
+                        <input type="hidden" class="pipe_private_source_water_selected" value="{{ kiosk_source_water.value_obj.0.id }}"/>
+                    {% endfor %}
+                {% endif %}
+                <!-- END PRIVATE PIPE -->
+
+            <!-- END Initial multiple selected choice -->
+
+            <input type="hidden" name="is_water_quality_check" id="is_water_quality_check" value="{{ watersupply.is_water_quality_check }}"/>
+            <div class="table-responsive" id="panel_water_quanlity_check">
+                <table id="table_water_quanlity_check" class="table table-bordered">
+                    <thead>
+                        <tr>                        
+                            <th>{% trans 'thead_parameter_code' %}</th>
+                            <th>{% trans 'thead_parameter' %}</th>
+                            <th>{% trans 'thead_unit' %}</th>
+                            <th>{% trans 'thead_standard_drinking_water' %}</th>
+                            <th>{% trans 'thead_value' %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for water_quality_check_parameter in water_quality_check_parameters %}
+                        <tr>
+                            <td>{{ water_quality_check_parameter.parameter_code }}</td>
+                            <td>{{ water_quality_check_parameter.parameter }}</td>
+                            <td>{{ water_quality_check_parameter.unit }}</td>
+                            <td>{{ water_quality_check_parameter.standard_of_drinking_water }}</td>
+                            <td>
+                                <input type="hidden" name="water_quality_check_param_id[]" value="{{ water_quality_check_parameter.id }}" />
+                                {% if water_quality_check_parameter.id == 1 %}
+                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param1_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/> 
+                                {% elif water_quality_check_parameter.id == 2 %}
+                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param2_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/>
+                                {% elif water_quality_check_parameter.id == 3 %}
+                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param3_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/> 
+                                {% elif water_quality_check_parameter.id == 4 %}
+                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param4_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/> 
+                                {% elif water_quality_check_parameter.id == 5 %}
+                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param5_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/> 
+                                {% elif water_quality_check_parameter.id == 6 %}
+                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param6_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/> 
+                                {% elif water_quality_check_parameter.id == 7 %}
+                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param7_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/> 
+                                {% elif water_quality_check_parameter.id == 8 %}
+                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param8_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/> 
+                                {% elif water_quality_check_parameter.id == 9 %}
+                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param9_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/> 
+                                {% elif water_quality_check_parameter.id == 10 %}
+                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param10_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/> 
+                                {% elif water_quality_check_parameter.id == 11 %}
+                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param11_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/> 
+                                {% elif water_quality_check_parameter.id == 12 %}
+                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param12_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/> 
+                                {% elif water_quality_check_parameter.id == 13 %}
+                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param13_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/> 
+                                {% elif water_quality_check_parameter.id == 14 %}
+                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param14_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/> 
+                                {% elif water_quality_check_parameter.id == 15 %}
+                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param15_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/> 
+                                {% elif water_quality_check_parameter.id == 16 %}
+                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param16_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/>  
+                                {% else %}
+                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="0" step="any" data-id="{{ water_quality_check_parameter.id }}"/> 
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="error_message_panel" style="color:red !important;"> 
+
+            </div>
+        
+            <div class="form-group row">
+                <div class="col-md-2"></div>
+                <div class="col-md-10">
+                    <button class="btn btn-outline-primary" type="button" onclick="submitForm(3,'btn_save_draft')" id="btn_save_draft"><i class="fa fa-save"></i> {% trans 'btn_save_draft' %}</button>
+                    <button class="btn btn-outline-primary" type="button" onclick="submitForm(1, 'btn_submit')" id="btn_submit"><i class="fa fa-save"></i> {% trans 'btn_submit' %}</button>
+                    <a href="javascript:history.back()" class="btn btn-outline-primary">{% trans 'btn_back' %}</a>
+                </div>
+                
+            </div> 
+
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script src="https://maps.googleapis.com/maps/api/js?key={{key}}&callback=initMap&v=weekly&libraries=places" defer></script>
+<script type="text/javascript">
+    let map;
+        let markers = [];
+    	$(function(){
+            //$('.select2').select2();
+
+            var main_status=$('#main_status').val();
+            if(main_status==13){
+                $('#btn_save_draft').hide();
+            }
+
+            $.each($('.map_number'),function(index,item){
+                //console.log($(item).val());
+                var afterFormat=parseFloat($(item).val());
+                //console.log(afterFormat);
+                $(item).val(afterFormat);
+            });
+            $('#map_unit').val('{{ watersupply.map_unit }}');
+            visible_map_control_v1('{{ watersupply.map_unit }}');
+            $('#map_unit').change(function(){
+                var val=$(this).val();
+                visible_map_control_v1(val);
+            });
+
+            $('.date').datepicker({
+                format: 'yyyy-mm-dd',
+                //startDate: '-3d'
+                "setDate": new Date('{{ watersupply.construction_date }}'),
+                "autoclose": true
+            }).datepicker("setDate",'{{ watersupply.construction_date }}');
+
+            $('#source_budget').val('{{ watersupply.source_budget }}');
+            $('#province').val('{{ watersupply.province_id.id }}').trigger('change');
+
+            inititalDistrictDropdownList($('#province').val(),'{{ watersupply.district_id.id }}');
+            initialCommuneDropdownList('{{ watersupply.district_id.id }}','{{ watersupply.commune_id.id }}');
+            intialVillageDropdownList('{{ watersupply.commune_id.id }}','{{ watersupply.village_id.id }}');
+
+            //getLocation();
+            window.initMap = initMap;
+
+            // google.maps.event.addListener(map, 'click', function(event) {
+            //     deleteMarkers();
+            //     placeMarker(event.latLng);
+            //     var latlng = JSON.stringify(event.latLng.toJSON(), null, 2)
+            //     //console.log(event.latLng.lat());
+            //     $('#utm_x').val(event.latLng.lat());
+            //     $('#utm_y').val(event.latLng.lng());
+            // });
+
+            $('#province').change(function(e){
+                var province_id = $(this).val();
+                inititalDistrictDropdownList(province_id);
+
+            });   
+            
+            $('#district').change(function(e){
+                initialCommuneDropdownList($(this).val()); 
+            });
+
+            $('#commune').change(function(e){
+                intialVillageDropdownList($(this).val());
+            });
+
+            /* Start Initial Well Section */
+
+            if($('#water_supply_type').val()==1){
+                //alert("This is Well");
+                var well_type_selected=$('.well_type_selected');
+                $.each(well_type_selected,function(index,item){
+                    //console.log($(item).val());
+                    $('input[type="checkbox"][value="'+$(item).val()+'"]').attr("checked","checked");
+                });
+                $('#well_height').val('{{ watersupply.watersupplywell_watersupply.0.well_height }}');
+                $('#well_filter_height').val('{{ watersupply.watersupplywell_watersupply.0.well_filter_height }}');
+                $('#well_water_supply').val('{{ watersupply.watersupplywell_watersupply.0.well_water_supply }}');
+                $('#well_nirostatic').val('{{ watersupply.watersupplywell_watersupply.0.well_nirostatic }}');
+                $('#well_nirodynamic').val('{{ watersupply.watersupplywell_watersupply.0.well_nirodynamic }}');
+                $('#well_watar_quality').val('{{ watersupply.watersupplywell_watersupply.0.well_watar_quality_obj.0.id }}');
+                $('#well_water_quality_check').val('{{ watersupply.watersupplywell_watersupply.0.well_water_quality_check_obj.0.id }}');
+                $('#well_status').val('{{ watersupply.watersupplywell_watersupply.0.well_status_obj.0.id }}');
+                $('#well_status_reason').val('{{ watersupply.watersupplywell_watersupply.0.well_status_reason }}');
+            }
+
+            /* End Initial Well Section */
+
+            /* START Initial Air to Water Section */
+            else if ($('#water_supply_type').val()==7){
+                var air_water_source_water_selected = $('.air_water_source_water_selected');
+                $.each(air_water_source_water_selected,function(index,item){
+                    $('input[type="checkbox"][name="source_type_of_water_option"][value="'+$(item).val()+'"]').attr("checked","checked");
+                });
+                $('#abilty_of_produce_water').val('{{ watersupply.watersupplyairwater_watersupply.0.abilty_of_produce_water }}');
+                $('#filter_system').val("{{ watersupply.watersupplyairwater_watersupply.0.filter_system_obj.0.id }}");
+                $('#well_water_quality_check').val('{{ watersupply.watersupplyairwater_watersupply.0.water_quality_checking_obj.0.id }}');
+                $('#status').val('{{ watersupply.watersupplyairwater_watersupply.0.status_obj.0.id }}');
+                $('#status_no_reason').val('{{ watersupply.watersupplyairwater_watersupply.0.abilty_of_produce_water }}')
+            }
+            /* END Air to Water Section */
+
+            /* START SMall PIPE SECTION */
+            else if ($('#water_supply_type').val() == 2){
+                var small_pipe_source_water_selected = $('.pipe_source_water_selected');
+                $.each(small_pipe_source_water_selected,function(index,item){
+                    $('input[type="checkbox"][name="source_type_of_water_option"][value="'+$(item).val()+'"]').attr("checked","checked");
+                });
+                $('#abilty_of_produce_water').val('{{ watersupply.watersupplypipe_watersupply.0.abilty_of_produce_water }}');
+                $('#underground_pool_storage').val('{{ watersupply.watersupplypipe_watersupply.0.underground_pool_storage }}');
+                $('#pool_air').val('{{ watersupply.watersupplypipe_watersupply.0.pool_air }}');
+                $('#pool_filter').val('{{ watersupply.watersupplypipe_watersupply.0.pool_filter_obj.0.id }}');
+                $('#number_of_link').val('{{ watersupply.watersupplypipe_watersupply.0.number_of_link }}');
+                $('#water_quality_check').val('{{ watersupply.watersupplypipe_watersupply.0.water_quality_check_obj.0.id }}');
+                $('#pipe_length').val('{{ watersupply.watersupplypipe_watersupply.0.pipe_length }}');
+                $('#status').val('{{ watersupply.watersupplypipe_watersupply.0.status_obj.0.id }}');
+                $('#area_covering').val('{{ watersupply.watersupplypipe_watersupply.0.area_covering }}');
+                $('#status_no_reason').val('{{ watersupply.watersupplypipe_watersupply.0.status_no_reason }}');
+
+            }
+            else if ($('#water_supply_type').val() == 3){
+                var kiosk_source_water_selected=$('.kiosk_source_water_selected');
+                $.each(kiosk_source_water_selected,function(index,item){
+                    $('input[type="checkbox"][name="source_type_of_water_option"][value="'+$(item).val()+'"]').attr("checked","checked");
+                });
+                $('#abilty_of_produce_water').val('{{ watersupply.watersupplyKiosk_watersupply.0.abilty_of_produce_water }}'); 
+                $('#filter_system').val('{{ watersupply.watersupplyKiosk_watersupply.0.filter_system_obj.0.id }}');
+                $('#water_quality_checking').val('{{ watersupply.watersupplyKiosk_watersupply.0.water_quality_checking_obj.0.id }}');
+                $('#status').val('{{ watersupply.watersupplyKiosk_watersupply.0.status_obj.0.id }}');
+                $('#status_no_reason').val('{{ watersupply.watersupplyKiosk_watersupply.0.status_no_reason }}');
+            }
+            /* END SMALL PIPE SECTION */
+            /* START COMMUNITY POND */
+            else if ($('#water_supply_type').val() == 4){
+                $('#width').val('{{ watersupply.watersupplyCommunityPond_watersupply.0.width }}');
+                $('#length').val('{{ watersupply.watersupplyCommunityPond_watersupply.0.length }}');
+                $('#height').val('{{ watersupply.watersupplyCommunityPond_watersupply.0.height }}');
+                $('#pool_filter').val('{{ watersupply.watersupplyCommunityPond_watersupply.0.pool_filter_obj.0.id }}');
+                $('#type_of_pond').val('{{ watersupply.watersupplyCommunityPond_watersupply.0.type_of_pond_obj.0.id }}');
+                $('#is_summer_has_water').val('{{ watersupply.watersupplyCommunityPond_watersupply.0.is_summer_has_water_obj.0.id }}');
+                $('#status').val('{{ watersupply.watersupplyCommunityPond_watersupply.0.status_obj.0.id }}');
+                $('#status_no_reason').val('{{ watersupply.watersupplyCommunityPond_watersupply.0.status_no_reason }}');
+            }
+            /* END COMMUNITY POND */
+            /* RAIN Harvesting  */
+            else if ($('#water_supply_type').val() == 5){
+                $('#type_of_using').val('{{ watersupply.watersupplyRainWaterHarvesting_watersupply.0.type_of_using_obj.0.id }}');
+                $('#capacity_of_rain_water_harvesting').val('{{ watersupply.watersupplyRainWaterHarvesting_watersupply.0.capacity_of_rain_water_harvesting_obj.0.id }}');
+                $('#water_quality_checking').val('{{ watersupply.watersupplyRainWaterHarvesting_watersupply.0.water_quality_checking_obj.0.id }}');
+                $('#status').val('{{ watersupply.watersupplyRainWaterHarvesting_watersupply.0.status_obj.0.id }}');
+                $('#status_no_reason').val('{{ watersupply.watersupplyRainWaterHarvesting_watersupply.0.status_no_reason }}');
+
+            }
+            else if ($('#water_supply_type').val() == 6){
+                var pipe_private_source_water_selected=$('.pipe_private_source_water_selected');
+                $.each(pipe_private_source_water_selected,function(index,item){
+                    $('input[type="checkbox"][name="source_type_of_water_option"][value="'+$(item).val()+'"]').attr("checked","checked");
+                });
+                $('#abilty_of_produce_water').val('{{ watersupply.watersupplypipeprivate_watersupply.0.abilty_of_produce_water }}');
+                $('#underground_pool_storage').val('{{ watersupply.watersupplypipeprivate_watersupply.0.underground_pool_storage }}');
+                $('#pool_air').val('{{ watersupply.watersupplypipeprivate_watersupply.0.pool_air }}');
+                $('#pool_filter').val('{{ watersupply.watersupplypipeprivate_watersupply.0.pool_filter_obj.0.id }}');
+                $('#number_of_link').val('{{ watersupply.watersupplypipeprivate_watersupply.0.number_of_link }}');
+                $('#well_water_quality_check').val('{{ watersupply.watersupplypipeprivate_watersupply.0.water_quality_check_obj.0.id }}');
+                $('#area_covering').val('{{ watersupply.watersupplypipeprivate_watersupply.0.area_covering }}');
+                $('#is_has_license').val('{{ watersupply.watersupplypipeprivate_watersupply.0.is_has_license_obj.0.id }}');
+                $('#pipe_length').val('{{ watersupply.watersupplypipeprivate_watersupply.0.pipe_length }}');
+                $('#status').val('{{ watersupply.watersupplypipeprivate_watersupply.0.status_obj.0.id }}');
+                $('#well_status_reason').val('{{ watersupply.watersupplypipeprivate_watersupply.0.status_no_reason }}');
+                $('#license_registered_date').datepicker({
+                    format: 'yyyy-mm-dd',
+                    //startDate: '-3d'
+                    "setDate": new Date('{{ watersupply.watersupplypipeprivate_watersupply.0.license_registered_date }}'),
+                    "autoclose": true
+                }).datepicker("setDate",'{{ watersupply.watersupplypipeprivate_watersupply.0.license_registered_date }}');
+                $('#license_expired_date').datepicker({
+                    format: 'yyyy-mm-dd',
+                    //startDate: '-3d'
+                    "setDate": new Date('{{ watersupply.watersupplypipeprivate_watersupply.0.license_expired_date }}'),
+                    "autoclose": true
+                }).datepicker("setDate",'{{ watersupply.watersupplypipeprivate_watersupply.0.license_expired_date }}');
+            }
+            /* END RAIN Harvesting */
+
+            var is_water_quality_check = '{{ watersupply.is_water_quality_check }}';
+            if(is_water_quality_check=='True'){
+                $('#panel_water_quanlity_check').show();
+            }else{
+                $('#panel_water_quanlity_check').hide();
+            }
+        });
+
+        function inititalDistrictDropdownList(province_id,district_id){
+            
+            $('#district').empty().append('<option value="0">{% trans "select_option" %} </option>');
+            $('#commune').empty();
+            $('#village').empty();
+
+            $.ajax({
+                type: 'GET',
+                url: "{% url 'ajax_get_district' %}",
+                data: {"province_id":province_id },
+                success: function (response) {
+                    
+                    if(!response["valid"]){
+                        //console.log(response);
+                        $.each(response.district,function(ind,dis){
+                            $('#district').append("<option value='"+dis.id+"'>"+dis.name_kh+"</option>");
+
+
+                        });
+                        if(district_id!=null)
+                            $('#district').val(district_id);//.trigger('change');
+                        //alert("You cannot create a friend with same nick name");   
+                                            
+                    }
+                },
+                error: function (response) {
+                    console.log(response)
+                }
+            });
+
+        }
+
+        function initialCommuneDropdownList(district_id,commune_id){
+            //var district_id=$('#district').val();
+            $('#commune').empty().append('<option value="0">{% trans "select_option" %}</option>');
+            $('#village').empty();
+            //alert(district_id)
+            $.ajax({
+                type: 'GET',
+                url: "{% url 'ajax_get_commune_list' %}",
+                data: {"district_id":district_id },
+                success: function (response) {
+                    
+                    if(!response["valid"]){
+                        console.log(response);
+                        $.each(response.communes,function(ind,commune){
+                            $('#commune').append("<option value='"+commune.id+"'>"+commune.name_kh+"</option>");
+
+
+                        });
+                        if(commune_id!=null)
+                            $('#commune').val(commune_id);//.trigger('change');
+                        //alert("You cannot create a friend with same nick name");                        
+                    }
+                },
+                error: function (response) {
+                    console.log(response)
+                }
+            });
+        }
+
+        function intialVillageDropdownList(commune_id,village_id){
+            //var commune_id=$('#commune').val();
+            $('#village').empty().append('<option value="0">{% trans "select_option" %}</option>');
+
+            $.ajax({
+                type: 'GET',
+                url: "{% url 'ajax_get_village_list' %}",
+                data: {"commune_id":commune_id },
+                success: function (response) {
+                    
+                    if(!response["valid"]){
+                        console.log(response);
+                        $.each(response.villages,function(ind,village){
+                            $('#village').append("<option value='"+village.id+"'>"+village.name_kh+"</option>");
+                        });
+                        if(village_id!=null)
+                            $('#village').val(village_id);//.trigger('change');
+                        //alert("You cannot create a friend with same nick name");                        
+                    }
+                },
+                error: function (response) {
+                    console.log(response)
+                }
+            });
+        }
+
+        function submitForm(status,btn_id){
+            $('#main_status').val(status);
+            $('#'+btn_id).attr('disabled',true);
+            //$('#'+btn_id).text("{% trans 'btn_submiiting' %}");
+
+            var error_message=validation_on_save();
+
+            /* IF WELL SECTION */
+            if($('#water_supply_type').val()==1){
+                var well_types = [];
+                var well_type_text='';
+                $('input[name="well_type_option"]:checked').each(function() {
+                    well_types.push(this.value); 
+                    well_type_text=well_type_text+"/"+this.value;
+                });
+                
+                if(well_types.length==0){
+                    //alert("Please select well type.");
+                    error_message.push("{% trans 'validation_well_type' %}");
+                    //return;
+                }else{
+                    $('#well_type').val(well_types);
+                }
+                if($('#well_watar_quality').val()==-1){
+                    error_message.push("{% trans 'validation_well_watar_quality' %}");
+                }
+                if($('#well_water_quality_check').val()==-1){
+                    error_message.push("{% trans 'validation_well_water_quality_check' %}");
+                }
+                if($('#well_status').val()==-1){
+                    error_message.push("{% trans 'validation_well_status' %}");
+                }
+                if($('#well_status').val()==13 && $("#well_status_reason").val().trim().length==0){
+                    error_message.push("{% trans 'validation_well_status_reason' %}");
+                }
+            }         
+            //START PIPE SECION 
+            else if ($('#water_supply_type').val()== 2 || $('#water_supply_type').val()== 6){
+                var pipe_source_waters=[];
+                $('input[name="source_type_of_water_option"]:checked').each(function(){
+                    pipe_source_waters.push(this.value);
+                });
+                if(pipe_source_waters.length==0){
+                    error_message.push("{% trans 'validation_pipe_source_of_water' %}")
+                }else{
+                    $('#source_type_of_water').val(pipe_source_waters);
+                }
+            }
+
+            //START KIOSK Section
+            else if ($('#water_supply_type').val()==3 || $('#water_supply_type').val()==7){
+                var kiosk_source_waters=[];
+                $('input[name="source_type_of_water_option"]:checked').each(function(){
+                    kiosk_source_waters.push(this.value);
+                });
+                if(kiosk_source_waters.length==0){
+                    error_message.push("{% trans 'validation_pipe_source_of_water' %}")
+                }else{
+                    $('#source_type_of_water').val(kiosk_source_waters);
+                }
+            }
+            //END KIOSK Section
+
+            //START Air to Water Section */
+            if($('#water_supply_type').val()==7){
+                if($('#well_water_quality_check').val()==-1){
+                    error_message.push("{% trans 'validation_well_water_quality_check' %}");
+                }else{
+                    if($('#well_water_quality_check').val()==10)
+                    {
+                        $('#is_water_quality_check').val('True');
+                    }else{
+                        $('#is_water_quality_check').val('False');
+                    }
+                }
+            }
+            // END Air to WAter Section
+
+            //return;
+            if(error_message.length>0){
+                $('#'+btn_id).attr('disabled',false);
+                $('#error_message_panel').empty();
+                $.each(error_message,function(index,item){
+                    $('#error_message_panel').append("<li>"+item+"</li>");
+                });
+            }else{
+                $('#error_message_panel').empty();
+                $('#myForm').submit();
+            }
+            
+        }
+
+        function visible_control(id_name,is_visible){
+            if(is_visible){
+                $('#label_'+id_name).show();
+                $('#'+id_name).show();
+                $('#'+id_name).val(' ');
+            }else{
+                $('#label_'+id_name).hide();
+                $('#'+id_name).hide();
+            }
+        }
+
+        function visible_map_control_v1(unit_id){
+            if(unit_id==1){
+                //UTM
+                $('#map_unit_dd_panel').hide();
+                $('#map_unit_mds_panel').hide();
+                $('#map_unit_utm_panel').show();
+            }else if (unit_id==2){
+                //Decimal Degree
+                $('#map_unit_dd_panel').show();
+                $('#map_unit_mds_panel').hide();
+                $('#map_unit_utm_panel').hide();
+            }else if(unit_id==3){
+                //Decimal Minute Second
+                $('#map_unit_dd_panel').hide();
+                $('#map_unit_mds_panel').show();
+                $('#map_unit_utm_panel').hide();
+            }
+        }
+
+        function validation_on_save(){
+            var error_messages=[];
+                /* master Data */
+            if($('#district').val()==0 || $('#district').val()==null){
+                error_messages.push("{% trans 'validation_district' %}");
+            }
+            if($('#commune').val()==0 || $('#commune').val()==null){
+                error_messages.push("{% trans 'validation_commune' %}");
+            }
+            if($('#village').val()==0 || $('#village').val()==null){
+                error_messages.push("{% trans 'validation_village' %}");
+            }
+            if($('#source_budget').val()==-1 || $('#source_budget').val()== null ){
+                error_messages.push("{% trans 'validation_source_budget' %}");
+            }
+            if($('#beneficiary_total_people').val().length==0){
+                error_messages.push("{% trans 'validation_beneficiary_total_people' %}");
+            }
+            if($('#beneficiary_total_women').val().length==0){
+                error_messages.push("{% trans 'validation_beneficiary_total_women' %}");
+            }
+            if($('#beneficiary_total_family').val().length==0){
+                error_messages.push("{% trans 'validation_beneficiary_total_family' %}");
+            }
+            if($('#beneficiary_total_family_poor_2').val().length==0){
+                error_messages.push("{% trans 'validation_beneficiary_total_family_poor_2' %}");
+            }
+            if($('#beneficiary_total_family_vulnerable').val().length==0){
+                error_messages.push("{% trans 'validation_beneficiary_total_family_vulnerable' %}");
+            }
+            if($('#beneficiary_total_family_indigenous').val().length==0){
+                error_messages.push("{% trans 'validation_beneficiary_total_family_indigenous' %}");
+            }
+
+
+            return error_messages;
+        }
+
+        /* Start MAP Section */
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition);
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+        function showPosition(position) {
+                var lat = position.coords.latitude;
+                var lng = position.coords.longitude;
+                //map.setCenter(new google.maps.LatLng(lat, lng));
+                map = new google.maps.Map(document.getElementById("map"), {
+                    center: { lat: parseFloat(lat), lng: parseFloat(lng) },
+                    zoom: 20,
+                    mapTypeId: 'hybrid'
+                });
+                const marker = new google.maps.Marker({
+                        position: { lat: parseFloat(lat), lng: parseFloat(lng)},
+                        map: map,
+                });
+                markers.push(marker);
+                $('#utm_x').val(lat);
+                $('#utm_y').val(lng);
+            }
+        function initMap() {
+            
+            var map_unit = '{{ watersupply.map_unit }}';
+            if(map_unit==2){
+                //alert(map_unit);
+                var lat= '{{ watersupply.decimal_degress_lat }}';
+                var lng = '{{ watersupply.decimal_degress_lng }}';
+                map = new google.maps.Map(document.getElementById("map"), {
+                    center: { lat: parseFloat(lat), lng: parseFloat(lng) },
+                    zoom: 20,
+                    mapTypeId: 'hybrid'
+                });
+                const marker = new google.maps.Marker({
+                        position: { lat: parseFloat(lat), lng: parseFloat(lng)},
+                        map: map,
+                });
+                markers.push(marker);
+                // $('#utm_x').val(lat);
+                // $('#utm_y').val(lng);
+                $("#map").css("relative", "");
+            }
+            else{
+                getLocation();
+            }
+            
+            
+        }
+
+        function re_initial_map(){
+            var utm_x=parseFloat($('#utm_x').val());
+            var utm_y=parseFloat($('#utm_y').val());
+            map = new google.maps.Map(document.getElementById("map"), {
+                center: { lat:utm_x, lng: utm_y },
+                zoom: 20,
+                mapTypeId: 'hybrid'
+            });
+            const marker = new google.maps.Marker({
+                position: { lat: utm_x, lng:utm_y},
+                map: map,
+            });
+
+            markers.push(marker);
+            
+        }
+
+        function placeMarker(location) {
+                var marker = new google.maps.Marker({
+                    position: location, 
+                    map: map
+                });
+                markers.push(marker);
+        }
+        // Sets the map on all markers in the array.
+        function setMapOnAll(map) {
+            for (let i = 0; i < markers.length; i++) {
+                markers[i].setMap(map);
+            }
+        }
+
+        // Removes the markers from the map, but keeps them in the array.
+        function hideMarkers() {
+            setMapOnAll(null);
+        }
+
+        // Shows any markers currently in the array.
+        function showMarkers() {
+            setMapOnAll(map);
+        }
+
+        // Deletes all markers in the array by removing references to them.
+        function deleteMarkers() {
+            hideMarkers();
+            markers = [];
+        }
+        
+        /* END MAP SECTION */
+
+
+</script>
+{% endblock %}

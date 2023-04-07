@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans 'menu_my_pending_approval_task' %}{% endblock %}
+
+{% block first_breadcrums %}
+{% if watersupplytype_id == 0 %}
+<li class="breadcrumb-item active" aria-current="page">{% trans 'menu_water_supply' %}</li>
+{% else %}
+<li class="breadcrumb-item active" aria-current="page">{% trans 'menu_my_pending_approval_task' %}</li>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="table-responsive">
+    <table class='table table-bordered' id="table_1">
+        <thead>
+            <tr>
+                <th>{% trans 'water_supply_code' %}</th>
+                <th>{% trans 'province' %}</th>
+                <th>{% trans 'district' %}</th>
+                <th>{% trans 'commune' %}</th>
+                <th>{% trans 'village' %}</th>
+                <th>{% trans 'created_at' %}</th>
+                <th>{% trans 'water_supply_type' %}</th>
+                    <th>{% trans 'ws_status' %}</th>
+                    <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ws in watersupplylist %}
+                <tr>
+                    <td>{{ ws.water_supply_code }}</td>
+                    <td>{{ ws.province_id.name_en}}</td>
+                    <td>{{ ws.district_id.name_en}}</td>
+                    <td>{{ ws.commune_id.name_en}}</td>
+                    <td>{{ ws.village_id.name_en}}</td>
+                    <td>{{ ws.created_at }}</td>
+                    <td>{{ ws.water_supply_type_id.name_kh }}</td>
+                   
+                    <td class="text-center"><span class="badge badge-warning">{{ ws.main_status.status_name_kh }}</span></td>
+                    <td><a href="{% url 'watersupply_detail' id=ws.id %}" class="btn btn-outline-primary btn-sm"><i class="fa fa-eye"></i> {% trans 'btn_view_detail' %}</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+    $(function(){
+        $(document).ready(function () {
+            $('#table_1').DataTable({});
+        });
+    });
+
+</script>
+{% endblock %}

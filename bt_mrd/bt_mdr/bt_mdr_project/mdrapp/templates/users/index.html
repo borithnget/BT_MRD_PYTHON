@@ -2,31 +2,82 @@
 {% load i18n %}
 
 {% block title %}{% trans 'userlist' %}{% endblock %}
+
+{% block first_breadcrums %}
+<li class="breadcrumb-item active" aria-current="page">{% trans 'userlist' %}</li>
+{% endblock %}
+
 {% block content %}
-<a href="{% url 'user_register' %}" class="btn btn-primary">Register New User</a>
-
-<div class="table-responsive">
-    <table class="table table-bordered" id="table_1">
-        <thead>
-            <tr>
-                <th>Username</th>
-                <th>Email</th>
-                <th></th>
-            </tr>
-            
-        </thead>
-        <tbody>
-            {% for u in users %}
-                <tr>
-                    <td>{{ u.username }}</td>
-                    <td>{{ u.email }}</td>
-                    <td></td>
-                </tr>
-            {% endfor %}
-        </tbody>
-
-    </table>
+<div class="card">
+    <div class="card-body">
+        <div class="btn-group btn-group-sm" role="group" aria-label="" style="margin-bottom: 10px !important;">
+            <a href="{% url 'user_register' %}" class="btn btn-primary"><i class="fa fa-user-plus" aria-hidden="true"></i> {% trans 'btn_create_new_user' %}</a>
+        </div>
+        
+        <div class="table-responsive">
+            <table class="table table-bordered" id="table_1">
+                <thead>
+                    <tr>
+                        <th>{% trans 'username' %}</th>
+                        <th>{% trans 'FullName' %}</th>
+                        <!-- <th>{% trans 'email' %}</th> -->
+                        <th>{% trans 'label_role' %}</th>
+                        <th></th>
+                    </tr>
+                    
+                </thead>
+                <tbody>
+                    {% for u in users %}
+                        <tr>
+                            <td>{{ u.username }}</td>
+                            <td>{{ u.first_name}} {{ u.last_name }}</td>
+                            <!-- <td>{{ u.email }}</td> -->
+                            <td>
+                                {% if u.is_data_entry %}                              
+                                    {% if u.data_entry_province_id is not None %}
+                                        <p>Data Entry ({{ u.data_entry_province_id.name_kh }}) </p>
+                                    {% else %}
+                                        <p>Data Entry</p>
+                                    {% endif %}
+                                {% endif %}
+                                {% if u.is_head_department %}
+                                <p>{% trans 'head_department' %}</p>
+                                    
+                                {% endif %}
+                                {% if u.is_provincial_department_head %}
+                                
+                                {% if u.provincial_department_head_province_id is not None %}
+                                        <p>{% trans 'provincial_head_department' %} ({{ u.provincial_department_head_province_id.name_kh }}) </p>
+                                    {% else %}
+                                    <p>{% trans 'provincial_head_department' %}</p>
+                                    {% endif %}
+                                {% endif %}
+                                {% if u.is_data_verifier_1 %}
+                                <p>{% trans 'data_verifier_1' %}</p>
+                                {% endif %}
+                                {% if u.is_data_verifier_2 %}
+                                <p>{% trans 'data_verifier_2' %}</p>
+                                {% endif %}
+                                {% if u.is_partner %}
+                                <p>{% trans 'partner' %}</p>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group" role="group" aria-label="Basic example">
+                                    <a href="" class="btn btn-secondary" style="color: white;"><i class="fa fa-eye"></i> </a>
+                                    <a href="" class="btn btn-secondary" style="color: white;"><i class="fa fa-edit"></i> </a>
+                                    <a href="" class="btn btn-secondary" style="color: white;"><i class="fa fa-trash"></i> </a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+        
+            </table>
+        </div>
+    </div>
 </div>
+
 {% endblock %}
 
 

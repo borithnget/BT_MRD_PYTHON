@@ -1,45 +1,175 @@
 {% extends 'base.html' %}
 {% load i18n %}
 
-{% block title %}{% trans 'UserRegister' %}{% endblock %}
+{% block title %}{% trans 'btn_create_new_user' %}{% endblock %}
+
+{% block first_breadcrums %}
+<li class="breadcrumb-item active" aria-current="page">{% trans 'btn_create_new_user' %}</li>
+
+{% endblock %}
 {% block content %}
 <div class="card" style="width: 100%;">
-    <div class="card-header">{% trans 'UserRegister' %}</div>
+    <!-- <div class="card-header">{% trans 'UserRegister' %}</div> -->
     <div class="card-body">
       <form method="post">
         {% csrf_token %}
-        <div class="form-group row">
-            <label class="control-label col-md-2">Username <strong class="text-danger">*</strong></label>
-            <div class="col-md-4">
-                <input type="text" class="form-control" id="username" name="username"/>
+        <div class="form-body">
+            <div class="form-group row">
+                <label class="control-label col-md-2">Username <strong class="text-danger">*</strong></label>
+                <div class="col-md-4">
+                    <input type="text" class="form-control" id="username" name="username" />
+                </div>
+                <label class="control-label col-md-2">Email <strong class="text-danger">*</strong></label>
+                <div class="col-md-4">
+                    <input type="email" class="form-control" id="email" name="email" />
+                </div>
             </div>
-            <label class="control-label col-md-2">Email <strong class="text-danger">*</strong></label>
-            <div class="col-md-4">
-                <input type="email" class="form-control" id="email" name="email"/>
+            <div class="form-group row">
+                <label class="control-label col-md-2">{% trans 'FirstName' %}</label>
+                <div class="col-md-4">
+                    <input type="text" class="form-control" id="first_name" name="first_name" />
+                </div>
+                <label class="control-label col-md-2">{% trans 'LastName' %}</label>
+                <div class="col-md-4">
+                    <input type="text" class="form-control" id="last_name" name="last_name" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="control-label col-md-2">Password <strong class="text-danger">*</strong></label>
+                <div class="col-md-4">
+                    <input type="password" class="form-control" id="password" name="password" />
+                </div>
+                <label class="control-label col-md-2">Confirm Password <strong class="text-danger">*</strong></label>
+                <div class="col-md-4">
+                    <input type="password" class="form-control" id="confirm_password" name="confirm_password" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="control-label col-md-2">{% trans 'label_role' %} <strong class="text-danger">*</strong></label>
+                <div class="col-md-4">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="chk_is_data_entry" name="is_data_entry" value="True">
+                        <label class="form-check-label" for="chk_is_data_entry" >{% trans 'data_entry' %}</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="is_provincial_head_department" name="is_provincial_head_department" value="True">
+                        <label class="form-check-label" for="is_provincial_head_department" >{% trans 'provincial_head_department' %}</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="is_data_verifier_1" name="is_data_verifier_1" value="True">
+                        <label class="form-check-label" for="is_data_verifier_1" >{% trans 'data_verifier_1' %}</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="is_data_verifier_2" name="is_data_verifier_2" value="True">
+                        <label class="form-check-label" for="is_data_verifier_2" >{% trans 'data_verifier_2' %}</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="is_head_department" name="is_head_department" value="True">
+                        <label class="form-check-label" for="is_head_department" >{% trans 'head_department' %}</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="is_partner" name="is_partner" value="True">
+                        <label class="form-check-label" for="is_partner" >{% trans 'partner' %}</label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div id="panel_data_entry_provincial" class="row col-md-6">
+                    <label class="control-label col-md-4">{% trans 'label_provincial_dataentry_province' %}</label>
+                    <div class="col-md-8">
+                        <select class="form-control select2" id="provincial_dataentry_province" name="data_entry_province_id">
+        
+                        </select>
+                    </div>
+                </div>
+                <div id="panel_provincial_head_department_province" class="row col-md-6">
+                    <label class="control-label col-md-4">{% trans 'label_provincial_head_department_province' %}</label>
+                    <div class="col-md-8">
+                        <select class="form-control select2" id="provincial_head_department_province" name="provincial_department_head_province_id">
+        
+                        </select>
+                    </div>
+                </div>
+                
             </div>
         </div>
-        <div class="form-group row">
-            <label class="control-label col-md-2">Password <strong class="text-danger">*</strong></label>
-            <div class="col-md-4">
-                <input type="password" class="form-control" id="password" name="password"/>
-            </div>
-            <label class="control-label col-md-2">Confirm Password <strong class="text-danger">*</strong></label>
-            <div class="col-md-4">
-                <input type="password" class="form-control" id="confirm_password" name="confirm_password"/>
-            </div>
+        
+        <div class="form-actions">
+            
+            <div class="form-group row">
+                <div class="col-md-2"></div>
+                <div class="col-md-10">
+                    <button type="submit" onclick="" class="btn btn-xs btn-primary"><i class="fa fa-save" aria-hidden="true"></i> {% trans 'btn_save' %}</button>
+                    <button type="button" onclick="window.history.back()" class="btn btn-xs btn-secondary">{% trans 'btn_back' %}</button>
+                </div>
+            </div>   
         </div>
-        <div class="form-group row">
-            <div class="col-md-2">
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="chk_is_data_entry" name="is_data_entry" value="True">
-                    <label class="form-check-label" for="chk_is_data_entry" >Data Entry</label>
-                  </div>
-            </div>
-        </div>
-        <button type="submit" onclick="" class="btn btn-xs btn-secondary">{% trans 'btn_register' %}</button>
-        <button type="button" onclick="window.history.back()" class="btn btn-xs btn-secondary">{% trans 'btn_back' %}</button>
+        
       </form>
     </div>
+
   </div>
 
+{% endblock %}
+{% block script %}
+<script type="text/javascript">
+
+    $(function(){
+        $('.select2').select2();
+        $('#panel_data_entry_provincial').hide();
+        $('#panel_provincial_head_department_province').hide();
+        
+        $('#chk_is_data_entry').change(function() {
+            inititalProvinceDropdownList(true);
+            if(this.checked) {
+                $('#panel_data_entry_provincial').show();
+            }else{
+                $('#panel_data_entry_provincial').hide();
+            }                  
+        });
+
+        $('#is_provincial_head_department').change(function() {
+            inititalProvinceDropdownList(false);
+            if(this.checked) {
+                $('#panel_provincial_head_department_province').show();
+            }else{
+                $('#panel_provincial_head_department_province').hide();
+            }                  
+        });
+    });
+
+    function inititalProvinceDropdownList(is_data_entry){
+            
+            $.ajax({
+                type: 'GET',
+                url: "{% url 'ajax_get_province_list' %}",              
+                success: function (response) {
+                    
+                    if(!response["valid"]){
+                        //console.log(response);
+                        if(is_data_entry){
+                            $('#provincial_dataentry_province').empty();
+                            $.each(response.provinces,function(ind,dis){
+                                $('#provincial_dataentry_province').append("<option value='"+dis.id+"'>"+dis.name_kh+"</option>");
+                            });
+                        }else{
+                            $('#provincial_head_department_province').empty();
+                            $.each(response.provinces,function(ind,dis){
+                                $('#provincial_head_department_province').append("<option value='"+dis.id+"'>"+dis.name_kh+"</option>");
+                            });
+                        }
+                        
+                        //alert("You cannot create a friend with same nick name");   
+                                            
+                    }
+                },
+                error: function (response) {
+                    console.log(response)
+                }
+            });
+
+
+        }
+
+</script>
 {% endblock %}

@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans 'menu_my_pending_approval_task' %}{% endblock %}
+
+{% block first_breadcrums %}
+{% if watersupplytype_id == 0 %}
+<li class="breadcrumb-item active" aria-current="page">{% trans 'menu_water_supply' %}</li>
+{% else %}
+<li class="breadcrumb-item active" aria-current="page">{% trans 'menu_my_pending_approval_task' %}</li>
+{% endif %}
+{% endblock %}
+
+{% block style %}
+<style type="text/css">
+    .mapholder{
+    height: 100px !important;
+    width: 100px !important;
+}
+
+#map {
+    height: 300px !important;
+    /* position: inherit !important; */
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <h2>Django Google Autocomplete Address Example - Tuts-Station.com</h2>
+
+    <div class="form-group">
+        <label>Location/City/Address</label>
+        <input type="text" name="autocomplete" id="autocomplete" class="form-control" placeholder="Choose Location">
+    </div>
+
+    <div class="form-group" id="latitudeArea">
+        <label>Latitude</label>
+        <input type="text" id="latitude" name="latitude" class="form-control">
+    </div>
+
+    <div class="form-group" id="longtitudeArea">
+        <label>Longitude</label>
+        <input type="text" name="longitude" id="longitude" class="form-control">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</div>
+
+<div class="pageholder">
+    <div class="titleholder"> 
+        <div class="title"><i class="fas fa-compass mr-2"></i> Google       Maps #1: Geocoding </div>
+    </div>
+
+    <div class="linkholder">
+        <div id="map"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="https://maps.googleapis.com/maps/api/js?key={{key}}&callback=initMap&v=weekly&libraries=places" defer></script>
+<!-- <script type="text/javascript"
+        src="https://maps.google.com/maps/api/js?key={{ key }}&libraries=places" ></script> -->
+
+<script type="text/javascript">
+
+    let map;
+    function initMap() {
+        map = new google.maps.Map(document.getElementById("map"), {
+            center: { lat: 11.599713775592127, lng: 104.88536430681577 },
+            zoom: 15,
+            //mapTypeId: 'hybrid'
+        });
+        const marker = new google.maps.Marker({
+                position: { lat: parseFloat(11.599713775592127), lng: parseFloat(104.88536430681577)},
+                map: map,
+            })
+        $("#map").css("relative", "");
+        
+    }
+    
+    $(function(){
+        window.initMap = initMap;
+        google.maps.event.addDomListener(window, 'load', initialize);
+        $("#latitudeArea").addClass("d-none");
+        $("#longtitudeArea").addClass("d-none");
+    });
+
+        function initialize() {
+            var input = document.getElementById('autocomplete');
+            var autocomplete = new google.maps.places.Autocomplete(input);
+  
+            autocomplete.addListener('place_changed', function () {
+                var place = autocomplete.getPlace();
+                $('#latitude').val(place.geometry['location'].lat());
+                $('#longitude').val(place.geometry['location'].lng());
+  
+                $("#latitudeArea").removeClass("d-none");
+                $("#longtitudeArea").removeClass("d-none");
+
+                map = new google.maps.Map(document.getElementById("map"), {
+                    center: { lat: place.geometry['location'].lat(), lng: place.geometry['location'].lng() },
+                    zoom: 15,
+                    //mapTypeId: 'hybrid'
+                });
+                const marker = new google.maps.Marker({
+                        position: { lat: parseFloat(place.geometry['location'].lat()), lng: parseFloat(place.geometry['location'].lng())},
+                        map: map,
+                    })
+
+            });
+        }
+    
+
+</script>
+{% endblock %}
