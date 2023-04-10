@@ -102,10 +102,13 @@ def get_beneficiary_total_people(request):
         ws_type = request.GET.get('ws_type', 0)
         province_id = request.GET.get('province_id', 0)
         url = settings.API_ENDPOINT + "watersupplybeneficiarytotalpeople/"+str(ws_type)+"/"+str(province_id)+"/"
-        print(url)
+        #print(url)
         list = requests.get(url).json()
+        
+        province_url = settings.API_ENDPOINT + "province/" + str(province_id)
+        province = requests.get(province_url).json()
 
-        return JsonResponse({'data': list}, status=200)
+        return JsonResponse({'data': list, 'province':province}, status=200)
 
     return JsonResponse({}, status=400) 
 

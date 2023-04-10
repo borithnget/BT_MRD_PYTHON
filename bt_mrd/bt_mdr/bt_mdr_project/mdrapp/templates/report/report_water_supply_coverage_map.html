@@ -9,7 +9,7 @@
 {% block style %}
     <style>
 #map {
-        height: 1000px !important;
+        height: 500px !important;
         width: 100% !important;
         /* position: inherit !important; */
         overflow: hidden !important;
@@ -36,9 +36,9 @@
                                         <option value="0">{% trans 'select_option' %}</option>
                                         <option value="1">{% trans 'Country' %}</option>
                                         <option value="2">{% trans 'province' %}</option>
-                                        <option value="3">{% trans 'district' %}</option>
+                                        {% comment %} <option value="3">{% trans 'district' %}</option>
                                         <option value="4">{% trans 'commune' %}</option>
-                                        <option value="5">{% trans 'village' %}</option>
+                                        <option value="5">{% trans 'village' %}</option> {% endcomment %}
                                     </select>
                                 </div>
                         </div>
@@ -115,14 +115,17 @@
 <script src="https://maps.googleapis.com/maps/api/js?key={{key}}&callback=initMap&v=weekly&libraries=places" defer></script>
 <script type="text/javascript">
     let map;
+    let markers = [];
+    let map_border_latlng="";
+
     $(function(){
 
-        
+        $('.select2').select2();
         window.initMap = initMap;
 
         enablegeoinformation($('#coverage_by').val());
 
-        $('#province').change(function(e){
+        {% comment %} $('#province').change(function(e){
             var province_id = $(this).val();
             inititalDistrictDropdownList(province_id);
 
@@ -134,7 +137,7 @@
 
         $('#commune').change(function(e){
             intialVillageDropdownList();
-        });
+        }); {% endcomment %}
 
         $('#coverage_by').change(function(e){
             var id = $(this).val();
@@ -165,7 +168,32 @@
                             console.log(response);
                             var data=response.data;
                             beneficiary_total_people = data.beneficiary_total_people==null?0: parseFloat(data.beneficiary_total_people);
-                            var beneficiary_percentage = (beneficiary_total_people*100)/total_population;
+                            var beneficiary_percentage =total_population==0?0: (beneficiary_total_people*100)/total_population;
+
+                            var province = response.province;
+                            var province_center_latlng=province.coordinate_center.split(',');
+
+                            var latlng={lat: parseFloat(province_center_latlng[0]), lng: parseFloat(province_center_latlng[1])};
+
+                            map = new google.maps.Map(document.getElementById('map'), {
+                                center: latlng,
+                                zoom: 9.5,
+                                mapTypeId: 'hybrid'
+                            });
+
+                            deleteMarkers();
+                            placeMarker(latlng, parseFloat(beneficiary_percentage).toFixed(2));
+
+                            new google.maps.Polygon({
+                                paths: buildCoordinatesArrayFromString(province.coordinate_border),
+                                strokeColor: '#0000FF',
+                                strokeOpacity: 0.9,
+                                strokeWeight: 1,
+                                fillColor: '#FF0000',
+                                fillOpacity: 0.5
+                            }).setMap(map);
+
+
                             // $('#table_coverage').append("<thead>"+
                             //     "<tr>"+
                             //         "<th>{% trans 'no' %}</th>"+
@@ -203,10 +231,10 @@
     function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
                 center: {
-                    lat: 11,
-                    lng: 104.888535
+                    lat: 12.7,
+                    lng: 104.883333
                 },
-                zoom: 7.5,
+                zoom: 7,
                 mapTypeId: 'hybrid'
             });
     }
@@ -236,7 +264,7 @@
                 }
             });
 
-        }
+    }
 
         function initialCommuneDropdownList(){
             var district_id=$('#district').val();
@@ -313,5 +341,53 @@
 
         }
         
-</script>
+        function placeMarker(location,marker_title) {
+            var marker = new google.maps.Marker({
+                position: location, 
+                map: map,
+                title : marker_title + " %"
+            });
+            markers.push(marker);
+        }
+        // Sets the map on all markers in the array.
+        function setMapOnAll(map) {
+            for (let i = 0; i < markers.length; i++) {
+                markers[i].setMap(map);
+            }
+        }
+
+        // Removes the markers from the map, but keeps them in the array.
+        function hideMarkers() {
+            setMapOnAll(null);
+        }
+
+        // Shows any markers currently in the array.
+        function showMarkers() {
+            setMapOnAll(map);
+        }
+
+        // Deletes all markers in the array by removing references to them.
+        function deleteMarkers() {
+            hideMarkers();
+            markers = [];
+        }
+
+        function buildCoordinatesArrayFromString(MultiGeometryCoordinates){
+            var finalData = [];
+            var grouped = MultiGeometryCoordinates.split(" ");
+    
+            grouped.forEach(function(item, i){
+                let a = item.trim().split(',');
+    
+                finalData.push({
+                    lng: parseFloat(a[0]),
+                    lat: parseFloat(a[1])
+                });
+            });
+    
+    
+            return finalData;
+        }
+
+    </script>
 {% endblock %}

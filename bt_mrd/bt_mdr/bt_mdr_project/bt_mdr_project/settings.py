@@ -105,7 +105,7 @@ DATABASES = {
     # }
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'br_mrd',
+        'NAME': 'bt_mrd',
         'USER': 'postgres',
         'PASSWORD': 'rootuser',
         'HOST': '127.0.0.1', 
@@ -232,5 +232,5 @@ EASY_MAPS_CENTER = (-41.3, 32)
 #CORS_ALLOWED_ORIGINS = ['*']
 CORS_ORIGIN_ALLOW_ALL = True
 
-#API_ENDPOINT = "http://127.0.0.1:8000/en/api/"
-API_ENDPOINT = "http://52.14.59.145/en/api/"
+API_ENDPOINT = "http://127.0.0.1:8000/en/api/"
+#API_ENDPOINT = "http://52.14.59.145/en/api/"
