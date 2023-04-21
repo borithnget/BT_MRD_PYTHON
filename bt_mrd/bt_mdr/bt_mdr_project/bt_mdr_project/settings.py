@@ -233,4 +233,4 @@ EASY_MAPS_CENTER = (-41.3, 32)
 CORS_ORIGIN_ALLOW_ALL = True
 
 #API_ENDPOINT = "http://127.0.0.1:8000/en/api/"
-API_ENDPOINT = "http://52.14.59.145/en/api/"
+API_ENDPOINT = "http://18.222.12.231//en/api/"

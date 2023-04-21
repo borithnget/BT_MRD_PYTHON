@@ -10,14 +10,14 @@ from qrcode import *
 from django.conf import settings
 from mdrapp import models
 # Create your views here.
-MAIN_URL = 'http://52.14.59.145/api/' 
-MAIN_URL_1 = 'http://52.14.59.145/en/'
+MAIN_URL = 'http://18.222.12.231/api/' 
+MAIN_URL_1 = 'http://18.222.12.231/en/'
 
 # MAIN_URL = 'http://127.0.0.1:8000/api/' 
 # MAIN_URL_1 = 'http://127.0.0.1:8000/en/'
 
 def index(request,id):
-    response = requests.get('http://52.14.59.145/en/api/watersupplytype/')
+    response = requests.get('http://18.222.12.231/en/api/watersupplytype/')
     watersupplytypelist = response.json()
     
     watersupplylist = []
@@ -56,7 +56,7 @@ def create_watersupply(request, id):
     
     if request.method == "POST":
         
-        url1 = "http://52.14.59.145/en/api/v2/watersupply"
+        url1 = "http://18.222.12.231/en/api/v2/watersupply"
 
         main_status = request.POST.get('main_status')
        
@@ -123,7 +123,7 @@ def create_watersupply(request, id):
         if 'status' in res_json:
 
             #water supply workflow
-            ws_workflow = "http://52.14.59.145/en/api/v2/watersupplyworkflow"
+            ws_workflow = "http://18.222.12.231/en/api/v2/watersupplyworkflow"
             payload_wsworkflow = {
                 "watersupply_id": res_json['data']['id'],
                 "status_id": main_status,
@@ -134,7 +134,7 @@ def create_watersupply(request, id):
 
             if id == 1:#Well
                 # print(request.POST['well_type'])
-                ws_well_url = "http://52.14.59.145/en/api/watersupplywell/"
+                ws_well_url = "http://18.222.12.231/en/api/watersupplywell/"
                 payload_well = {
                     "watersupply_id" : res_json['data']['id'],
                     "well_type" : request.POST['well_type'],
@@ -154,7 +154,7 @@ def create_watersupply(request, id):
                 well_res_json = response_well.json()                
                 # print(well_res_json)
                 if 'id' in well_res_json:
-                    ws_option_value_url = "http://52.14.59.145/en/api/watersupplywelloptionvalue/"
+                    ws_option_value_url = "http://18.222.12.231/en/api/watersupplywelloptionvalue/"
                     split_well_type_values = request.POST['well_type'].split(',')
                     # print(split_well_type_values)
                     for well_type_value in split_well_type_values:
@@ -167,7 +167,7 @@ def create_watersupply(request, id):
                         response_well_option_value = requests.post(ws_option_value_url,json=payload_well_option_value, headers=headers).json()
                         print(payload_well_option_value)
             elif id == 2:
-                ws_pipe_url = "http://52.14.59.145/en/api/watersupplypipe/"
+                ws_pipe_url = "http://18.222.12.231/en/api/watersupplypipe/"
                 payload_pipe = {
                     "watersupply_id" : res_json['data']['id'],
                     "is_active": True,
@@ -186,7 +186,7 @@ def create_watersupply(request, id):
                 response_pipe_json = requests.post(ws_pipe_url, json=payload_pipe, headers=headers).json()
                 # print(response_pipe_json)
                 if 'id' in response_pipe_json:
-                    ws_pipe_option_value_url = "http://52.14.59.145/en/api/watersupplypipoptionvalue/"
+                    ws_pipe_option_value_url = "http://18.222.12.231/en/api/watersupplypipoptionvalue/"
                     split_pipe_source_water_values = request.POST['source_type_of_water'].split(',')
                     for pipe_source_water in split_pipe_source_water_values:
                         payload_pipe_option_value = {
@@ -199,7 +199,7 @@ def create_watersupply(request, id):
                         # print(response_pipe_option_value)
 
             elif id == 3:
-                ws_kiosk_url = "http://52.14.59.145/en/api/watersupplykiosk/"
+                ws_kiosk_url = "http://18.222.12.231/en/api/watersupplykiosk/"
                 payload_kiosk = {               
                     "watersupply_id": res_json['data']['id'],
                     "is_active": True,
@@ -214,7 +214,7 @@ def create_watersupply(request, id):
                 
                 if 'id' in response_kiosk_json:
                     #print(response_kiosk_json)
-                    ws_kiosk_option_value_url = "http://52.14.59.145/en/api/watersupplykioskoptionvalue/"
+                    ws_kiosk_option_value_url = "http://18.222.12.231/en/api/watersupplykioskoptionvalue/"
                     #print(ws_kiosk_option_value_url)
                     split_kiosk_source_of_water_values = request.POST['source_type_of_water'].split(',')
                     #print(split_kiosk_source_of_water_values)
@@ -229,7 +229,7 @@ def create_watersupply(request, id):
                         response_kiosk_option_value = requests.post(ws_kiosk_option_value_url,json=payload_kiosk_option_value, headers=headers).json()
 
             elif id == 4:
-                ws_community_pond_url = "http://52.14.59.145/en/api/watersupplycommunitypond/"
+                ws_community_pond_url = "http://18.222.12.231/en/api/watersupplycommunitypond/"
                 payload_community_pond = {
                     "watersupply_id": res_json['data']['id'],
                     "is_active": True,
@@ -244,7 +244,7 @@ def create_watersupply(request, id):
                 }
                 response_community_pond_json = requests.post(ws_community_pond_url, json=payload_community_pond, headers=headers).json()
             elif id == 5:
-                ws_rain_water_harvesting_url = "http://52.14.59.145/en/api/watersupplyrainwaterharvesting/"
+                ws_rain_water_harvesting_url = "http://18.222.12.231/en/api/watersupplyrainwaterharvesting/"
                 payload_rain_water_harvesting = {
                     "watersupply_id": res_json['data']['id'],
                     "is_active": True,
@@ -259,7 +259,7 @@ def create_watersupply(request, id):
                 response_rain_water_harvesting_json = requests.post(ws_rain_water_harvesting_url, json=payload_rain_water_harvesting, headers=headers).json()
             
             elif id == 6:
-                ws_pipe_private_url = "http://52.14.59.145/en/api/watersupplypipeprivate/"
+                ws_pipe_private_url = "http://18.222.12.231/en/api/watersupplypipeprivate/"
                 payload_pipe_private = {
                     "watersupply_id" : res_json['data']['id'],
                     "is_active": True,
@@ -281,7 +281,7 @@ def create_watersupply(request, id):
                 response_pipe_private_json = requests.post(ws_pipe_private_url, json=payload_pipe_private, headers=headers).json()
                 # print(response_pipe_json)
                 if 'id' in response_pipe_private_json:
-                    ws_pipe_private_option_value_url = "http://52.14.59.145/en/api/watersupplypipeprivateoptionvalue/"
+                    ws_pipe_private_option_value_url = "http://18.222.12.231/en/api/watersupplypipeprivateoptionvalue/"
                     split_pipe_source_water_values = request.POST['source_type_of_water'].split(',')
                     for pipe_source_water in split_pipe_source_water_values:
                         payload_pipe_option_value = {
@@ -292,7 +292,7 @@ def create_watersupply(request, id):
                         }
                         response_pipe_option_value = requests.post(ws_pipe_private_option_value_url,json=payload_pipe_option_value, headers=headers).json()
             elif id == 7:
-                ws_air_water_url = "http://52.14.59.145/en/api/watersupplyairwater/"
+                ws_air_water_url = "http://18.222.12.231/en/api/watersupplyairwater/"
                 payload_air_water = {               
                     "watersupply_id": res_json['data']['id'],
                     "is_active": True,
@@ -307,7 +307,7 @@ def create_watersupply(request, id):
                 
                 if 'id' in response_air_water_json:
                     #print(response_kiosk_json)
-                    ws_air_water_option_value_url = "http://52.14.59.145/en/api/watersupplyairwateroptionvalue/"
+                    ws_air_water_option_value_url = "http://18.222.12.231/en/api/watersupplyairwateroptionvalue/"
                     #print(ws_kiosk_option_value_url)
                     split_air_water_source_of_water_values = request.POST['source_type_of_water'].split(',')
                     #print(split_kiosk_source_of_water_values)
@@ -327,7 +327,7 @@ def create_watersupply(request, id):
             img = make(detail_url)
             img_name = 'qr' + str(time.time()) + '.png'
             img.save(settings.MEDIA_ROOT + '/' + img_name)
-            ws_qr_code_url = "http://52.14.59.145/en/api/watersupplyqrcode/"
+            ws_qr_code_url = "http://18.222.12.231/en/api/watersupplyqrcode/"
             payload_qr_code = {
                 "watersupply_id": res_json['data']['id'],
                 "qr_code_image_name": img_name
@@ -335,7 +335,7 @@ def create_watersupply(request, id):
             response_ws_qrcode = requests.post(ws_qr_code_url, json=payload_qr_code, headers=headers).json()
 
             #if Water Quality Check
-            wqc_param_url = "http://52.14.59.145/en/api/watersupplyqualitycheckparameter/"
+            wqc_param_url = "http://18.222.12.231/en/api/watersupplyqualitycheckparameter/"
             wqc_param_ids = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]
        
             for param_id in wqc_param_ids:
@@ -402,7 +402,7 @@ def edit(request, id):
 
     if request.method == "POST":
         
-        url_update = "http://52.14.59.145/en/api/v2/watersupply/"+str(id)+"/update/"
+        url_update = "http://18.222.12.231/en/api/v2/watersupply/"+str(id)+"/update/"
 
         main_status = request.POST.get('main_status')
         
@@ -463,7 +463,7 @@ def edit(request, id):
         res_json  = response.json()
         if 'status' in res_json:
             #water supply workflow
-            ws_workflow = "http://52.14.59.145/en/api/v2/watersupplyworkflow"
+            ws_workflow = "http://18.222.12.231/en/api/v2/watersupplyworkflow"
             payload_wsworkflow = {
                 "watersupply_id": res_json['data']['id'],
                 "status_id": main_status ,
@@ -475,7 +475,7 @@ def edit(request, id):
             
             if int(request.POST['water_supply_type']) == 1:
                 # print(request.POST['water_supply_type'])
-                ws_well_url = "http://52.14.59.145/en/api/watersupplywell/"
+                ws_well_url = "http://18.222.12.231/en/api/watersupplywell/"
                 payload_well = {
                     "watersupply_id" : res_json['data']['id'],
                     "well_type" : request.POST['well_type'],
@@ -495,7 +495,7 @@ def edit(request, id):
                 well_res_json = response_well.json()                
                 # print(well_res_json)
                 if 'id' in well_res_json:
-                    ws_option_value_url = "http://52.14.59.145/en/api/watersupplywelloptionvalue/"
+                    ws_option_value_url = "http://18.222.12.231/en/api/watersupplywelloptionvalue/"
                     split_well_type_values = request.POST['well_type'].split(',')
                     print(split_well_type_values)
                     for well_type_value in split_well_type_values:
@@ -508,7 +508,7 @@ def edit(request, id):
                         response_well_option_value = requests.post(ws_option_value_url,json=payload_well_option_value, headers=headers).json()
                         print(payload_well_option_value)
             elif int(request.POST['water_supply_type']) == 2:
-                ws_pipe_url = "http://52.14.59.145/en/api/watersupplypipe/"
+                ws_pipe_url = "http://18.222.12.231/en/api/watersupplypipe/"
                 payload_pipe = {
                     "watersupply_id" : res_json['data']['id'],
                     "is_active": True,
@@ -527,7 +527,7 @@ def edit(request, id):
                 response_pipe_json = requests.post(ws_pipe_url, json=payload_pipe, headers=headers).json()
                 # print(response_pipe_json)
                 if 'id' in response_pipe_json:
-                    ws_pipe_option_value_url = "http://52.14.59.145/en/api/watersupplypipoptionvalue/"
+                    ws_pipe_option_value_url = "http://18.222.12.231/en/api/watersupplypipoptionvalue/"
                     split_pipe_source_water_values = request.POST['source_type_of_water'].split(',')
                     for pipe_source_water in split_pipe_source_water_values:
                         payload_pipe_option_value = {
@@ -539,7 +539,7 @@ def edit(request, id):
                         response_pipe_option_value = requests.post(ws_pipe_option_value_url,json=payload_pipe_option_value, headers=headers).json()
                         # print(response_pipe_option_value)
             elif int(request.POST['water_supply_type']) == 3:
-                ws_kiosk_url = "http://52.14.59.145/en/api/watersupplykiosk/"
+                ws_kiosk_url = "http://18.222.12.231/en/api/watersupplykiosk/"
                 payload_kiosk = {               
                     "watersupply_id": res_json['data']['id'],
                     "is_active": True,
@@ -554,7 +554,7 @@ def edit(request, id):
                 
                 if 'id' in response_kiosk_json:
                     #print(response_kiosk_json)
-                    ws_kiosk_option_value_url = "http://52.14.59.145/en/api/watersupplykioskoptionvalue/"
+                    ws_kiosk_option_value_url = "http://18.222.12.231/en/api/watersupplykioskoptionvalue/"
                     #print(ws_kiosk_option_value_url)
                     split_kiosk_source_of_water_values = request.POST['source_type_of_water'].split(',')
                     #print(split_kiosk_source_of_water_values)
@@ -569,7 +569,7 @@ def edit(request, id):
                         response_kiosk_option_value = requests.post(ws_kiosk_option_value_url,json=payload_kiosk_option_value, headers=headers).json()
 
             elif int(request.POST['water_supply_type']) == 4:
-                ws_community_pond_url = "http://52.14.59.145/en/api/watersupplycommunitypond/"
+                ws_community_pond_url = "http://18.222.12.231/en/api/watersupplycommunitypond/"
                 payload_community_pond = {
                     "watersupply_id": res_json['data']['id'],
                     "is_active": True,
@@ -584,7 +584,7 @@ def edit(request, id):
                 }
                 response_community_pond_json = requests.post(ws_community_pond_url, json=payload_community_pond, headers=headers).json()
             elif int(request.POST['water_supply_type']) == 5:
-                ws_rain_water_harvesting_url = "http://52.14.59.145/en/api/watersupplyrainwaterharvesting/"
+                ws_rain_water_harvesting_url = "http://18.222.12.231/en/api/watersupplyrainwaterharvesting/"
                 payload_rain_water_harvesting = {
                     "watersupply_id": res_json['data']['id'],
                     "is_active": True,
@@ -599,7 +599,7 @@ def edit(request, id):
                 response_rain_water_harvesting_json = requests.post(ws_rain_water_harvesting_url, json=payload_rain_water_harvesting, headers=headers).json()
             
             elif int(request.POST['water_supply_type']) == 6:
-                ws_pipe_private_url = "http://52.14.59.145/en/api/watersupplypipeprivate/"
+                ws_pipe_private_url = "http://18.222.12.231/en/api/watersupplypipeprivate/"
                 payload_pipe_private = {
                     "watersupply_id" : res_json['data']['id'],
                     "is_active": True,
@@ -621,7 +621,7 @@ def edit(request, id):
                 response_pipe_private_json = requests.post(ws_pipe_private_url, json=payload_pipe_private, headers=headers).json()
                 # print(response_pipe_json)
                 if 'id' in response_pipe_private_json:
-                    ws_pipe_private_option_value_url = "http://52.14.59.145/en/api/watersupplypipeprivateoptionvalue/"
+                    ws_pipe_private_option_value_url = "http://18.222.12.231/en/api/watersupplypipeprivateoptionvalue/"
                     split_pipe_source_water_values = request.POST['source_type_of_water'].split(',')
                     for pipe_source_water in split_pipe_source_water_values:
                         payload_pipe_option_value = {
@@ -632,7 +632,7 @@ def edit(request, id):
                         }
                         response_pipe_option_value = requests.post(ws_pipe_private_option_value_url,json=payload_pipe_option_value, headers=headers).json()
             elif int(request.POST['water_supply_type']) == 7:
-                ws_air_water_url = "http://52.14.59.145/en/api/watersupplyairwater/"
+                ws_air_water_url = "http://18.222.12.231/en/api/watersupplyairwater/"
                 payload_air_water = {               
                     "watersupply_id": res_json['data']['id'],
                     "is_active": True,
@@ -647,7 +647,7 @@ def edit(request, id):
                 
                 if 'id' in response_air_water_json:
                     #print(response_kiosk_json)
-                    ws_air_water_option_value_url = "http://52.14.59.145/en/api/watersupplyairwateroptionvalue/"
+                    ws_air_water_option_value_url = "http://18.222.12.231/en/api/watersupplyairwateroptionvalue/"
                     #print(ws_kiosk_option_value_url)
                     split_air_water_source_of_water_values = request.POST['source_type_of_water'].split(',')
                     #print(split_kiosk_source_of_water_values)
@@ -663,7 +663,7 @@ def edit(request, id):
 
 
             #if Water Quality Check
-            wqc_param_url = "http://52.14.59.145/en/api/watersupplyqualitycheckparameter/"
+            wqc_param_url = "http://18.222.12.231/en/api/watersupplyqualitycheckparameter/"
             wqc_param_ids = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]
        
             for param_id in wqc_param_ids:
@@ -741,7 +741,7 @@ def user_register(request):
     
     if request.method == "POST":
         
-        url = "http://52.14.59.145/en/api/register/"
+        url = "http://18.222.12.231/en/api/register/"
         is_data_entry = request.POST.get('is_data_entry', False)
         is_head_department= request.POST.get('is_head_department', False)
         is_provincial_department_head = request.POST.get('is_provincial_head_department', False)

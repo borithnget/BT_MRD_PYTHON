@@ -6,7 +6,7 @@ import requests
 from django.conf import settings
 # Create your views here.
 
-MAIN_URL = 'http://52.14.59.145/api/' 
+MAIN_URL = 'http://18.222.12.231/api/' 
 #MAIN_URL = 'http://127.0.0.1:8000/en/api/'
 
 def get_province_list(request):
@@ -118,7 +118,7 @@ def post_approval_watersupply_by_provicial_head_department(request):
         remark = request.GET.get('remark',NONE)
 
         #print(water_supply_id + " " + status_id)
-        ws_workflow = "http://52.14.59.145/en/api/v2/watersupplyworkflow"
+        ws_workflow = "http://18.222.12.231/en/api/v2/watersupplyworkflow"
         payload_wsworkflow = {
             "watersupply_id": water_supply_id,
             "status_id":int(status_id),
@@ -129,7 +129,7 @@ def post_approval_watersupply_by_provicial_head_department(request):
         response_ws_workflow = requests.post(ws_workflow, json=payload_wsworkflow, headers=headers).json()
 
         #Update Water Supply MainStatus
-        ws_update_url = "http://52.14.59.145/en/api/watersupply/"+ str (water_supply_id) +"/update/"
+        ws_update_url = "http://18.222.12.231/en/api/watersupply/"+ str (water_supply_id) +"/update/"
         ws_update_payload = {
             "id": water_supply_id,
             "main_status": status_id
@@ -145,7 +145,7 @@ def put_water_supply_delete(request):
         headers = {'Content-Type': 'application/json'}
         water_supply_id = request.GET.get('water_supply_id', NONE)
 
-        ws_delete_url = "http://52.14.59.145/en/api/v2/watersupply/" + str(water_supply_id) + "/delete/"
+        ws_delete_url = "http://18.222.12.231/en/api/v2/watersupply/" + str(water_supply_id) + "/delete/"
         ws_delete_payload = {
             "id": water_supply_id,
             "updated_by": int(request.session['user']['id']),
