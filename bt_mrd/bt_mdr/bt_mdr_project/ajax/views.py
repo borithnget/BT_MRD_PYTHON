@@ -9,6 +9,13 @@ from django.conf import settings
 MAIN_URL = 'http://18.222.12.231/api/' 
 #MAIN_URL = 'http://127.0.0.1:8000/en/api/'
 
+def get_country_km(request):
+    if request.method == "GET":
+        country_url = "http://127.0.0.1:8000/en/api/country/1/"     # settings.API_ENDPOINT +  
+        country = requests.get(country_url).json()
+        return JsonResponse({"country":country}, status=200)
+    return JsonResponse({}, status = 400)
+
 def get_province_list(request):
     if request.method == "GET":
         province_api_url = settings.API_ENDPOINT + "province/"
@@ -102,10 +109,13 @@ def get_beneficiary_total_people(request):
         ws_type = request.GET.get('ws_type', 0)
         province_id = request.GET.get('province_id', 0)
         url = settings.API_ENDPOINT + "watersupplybeneficiarytotalpeople/"+str(ws_type)+"/"+str(province_id)+"/"
-        print(url)
+        #print(url)
         list = requests.get(url).json()
+        
+        province_url = settings.API_ENDPOINT + "province/" + str(province_id)
+        province = requests.get(province_url).json()
 
-        return JsonResponse({'data': list}, status=200)
+        return JsonResponse({'data': list, 'province':province}, status=200)
 
     return JsonResponse({}, status=400) 
 

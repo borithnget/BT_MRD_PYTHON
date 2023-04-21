@@ -120,10 +120,16 @@ class DistrictSerializer(serializers.HyperlinkedModelSerializer):
   
 class ProvinceSerializer(serializers.HyperlinkedModelSerializer):
     provincedistrict = DistrictSerializer(many= True, read_only=True)
+    total_district = serializers.SerializerMethodField(read_only=True)
+    
+    def get_total_district(self, language):
+        return language.provincedistrict.count()
+
+    
     class Meta:
         model = Province
         # fields = '__all__'
-        fields = ('id' ,'code_en', 'code_kh', 'name_en', 'name_kh', 'total_population', 'description' ,'provincedistrict')
+        fields = ('id' ,'code_en', 'code_kh', 'name_en', 'name_kh', 'total_population', 'description', 'coordinate_border', 'coordinate_center',  'total_district' ,'provincedistrict')
 
 class ProvinceSerializer_v2(serializers.ModelSerializer):
     class Meta:

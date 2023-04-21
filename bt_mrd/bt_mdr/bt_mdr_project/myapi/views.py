@@ -635,9 +635,7 @@ class WaterSupplyByStatusMutipleViewSet(viewsets.ModelViewSet):
     filterset_class =  WaterSupplyMultipleFilterBackend
 
 class WaterSupplyGetBeneficiaryTotalPeople(generics.ListAPIView):
-    """
-    Retrieve list of transactions
-    """
+
     # authentication_classes = (TokenAuthentication,)
     # permission_classes = (IsAuthenticated,)
 
@@ -650,8 +648,7 @@ class WaterSupplyGetBeneficiaryTotalPeople(generics.ListAPIView):
             return WaterSupply.objects.all().order_by('-id').filter(is_active=True).filter(main_status=9).filter(province_id=province_id)
         else:
             return WaterSupply.objects.all().order_by('-id').filter(is_active=True).filter(main_status=9).filter(province_id=province_id).filter(water_supply_type_id=wstype)
-
-
+        
     # def get(self, request):
     #     """List Transactions"""
     #     transaction = WaterSupply.objects.all().order_by('-id').filter(is_active=True).filter(main_status=9)
@@ -664,8 +661,8 @@ class WaterSupplyGetBeneficiaryTotalPeople(generics.ListAPIView):
     
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
-    
         page = self.paginate_queryset(queryset)
+        
         if page is not None:
             serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
@@ -673,5 +670,9 @@ class WaterSupplyGetBeneficiaryTotalPeople(generics.ListAPIView):
         serializer = self.get_serializer(queryset, many=True)
         count = queryset.count()
         beneficiary_total_people = queryset.aggregate(sum=Sum('beneficiary_total_people'))['sum']
+        
         return Response({"count":count, "data":serializer.data, "beneficiary_total_people" : beneficiary_total_people})
         #return Response({"count":count})
+        
+class ProvinceListAPIView(generics.ListAPIView):
+    serializer_class = serializers.ProvinceSerializer_v2

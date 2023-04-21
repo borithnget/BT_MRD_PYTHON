@@ -2,6 +2,8 @@ from email.policy import default
 from unittest.util import _MAX_LENGTH
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+
+#import jsonfield
 # Create your models here.
 
 class Country(models.Model):
@@ -14,6 +16,8 @@ class Country(models.Model):
     total_population = models.DecimalField(max_digits=25, decimal_places=0, default=0, null=True, blank=True)
     coordinate_border = models.TextField(null=True, blank=True, default='')
     coordinate_center = models.CharField(max_length=255, default='', null=True, blank=True)
+    #the_json = jsonfield.JSONField()
+    form_data = models.JSONField(null=True, blank=True)
     
     def __str__(self):
         return '%s - %s' % (self.code_en, self.name_en)

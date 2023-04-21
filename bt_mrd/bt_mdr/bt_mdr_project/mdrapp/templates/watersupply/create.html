@@ -433,6 +433,7 @@
             google.maps.event.addListener(map, 'click', function(event) {
                 deleteMarkers();
                 placeMarker(event.latLng);
+                console.log(event.latLng);
                 var latlng = JSON.stringify(event.latLng.toJSON(), null, 2)
                 console.log(event.latLng.lat());
                 $('#utm_x').val(event.latLng.lat());
