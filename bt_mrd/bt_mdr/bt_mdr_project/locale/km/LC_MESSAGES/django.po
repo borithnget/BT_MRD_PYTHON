@@ -431,6 +431,11 @@ msgstr "ស្នើសុំកែប្រែ"
 msgid "menu_my_request"
 msgstr "ការស្នើសុំរបស់ខ្ញុំ"
 
+msgid "menu_report_water_supply_coverage_map"
+msgstr "របាយការណ៍គ្រប់ដណ្ដប់ប្រពន្ធ័ផ្គត់ផ្គង់ទឹកជាផែនទី"
+msgid "menu_report_well_sum_by_province"
+msgstr "របាយការណ៍អណ្ដូងគ្របដណ្ដប់លម្អិត"
+
 #START VALIDATION MESSAGE
 msgid "validation_district"
 msgstr "សូមបញ្ចូលស្រុក។"

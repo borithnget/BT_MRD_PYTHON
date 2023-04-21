@@ -113,6 +113,7 @@
 {% endblock %}
 {% block script %}
 <script src="https://maps.googleapis.com/maps/api/js?key={{key}}&callback=initMap&v=weekly&libraries=places" defer></script>
+<link href="{% static '/js/markerwithlabel.js' %}" rel="stylesheet"/>
 <script type="text/javascript">
     let map;
     let markers = [];
@@ -148,7 +149,57 @@
             var id=$('#coverage_by').val();
             var ws_type = $('#md_ws_type').val();
 
-            if(id==2){
+            if(id==1){
+                $.ajax({
+                    type: 'GET',
+                    url: "{% url 'ajax_get_country_km' %}",
+                    success: function (response) {                      
+                        if(!response["valid"]){
+                            
+                            var country = response.country;
+                            var cambodia_border_latlng=country.form_data.latlng;
+                            console.log(country);
+                            /*
+                            var data=response.data;
+                            beneficiary_total_people = data.beneficiary_total_people==null?0: parseFloat(data.beneficiary_total_people);
+                            var beneficiary_percentage =total_population==0?0: (beneficiary_total_people*100)/total_population;
+
+                            var province = response.province;
+                            */
+
+                            var country_center_latlng=country.coordinate_center.split(',');
+
+                            var latlng={lat: parseFloat(country_center_latlng[0]), lng: parseFloat(country_center_latlng[1])};
+
+                            map = new google.maps.Map(document.getElementById('map'), {
+                                center: latlng,
+                                zoom: 7,
+                                mapTypeId: 'roadmap'
+                            });
+
+                            deleteMarkers();
+                            placeMarker(latlng, parseFloat(0).toFixed(2));
+
+                            new google.maps.Polygon({
+                                paths: buildCoordinatesArrayFromString(cambodia_border_latlng),
+                                strokeColor: '#0000FF',
+                                strokeOpacity: 0.9,
+                                strokeWeight: 1,
+                                fillColor: '#FF0000',
+                                fillOpacity: 0.5
+                            }).setMap(map);
+
+                            
+  
+                                                
+                        }
+                    },
+                    error: function (response) {
+                        console.log(response)
+                    }
+                });
+            }
+            else if(id==2){
                 //Province Coverage
                 var province=$('#province').select2('data');
                 var total_population = $("#province option:selected").attr('data-population');
@@ -235,7 +286,7 @@
                     lng: 104.883333
                 },
                 zoom: 7,
-                mapTypeId: 'hybrid'
+                mapTypeId: 'roadmap'
             });
     }
     function inititalDistrictDropdownList(province_id){
@@ -342,11 +393,12 @@
         }
         
         function placeMarker(location,marker_title) {
-            var marker = new google.maps.Marker({
+           var marker = new google.maps.Marker({
                 position: location, 
                 map: map,
                 title : marker_title + " %"
-            });
+            }); 
+
             markers.push(marker);
         }
         // Sets the map on all markers in the array.

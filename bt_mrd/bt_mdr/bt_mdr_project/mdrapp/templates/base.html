@@ -173,9 +173,10 @@
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
             <!-- <a class="dropdown-item" href="{% url 'report_watersupply_map' %}">{% trans 'menu_water_supply_map' %}</a> -->
             <a class="dropdown-item" href="{% url 'reportwellbyprovince' %}">{% trans 'menu_report_well_by_province' %}</a>
+            <a class="dropdown-item" href="{% url 'report_well_sum_by_province' %}">{% trans 'menu_report_well_sum_by_province' %}</a>
             <a class="dropdown-item" href="{% url 'reportwatersupplycoverage' %}">{% trans 'menu_report_water_supply_coverage' %}</a>
             <a class="dropdown-item" href="{% url 'report_coverage_by_map' %}">{% trans 'menu_report_water_supply_coverage_map' %}</a>
-            <a class="dropdown-item" href="{% url 'report_well_sum_by_province' %}">{% trans 'menu_report_well_sum_by_province' %}</a>
+            
           </div>
         </li>
         {% endif %}

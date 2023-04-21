@@ -9,6 +9,13 @@ from django.conf import settings
 MAIN_URL = 'http://52.14.59.145/api/' 
 #MAIN_URL = 'http://127.0.0.1:8000/en/api/'
 
+def get_country_km(request):
+    if request.method == "GET":
+        country_url = "http://127.0.0.1:8000/en/api/country/1/"     # settings.API_ENDPOINT +  
+        country = requests.get(country_url).json()
+        return JsonResponse({"country":country}, status=200)
+    return JsonResponse({}, status = 400)
+
 def get_province_list(request):
     if request.method == "GET":
         province_api_url = settings.API_ENDPOINT + "province/"
