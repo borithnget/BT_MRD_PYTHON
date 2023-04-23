@@ -11,7 +11,7 @@ MAIN_URL = 'http://18.222.12.231/api/'
 
 def get_country_km(request):
     if request.method == "GET":
-        country_url = "http://127.0.0.1:8000/en/api/country/1/"     # settings.API_ENDPOINT +  
+        country_url = "http://18.222.12.231/en/api/country/1/"     # settings.API_ENDPOINT +  
         country = requests.get(country_url).json()
         return JsonResponse({"country":country}, status=200)
     return JsonResponse({}, status = 400)

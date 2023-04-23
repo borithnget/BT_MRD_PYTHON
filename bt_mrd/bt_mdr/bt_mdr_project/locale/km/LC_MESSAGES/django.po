@@ -435,10 +435,8 @@ msgstr "របាយការណ៍គ្រប់ដណ្ដប់ប្រព
 msgid "menu_report_well_sum_by_province"
 msgstr "របាយការណ៍អណ្ដូងគ្របដណ្ដប់លម្អិត"
 
-msgid "menu_report_water_supply_coverage_map"
-msgstr "របាយការណ៍គ្រប់ដណ្ដប់ប្រពន្ធ័ផ្គត់ផ្គង់ទឹកជាផែនទី"
-msgid "menu_report_well_sum_by_province"
-msgstr "របាយការណ៍អណ្ដូងគ្របដណ្ដប់លម្អិត"
+msgid "filtering"
+msgstr "កំពុងច្រោះរក"
 
 #START VALIDATION MESSAGE
 msgid "validation_district"

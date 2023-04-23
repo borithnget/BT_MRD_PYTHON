@@ -21,6 +21,7 @@
     </style>
 {% endblock %}
 {% block content %}
+{% get_current_language as CURRENT_LANGUAGE %}
 <div class="container-fluid">
     <div class="card" style="width: 100%;">
         <div class="card-header"><h4>{% trans 'menu_report_water_supply_coverage_map' %}</h4></div>
@@ -49,7 +50,11 @@
                                 <select class="form-control" id="md_ws_type">
                                     <option value="0">{% trans 'all' %}</option>
                                     {% for watersupplytype in watersupplytypelist %}
-                                        <option value="{{ watersupplytype.id }}">{{ watersupplytype.name_kh }}</option>
+                                        {% if CURRENT_LANGUAGE == 'en' %}
+                                            <option value="{{ watersupplytype.id }}">{{ watersupplytype.name_en }}</option>
+                                        {% else %}
+                                            <option value="{{ watersupplytype.id }}">{{ watersupplytype.name_kh }}</option>
+                                        {% endif %}
                                         
                                     {% endfor %}
                                 </select>
@@ -125,6 +130,8 @@
         $('.select2').select2();
         window.initMap = initMap;
 
+        // alert('{{ CURRENT_LANGUAGE }}');
+
         enablegeoinformation($('#coverage_by').val());
 
         {% comment %} $('#province').change(function(e){
@@ -156,7 +163,7 @@
                     url: "{% url 'ajax_get_country_km' %}",
                     success: function (response) {                      
                         if(!response["valid"]){
-                            
+                            console.log(response);
                             var country = response.country;
                             var cambodia_border_latlng=country.form_data.latlng;
                             console.log(country);
@@ -230,7 +237,7 @@
                             map = new google.maps.Map(document.getElementById('map'), {
                                 center: latlng,
                                 zoom: 9.5,
-                                mapTypeId: 'hybrid'
+                                mapTypeId: 'roadmap'
                             });
 
                             deleteMarkers();
@@ -374,6 +381,8 @@
             $('#commune_panel').hide();
             $('#village_panel').hide();
             coverage_by=parseFloat(coverage_by);
+
+            
 
             if(coverage_by==2){
                 $('#province_panel').show();

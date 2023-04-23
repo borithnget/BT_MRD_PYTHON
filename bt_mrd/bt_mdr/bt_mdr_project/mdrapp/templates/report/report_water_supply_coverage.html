@@ -18,30 +18,78 @@
         <div class="card-body">
             <form method="post" id="myForm">
                 {% csrf_token %}
-                <div class="form-group row">
-                                     
-                    <div class="col-md-2">
-                        <button type="button" class="btn btn-sm btn-outline-primary" id="btnGenerate"><i class="fa fa-filter" aria-hidden="true"></i></button>
-                        <button type="button" class="btn btn-sm btn-outline-primary" id="btnExportExcel"><i class="fa fa-file-excel-o" aria-hidden="true"></i></button>
-                        <button type="button" class="btn btn-sm btn-outline-primary" id="btnPDFExport" onclick="printDiv('report_panel','Water Supply Coverage')"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></button>
-                        <button type="button" class="btn btn-sm btn-outline-primary" id="btnExportCSV">{% trans 'CSV' %}</button>
-                    </div>
-                </div>
-                <div class="row" id="report_panel">
-                    <div class="table-responsive" id="table_panel">
-                        <table class="table table-bordered" id="table_coverage">
-                            
-                        </table>
-                    </div>
 
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group row">
+                            <label class="control-label col-md-4">{% trans 'CoverageBy' %}</label>
+                                <div class="col-md-8">
+                                    <select class="form-control" id="coverage_by">
+                                        <option value="0">{% trans 'select_option' %}</option>
+                                        <option value="1">{% trans 'Country' %}</option>
+                                        <option value="2">{% trans 'province' %}</option>
+                                    </select>
+                                </div>
+                        </div>
+            
+                        <div class="form-group row">
+                            <label class="control-label col-md-4">{% trans 'water_supply_type' %}</label>
+                            <div class="col-md-8">
+                                <select class="form-control" id="md_ws_type">
+                                    <option value="0">{% trans 'all' %}</option>
+                                    {% for watersupplytype in watersupplytypelist %}
+
+                                        {% if CURRENT_LANGUAGE == 'en' %}
+                                            <option value="{{ watersupplytype.id }}">{{ watersupplytype.name_en }}</option>
+                                        {% else %}
+                                            <option value="{{ watersupplytype.id }}">{{ watersupplytype.name_kh }}</option>
+                                        {% endif %}
+                                        
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+            
+                        <div class="form-group row" id="province_panel">
+                            <label class='col-md-4 control-label'>{% trans 'province' %} <strong class="text-danger">*</strong></label>
+                            <div class="col-md-8">
+                                <select class='form-control select2' id="province" name="province"​​ style="width: 100% !important;">
+                                    {% for province in provinces %}
+                                        <option value="{{ province.id }}" data-population="{{ province.total_population }}">{{ province.name_kh }}
+                                    {% endfor %}
+                                </select>
+                            </div>             
+                        </div>
+                        <div class="form-group row">
+                                     <div class="col-md-4"></div>
+                            <div class="col-md-8">
+                                <button type="button" class="btn btn-sm btn-outline-primary" id="btnGenerate"><i class="fa fa-filter" aria-hidden="true"></i>{% trans 'btn_filter' %}</button>
+                                <button type="button" class="btn btn-sm btn-outline-primary" id="btnExportExcel"><i class="fa fa-file-excel-o" aria-hidden="true"></i></button>
+                                <!-- <button type="button" class="btn btn-sm btn-outline-primary" id="btnPDFExport" onclick="printDiv('report_panel','Water Supply Coverage')"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></button> -->
+                                <button type="button" class="btn btn-sm btn-outline-primary" id="btnExportCSV">{% trans 'CSV' %}</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="row" id="report_panel">
+                            <div class="table-responsive" id="table_panel">
+                                <table class="table table-bordered" id="table_coverage">
+                                    
+                                </table>
+                            </div>       
+                        </div>
+                    </div>
                 </div>
+
+                
+                
             </form>
         </div>
     </div>
 </div>
 
 <!-- Modal Approve -->
-<div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<!-- <div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -90,6 +138,7 @@
                     </select>
                 </div>             
             </div>
+
             <div class="form-group row" id="district_panel">
                 <label class='col-md-4 control-label'>{% trans 'district' %} <strong class="text-danger">*</strong></label>
                 <div class="col-md-8">
@@ -122,7 +171,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 
 {% endblock %}
 
@@ -136,10 +185,12 @@
 
         $('.select2').select2();
 
-        $('#btnGenerate').click(function(e){
-            $('#filterModal').modal('show');
-            enablegeoinformation($('#coverage_by').val());
-        });
+        enablegeoinformation($('#coverage_by').val());
+
+        // $('#btnGenerate').click(function(e){
+        //     $('#filterModal').modal('show');
+        //     enablegeoinformation($('#coverage_by').val());
+        // });
 
         $('#province').change(function(e){
             var province_id = $(this).val();
@@ -160,20 +211,23 @@
             enablegeoinformation(id);
         });
 
-        $("#btn_modal_filter").click(function(e){
+        $("#btnGenerate").click(function(e){
 
-            $('#filterModal').modal('hide');
+            //$('#filterModal').modal('hide');
+
+            $('#btnGenerate').text("{% trans 'filtering' %}");
+            $('#btnGenerate').attr("disabled", true);
 
             var id=$('#coverage_by').val();
             var ws_type = $('#md_ws_type').val();
             var ws_type_text = $("#md_ws_type option:selected").text();
             
-
-
             $('#table_coverage').empty();
 
             //Country Coverage
             if(id==1){
+                $('#btnGenerate').text("{% trans 'btn_filter' %}");
+                $('#btnGenerate').attr("disabled", false);
                 $('#table_coverage').append("<thead>"+
                                 "<tr>"+
                                     "<th>RSW Types</th>"+
@@ -193,7 +247,7 @@
                 //Province Coverage
                 var province=$('#province').select2('data');
                 var total_population = $("#province option:selected").attr('data-population');
-                console.log(total_population);
+                //console.log(total_population);
 
                 $.ajax({
                     type: 'GET',
@@ -204,12 +258,15 @@
                         
                     },
                     success: function (response) {
+
+                        $('#btnGenerate').text("{% trans 'btn_filter' %}");
+                        $('#btnGenerate').attr("disabled", false);
                         
                         if(!response["valid"]){
                             console.log(response);
                             var data=response.data;
                             beneficiary_total_people = data.beneficiary_total_people==null?0: parseFloat(data.beneficiary_total_people);
-                            var beneficiary_percentage = (beneficiary_total_people*100)/total_population;
+                            var beneficiary_percentage =total_population==0?0: (beneficiary_total_people*100)/total_population;
                             $('#table_coverage').append("<thead>"+
                                 "<tr>"+
                                     "<th>{% trans 'no' %}</th>"+
