@@ -340,7 +340,7 @@
 
                         $('#table_coverage').append("<thead>"+
                             "<tr>"+
-                                "<th>{% trans 'no' %}</th>"+
+                                //"<th>{% trans 'no' %}</th>"+
                                 "<th>{% trans 'province' %}</th>"+
                                 "<th>{% trans 'water_supply_type' %}</th>"+
                                 "<th>{% trans 'beneficiary_total_people' %}</th>"+
@@ -373,7 +373,7 @@
                                             var beneficiary_percentage =total_population==0?0: (beneficiary_total_people*100)/total_population;
                                             $('#table_coverage tbody').append(
                                                 "<tr>"+
-                                                    "<td class='text-center'>"+Number(index+1)+"</td>"+
+                                                    //"<td class='text-center'>"+Number(index+1)+"</td>"+
                                                     "<td>"+item.name_kh+"</td>"+
                                                     "<td>"+ws_type_text+"</td>"+
                                                     "<td class='text-center'>"+beneficiary_total_people+"</td>"+
