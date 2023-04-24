@@ -174,7 +174,7 @@ class ChangePasswordView(generics.UpdateAPIView):
     
 class ProvinceViewSet(viewsets.ModelViewSet):
     model = Province
-    queryset = Province.objects.all().order_by('name_en').filter(is_active=True)
+    queryset = Province.objects.all().order_by('code_en').filter(is_active=True)
     serializer_class = ProvinceSerializer
     # filter_backends = [filters.SearchFilter]
     # search_fields = ['id']
@@ -183,28 +183,28 @@ class ProvinceViewSet(viewsets.ModelViewSet):
     
 class DistrictViewSet(viewsets.ModelViewSet):
     model = District
-    queryset = District.objects.all().order_by('name_en').filter(is_active=True)
+    queryset = District.objects.all().order_by('code_en').filter(is_active=True)
     serializer_class = DistrictSerializer
     filter_backends = [filters.SearchFilter]
     search_fields = ['province_id__id']
 
 class CommnueViewSet(viewsets.ModelViewSet):
     model = Commune
-    queryset = Commune.objects.all().order_by('name_en').filter(is_active=True)
+    queryset = Commune.objects.all().order_by('code_en').filter(is_active=True)
     serializer_class = CommuneSerializer
     filter_backends = [filters.SearchFilter]
     search_fields = ['district_id__id']
     
 class VillageViewSet(viewsets.ModelViewSet):
     model = Village
-    queryset = Village.objects.all().order_by('name_en').filter(is_active=True)
+    queryset = Village.objects.all().order_by('code_en').filter(is_active=True)
     serializer_class = VillageSerializer
     filter_backends = [filters.SearchFilter]
     search_fields = ['commune_id__id']
 
 class CountryViewSet(viewsets.ModelViewSet):
     model = Country
-    queryset = Country.objects.all().order_by('name_en').filter(is_active=True)
+    queryset = Country.objects.all().order_by('code_en').filter(is_active=True)
     serializer_class = serializers.CountrySerializer
     
 class WaterSupplyTypeViewSet(viewsets.ModelViewSet):
@@ -635,10 +635,6 @@ class WaterSupplyByStatusMutipleViewSet(viewsets.ModelViewSet):
     filterset_class =  WaterSupplyMultipleFilterBackend
 
 class WaterSupplyGetBeneficiaryTotalPeople(generics.ListAPIView):
-
-    # authentication_classes = (TokenAuthentication,)
-    # permission_classes = (IsAuthenticated,)
-
     serializer_class = serializers.WaterSupplySerializer
 
     def get_queryset(self):
@@ -673,6 +669,32 @@ class WaterSupplyGetBeneficiaryTotalPeople(generics.ListAPIView):
         
         return Response({"count":count, "data":serializer.data, "beneficiary_total_people" : beneficiary_total_people})
         #return Response({"count":count})
+        
+class WaterSupplyBeneficiaryTotalPeopleByCountry(generics.ListAPIView):
+    serializer_class = serializers.WaterSupplySerializer
+    
+    def get_queryset(self):
+        wstype = self.kwargs['type']
+        
+        if wstype == 0:
+            return WaterSupply.objects.all().order_by('-id').filter(is_active=True).filter(main_status=9)
+        else:
+            return WaterSupply.objects.all().order_by('-id').filter(is_active=True).filter(main_status=9).filter(water_supply_type_id=wstype)
+    
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+        
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+    
+        serializer = self.get_serializer(queryset, many=True)
+        count = queryset.count()
+        beneficiary_total_people = queryset.aggregate(sum=Sum('beneficiary_total_people'))['sum']
+        
+        return Response({"count":count, "beneficiary_total_people" : beneficiary_total_people})
+        
         
 class ProvinceListAPIView(generics.ListAPIView):
     serializer_class = serializers.ProvinceSerializer_v2

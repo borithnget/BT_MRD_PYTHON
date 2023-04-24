@@ -435,6 +435,9 @@ msgstr "Well Coverage Report"
 
 msgid "filtering"
 msgstr "Filtering"
+msgid "all_province_country"
+msgstr "All Province in Country"
+
 
 #START VALIDATION MESSAGE
 msgid "validation_district"

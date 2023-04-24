@@ -119,6 +119,20 @@ def get_beneficiary_total_people(request):
 
     return JsonResponse({}, status=400) 
 
+def get_beneficiary_people_by_country(request):
+    if request.method == "GET":
+        ws_type = request.GET.get('ws_type', 0)
+        url = settings.API_ENDPOINT + "watersupplybeneficiarytotalpeoplebycountry/"+str(ws_type)+"/"
+        #print(url)
+        list = requests.get(url).json()
+        
+        country_url = settings.API_ENDPOINT + "country/1/"
+        country = requests.get(country_url).json()
+
+        return JsonResponse({'data': list, 'country':country}, status=200)
+
+    return JsonResponse({}, status=400) 
+
 #START POST SECTION
 def post_approval_watersupply_by_provicial_head_department(request):
     if request.method == "GET":

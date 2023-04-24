@@ -28,6 +28,7 @@
                                         <option value="0">{% trans 'select_option' %}</option>
                                         <option value="1">{% trans 'Country' %}</option>
                                         <option value="2">{% trans 'province' %}</option>
+                                        <option value="3">{% trans 'all_province_country' %}</option>
                                     </select>
                                 </div>
                         </div>
@@ -226,9 +227,26 @@
 
             //Country Coverage
             if(id==1){
-                $('#btnGenerate').text("{% trans 'btn_filter' %}");
-                $('#btnGenerate').attr("disabled", false);
-                $('#table_coverage').append("<thead>"+
+
+                $.ajax({
+                    type: 'GET',
+                    url: "{% url 'ajax_get_beneficiary_people_by_country' %}",
+                    data: {
+                        "ws_type" : ws_type,
+                        
+                    },
+                    success: function (response) {
+
+                        $('#btnGenerate').text("{% trans 'btn_filter' %}");
+                        $('#btnGenerate').attr("disabled", false);
+                        
+                        if(!response["valid"]){
+                            console.log(response);  
+                            var data=response.data;
+                            total_population=response.country.total_population;
+                            beneficiary_total_people = data.beneficiary_total_people==null?0: parseFloat(data.beneficiary_total_people);
+                            var beneficiary_percentage =total_population==0?0: (beneficiary_total_people*100)/total_population;
+                            $('#table_coverage').append("<thead>"+
                                 "<tr>"+
                                     "<th>RSW Types</th>"+
                                     "<th>Beneficiary</th>"+
@@ -238,11 +256,24 @@
                             "</thead><tbody>"+
                                 "<tr>"+
                                     "<td>"+ws_type_text+"</td>"+
-                                    "<td></td>"+
-                                    "<td></td>"+
-                                    "<td></td>"+
+                                    "<td class='text-center'>"+beneficiary_total_people+"</td>"+
+                                    "<td class='text-center'>"+total_population+"</td>"+
+                                    "<td class='text-center'>"+ parseFloat(beneficiary_percentage).toFixed(2)+"</td>"+
                                     "</tr>"+
-                                "</tbody>");                            
+                                "</tbody>"
+                                ); 
+                            //alert("You cannot create a friend with same nick name");   
+                                                
+                        }
+                    },
+                    error: function (response) {
+                        console.log(response)
+                    }
+                })
+
+                
+
+                                       
             }else if (id==2){
                 //Province Coverage
                 var province=$('#province').select2('data');
@@ -297,19 +328,79 @@
                 });
                  
             
-                            }else if(id==3){
-                //District Coverage
-                $('#table_coverage').append("<thead>"+
-                                "<tr>"+
-                                    "<th>No.</th>"+
-                                    "<th>Province</th>"+
-                                    "<th>District</th>"+
-                                    "<th>RSW Types</th>"+
-                                    "<th>Beneficiary</th>"+
-                                    "<th>Total Population</th>"+
-                                    "<th>Percentage %</th>"+
-                                "</tr>"+
-                            "</thead><tbody></tbody>");
+            }else if(id==3){
+                //All Province Coverage
+                $.ajax({
+                    type: 'GET',
+                    url: "{% url 'ajax_get_province_list' %}",
+                    success: function (response) {
+
+                        $('#btnGenerate').text("{% trans 'btn_filter' %}");
+                        $('#btnGenerate').attr("disabled", false);
+
+                        $('#table_coverage').append("<thead>"+
+                            "<tr>"+
+                                "<th>{% trans 'no' %}</th>"+
+                                "<th>{% trans 'province' %}</th>"+
+                                "<th>{% trans 'water_supply_type' %}</th>"+
+                                "<th>{% trans 'beneficiary_total_people' %}</th>"+
+                                "<th>{% trans 'total_population' %}</th>"+
+                                "<th>{% trans 'percentage' %}</th>"+
+                            "</tr>"+
+                        "</thead><tbody></tbody>"); 
+                        
+                        if(!response["valid"]){
+                            console.log(response);
+                            var provinces = response.provinces;
+                            $.each(provinces,function(index,item){
+                                var province_id=item.id;
+
+                                $.ajax({
+                                    type: 'GET',
+                                    url: "{% url 'ajax_get_beneficiarytotalpeople' %}",
+                                    data: {
+                                        "ws_type" : ws_type,
+                                        "province_id":item.id,
+                                        
+                                    },
+                                    success: function (response1) {
+                                                    
+                                        if(!response1["valid"]){
+                                            console.log(response1);
+                                            var data=response1.data;
+                                            var total_population=item.total_population;
+                                            var beneficiary_total_people = data.beneficiary_total_people==null?0: parseFloat(data.beneficiary_total_people);
+                                            var beneficiary_percentage =total_population==0?0: (beneficiary_total_people*100)/total_population;
+                                            $('#table_coverage tbody').append(
+                                                "<tr>"+
+                                                    "<td class='text-center'>"+Number(index+1)+"</td>"+
+                                                    "<td>"+item.name_kh+"</td>"+
+                                                    "<td>"+ws_type_text+"</td>"+
+                                                    "<td class='text-center'>"+beneficiary_total_people+"</td>"+
+                                                    "<td class='text-center'>"+total_population+"</td>"+
+                                                    "<td class='text-center'>"+ parseFloat(beneficiary_percentage).toFixed(2)+"</td>"+
+                                                    "</tr>"
+                                                ); 
+                                            //alert("You cannot create a friend with same nick name");   
+                                                                
+                                        }
+                                    },
+                                    error: function (response) {
+                                        console.log(response)
+                                    }
+                                });
+
+                            })
+
+                            
+                                                
+                        }
+                    },
+                    error: function (response) {
+                        console.log(response)
+                    }
+                });
+                
             }else if (id==4){
                 //Commune
                 $('#table_coverage').append("<thead>"+
@@ -451,8 +542,9 @@
             if(coverage_by==2){
                 $('#province_panel').show();
             }else if (coverage_by==3){
-                $('#province_panel').show();
-                $('#district_panel').show();
+                /*$('#province_panel').show();
+                $('#district_panel').show(); 
+                */
             }else if(coverage_by==4){
                 $('#province_panel').show();
                 $('#district_panel').show();

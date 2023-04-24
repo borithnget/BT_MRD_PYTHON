@@ -70,5 +70,6 @@ urlpatterns = [
     path('watersupplycountpendingapproval/<int:status>/', views.WaterSupplyCountPendingApprovalGenericAPIVIew.as_view()),
     path('watersupplyfilterdaterange', views.WaterSupplyFilterDateRangeListView.as_view()),
     path('v2/watersupplyfilterdaterange/<str:sd>/<str:ed>/', views.WSByDateRange.as_view()),
-    path('watersupplybeneficiarytotalpeople/<int:type>/<int:province>/', views.WaterSupplyGetBeneficiaryTotalPeople.as_view())
+    path('watersupplybeneficiarytotalpeople/<int:type>/<int:province>/', views.WaterSupplyGetBeneficiaryTotalPeople.as_view()),
+    path('watersupplybeneficiarytotalpeoplebycountry/<int:type>/', views.WaterSupplyBeneficiaryTotalPeopleByCountry.as_view()),
 ]
