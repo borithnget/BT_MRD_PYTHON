@@ -51,7 +51,7 @@
                         <td>{{ ws.village_id.name_en}}</td>
                         <td>{{ ws.created_at }}</td>
                         <td>{{ ws.water_supply_type_id.name_kh }}</td>
-                        <td>{{ ws.created_by.username }}</td>
+                        <td>{{ ws.created_by.first_name }} {{ ws.created_by.last_name }}</td>
                         <td class="text-center"><span class="badge badge-warning">{{ ws.main_status.status_name_kh }}</span></td>
                         <td class="text-center">
                             <a href="{% url 'watersupply_detail' id=ws.id %}" class="btn btn-sm btn-outline-primary"><i class="fa fa-eye"></i> {% trans 'btn_view_detail' %}</a>

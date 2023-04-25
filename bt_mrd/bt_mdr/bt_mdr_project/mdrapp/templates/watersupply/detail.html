@@ -82,12 +82,12 @@
                     <div id="map_unit_utm_panel">
                         <div class="form-group row">
                             <label class='col-md-4 control-label'>{% trans 'utm_x' %} </label>
-                            <label class="col-md-8">: {{ watersupply.utm_x }}</label>  
+                            <label class="col-md-8" id="label_utm_x">: {{ watersupply.utm_x }}</label>  
                            
                         </div>
                         <div class="form-group row">
                             <label class='col-md-4 control-label'>{% trans 'utm_y' %} </label>
-                            <label class="col-md-8">: {{ watersupply.utm_y }}</label>  
+                            <label class="col-md-8" id="label_utm_y">: {{ watersupply.utm_y }}</label>  
                         </div>
                     </div>
                     {% elif watersupply.map_unit == 2 %}
@@ -892,6 +892,12 @@
     $(function(){
 
         window.initMap = initMap;
+
+        var map_unit_id = $('#map_unit').val();
+        if(map_unit_id==1){
+            $('#label_utm_x').text(': '+parseFloat('{{ watersupply.utm_x }}').toFixed(0));
+            $('#label_utm_y').text(': '+parseFloat('{{ watersupply.utm_y }}').toFixed(0));
+        }
 
         $('#btn_approve').click(function(e){
 
