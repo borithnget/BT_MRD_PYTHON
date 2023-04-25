@@ -156,17 +156,29 @@
         $('#btn_filter').click(function(){
             var id=$('#coverage_by').val();
             var ws_type = $('#md_ws_type').val();
+            $('#btn_filter').text("{% trans 'filtering' %}");
+            $('#btn_filter').attr("disabled", true);
 
             if(id==1){
                 $.ajax({
                     type: 'GET',
-                    url: "{% url '' %}",
+                    url: "{% url 'ajax_get_beneficiary_people_by_country' %}",
+                    data: {
+                        "ws_type" : ws_type,
+                        
+                    },
                     success: function (response) {                      
                         if(!response["valid"]){
+                            $('#btn_filter').text("{% trans 'btn_filter' %}");
+                            $('#btn_filter').attr("disabled", false);
                             console.log(response);
                             var country = response.country;
                             var cambodia_border_latlng=country.form_data.latlng;
                             console.log(country);
+                            var data=response.data;
+                            var total_population=response.country.total_population;
+                            beneficiary_total_people = data.beneficiary_total_people==null?0: parseFloat(data.beneficiary_total_people);
+                            var beneficiary_percentage =total_population==0?0: (beneficiary_total_people*100)/total_population;
                             /*
                             var data=response.data;
                             beneficiary_total_people = data.beneficiary_total_people==null?0: parseFloat(data.beneficiary_total_people);
@@ -186,7 +198,7 @@
                             });
 
                             deleteMarkers();
-                            placeMarker(latlng, parseFloat(0).toFixed(2));
+                            placeMarker(latlng, parseFloat(beneficiary_percentage).toFixed(2));
 
                             new google.maps.Polygon({
                                 paths: buildCoordinatesArrayFromString(cambodia_border_latlng),
@@ -222,7 +234,8 @@
                         
                     },
                     success: function (response) {
-                        
+                        $('#btn_filter').text("{% trans 'btn_filter' %}");
+                        $('#btn_filter').attr("disabled", false);
                         if(!response["valid"]){
                             console.log(response);
                             var data=response.data;
@@ -233,7 +246,7 @@
                             var province_center_latlng=province.coordinate_center.split(',');
 
                             var latlng={lat: parseFloat(province_center_latlng[0]), lng: parseFloat(province_center_latlng[1])};
-
+                            
                             map = new google.maps.Map(document.getElementById('map'), {
                                 center: latlng,
                                 zoom: 9.5,
@@ -242,7 +255,7 @@
 
                             deleteMarkers();
                             placeMarker(latlng, parseFloat(beneficiary_percentage).toFixed(2));
-
+                            //console.log(province.coordinate_border);
                             new google.maps.Polygon({
                                 paths: buildCoordinatesArrayFromString(province.coordinate_border),
                                 strokeColor: '#0000FF',
