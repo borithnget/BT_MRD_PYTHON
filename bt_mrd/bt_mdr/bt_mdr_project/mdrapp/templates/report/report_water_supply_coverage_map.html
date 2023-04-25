@@ -160,7 +160,7 @@
             if(id==1){
                 $.ajax({
                     type: 'GET',
-                    url: "{% url 'ajax_get_country_km' %}",
+                    url: "{% url '' %}",
                     success: function (response) {                      
                         if(!response["valid"]){
                             console.log(response);
