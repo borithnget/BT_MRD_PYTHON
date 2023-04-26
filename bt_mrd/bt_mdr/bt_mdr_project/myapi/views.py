@@ -329,6 +329,22 @@ class WaterSupplyDeleteAPIView(generics.RetrieveUpdateAPIView):
             'data': response.data
         }) 
 
+class UserDeactivateAPIView(generics.RetrieveUpdateAPIView):
+    permission_classes = (permissions.AllowAny, )
+    serializer_class = serializers.UserDeactivateSerializer
+    lookup_field = 'id'
+    
+    def get_object(self):
+        id = self.kwargs["id"]
+        return get_object_or_404(User, id=id)
+
+    def put(self, request, *args, **kwargs):
+        response = self.update(request, *args, **kwargs)
+        return Response({
+            'status': 200,
+            'message': 'Testimonials fetched',
+            'data': response.data
+        }) 
 
 class WaterSupplyWorkFlowCreateAPIVIew(generics.CreateAPIView):
     permission_classes = (AllowAny,)
@@ -494,7 +510,7 @@ class WSByDateRange(generics.RetrieveAPIView):
 
 class UserListViewSet(generics.ListAPIView):
     User = get_user_model()
-    queryset = User.objects.all()
+    queryset = User.objects.all().filter(is_active =True)
     serializer_class = UserDetailSerializer
     #permission_classes = [IsAuthenticated]
 
@@ -675,7 +691,6 @@ class WaterSupplyBeneficiaryTotalPeopleByCountry(generics.ListAPIView):
     
     def get_queryset(self):
         wstype = self.kwargs['type']
-        
         if wstype == 0:
             return WaterSupply.objects.all().order_by('-id').filter(is_active=True).filter(main_status=9)
         else:
@@ -695,6 +710,31 @@ class WaterSupplyBeneficiaryTotalPeopleByCountry(generics.ListAPIView):
         
         return Response({"count":count, "beneficiary_total_people" : beneficiary_total_people})
         
+class WaterSupplyFilterDateRangeProvinceCoverageListView(generics.ListAPIView):
+    serializer_class = serializers.WaterSupplySerializer
+    
+    def get_queryset(self):
+        date_from = self.kwargs['date_from']
+        province_id = self.kwargs['province']
+        if province_id == 0:
+            return WaterSupply.objects.all().order_by('-id').filter(is_active=True).filter(main_status=9).filter(water_supply_type_id=1)
+        else:
+            return WaterSupply.objects.all().order_by('-id').filter(is_active=True).filter(main_status=9).filter(province_id=province_id).filter(water_supply_type_id=1)
+    
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+        
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+    
+        serializer = self.get_serializer(queryset, many=True)
+        count = queryset.count()
+        beneficiary_total_people = queryset.aggregate(sum=Sum('beneficiary_total_people'))['sum']
+        
+        return Response({"count":count, "data":serializer.data, "beneficiary_total_people" : beneficiary_total_people})
+    
         
 class ProvinceListAPIView(generics.ListAPIView):
     serializer_class = serializers.ProvinceSerializer_v2

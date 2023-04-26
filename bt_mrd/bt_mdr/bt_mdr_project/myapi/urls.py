@@ -58,6 +58,7 @@ urlpatterns = [
     path('set-csrf/', views.set_csrf_token, name='Set-CSRF'),
     path('auth/login', views.SignInAPI.as_view()),
     path('auth/user', views.MainUser.as_view()),
+    path('user/<int:id>/deactivate/', views.UserDeactivateAPIView.as_view()),
     # path('v2/watersupply', views.WaterSupplyAPIView.as_view()),
     path('v2/watersupply', views.WaterSupplyCreateAPIView.as_view()),
     path('v2/watersupply/<int:id>/update/', views.WaterSupplyUpdateAPIView.as_view()),
@@ -70,6 +71,7 @@ urlpatterns = [
     path('watersupplycountpendingapproval/<int:status>/', views.WaterSupplyCountPendingApprovalGenericAPIVIew.as_view()),
     path('watersupplyfilterdaterange', views.WaterSupplyFilterDateRangeListView.as_view()),
     path('v2/watersupplyfilterdaterange/<str:sd>/<str:ed>/', views.WSByDateRange.as_view()),
+    path('watersupplyfilterdaterangeprvoincecoverage/<int:province>/<str:sd>/<str:ed>/', views.WaterSupplyFilterDateRangeProvinceCoverageListView.as_view()),
     path('watersupplybeneficiarytotalpeople/<int:type>/<int:province>/', views.WaterSupplyGetBeneficiaryTotalPeople.as_view()),
     path('watersupplybeneficiarytotalpeoplebycountry/<int:type>/', views.WaterSupplyBeneficiaryTotalPeopleByCountry.as_view()),
 ]

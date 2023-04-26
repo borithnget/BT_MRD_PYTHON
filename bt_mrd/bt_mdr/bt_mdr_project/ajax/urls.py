@@ -14,6 +14,7 @@ urlpatterns = [
     path('get/water_supply_delete', views.put_water_supply_delete, name= 'ajax_put_water_supply_delete'),
     path('get/watersupplyreportmap', views.get_water_supply_report_map, name='ajax_get_water_supply_report_map'),
     path('get/reportwatersupplywellbydaterange', views.report_supply_well_by_province, name="ajax_get_report_water_supply_well_daterange"),
+    path('get/reportwatersupplywellcoveragebydaterange', views.report_supply_well_coverage_by_province, name="ajax_get_report_supply_well_coverage_by_province"),
     path('get/beneficiarytotalpeople', views.get_beneficiary_total_people, name='ajax_get_beneficiarytotalpeople'),
     path('get/beneficiarypeoplebycountry', views.get_beneficiary_people_by_country, name = 'ajax_get_beneficiary_people_by_country'),
     path('get/reqeusthistory_by_phd', views.get_phd_requested_history, name="ajax_get_phd_requested_history"),

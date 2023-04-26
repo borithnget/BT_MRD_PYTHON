@@ -104,6 +104,21 @@ def report_supply_well_by_province(request):
         return JsonResponse({'data': list}, status=200)
     return JsonResponse({}, status=400) 
 
+def report_supply_well_coverage_by_province(request):
+    if request.method == "GET":
+        date_start = request.GET.get('date_start', NONE)
+        date_end = request.GET.get('date_end', NONE)
+        province = request.GET.get('province', '')
+        url = settings.API_ENDPOINT + "watersupplyfilterdaterange?created_at="+str(date_start)+"&crated_at_1="+str(date_end)+"&province_id="+province
+        # print(url)
+        list = requests.get(url).json()
+        
+        province_url = settings.API_ENDPOINT + "province/" + str(province)
+        province = requests.get(province_url).json()
+        
+        return JsonResponse({'data': list, 'province': province}, status=200)
+    return JsonResponse({}, status=400) 
+
 def get_beneficiary_total_people(request):
     if request.method == "GET":
         ws_type = request.GET.get('ws_type', 0)

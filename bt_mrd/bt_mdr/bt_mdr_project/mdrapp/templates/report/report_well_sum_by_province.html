@@ -18,6 +18,9 @@
     .gm-style-iw-d div{
         color: black !important;
     }
+    .datepicker.dropdown-menu {
+        z-index: 9999 !important;
+    }
     </style>
 {% endblock %}
 {% block content %}
@@ -33,7 +36,7 @@
                     <div class="col-md-2">
                         <div class="input-group date" data-provide="datepicker">
                             <input type="text" class="form-control" name="datefrom" id="datefrom">
-                            <div class="input-group-addon">
+                            <div class="input-group-addon" style="border:1px solid #ced4da;padding:8px !important;">
                                 <span class="fa fa-calendar"></span>
                             </div>
                         </div>
@@ -42,7 +45,7 @@
                     <div class="col-md-2">
                         <div class="input-group date" data-provide="datepicker">
                             <input type="text" class="form-control" name="dateto" id="dateto">
-                            <div class="input-group-addon">
+                            <div class="input-group-addon" style="border:1px solid #ced4da;padding:8px !important;">
                                 <span class="fa fa-calendar"></span>
                             </div>
                         </div>
@@ -50,7 +53,7 @@
                     <label class="control-label col-md-1">{% trans 'province' %}</label>
                     <div class="col-md-2">
                         <select class='form-control select2' id="province" name="province select2"​​ style="width: 100% !important;">
-                            <option value="">{% trans 'all' %}</option>
+                            <option value="0">{% trans 'all' %}</option>
                             {% for province in provinces %}
                                 <option value="{{ province.id }}">{{ province.name_kh }}
                             {% endfor %}
@@ -67,11 +70,9 @@
                 <div class="table-responsive" id="report_panel">
                     <table class="table table-bordered" id="table1">
                         <thead>
-                            <tr><th>{% trans 'No' %} </th>
+                            <tr>
+                                {% comment %} <th>{% trans 'No' %} </th> {% endcomment %}
                                 <th>{% trans 'province' %}</th>
-                                <th>{% trans 'no_district'%}</th>
-                                <th>{% trans 'no_commune' %}</th>
-                                <th>{% trans 'no_village' %}</th>
                                 <th>{% trans 'no_motor' %}</th>
                                 <th>{% trans 'no_afridev' %}</th>
                                 <th>{% trans 'no_markII' %}</th>
@@ -79,7 +80,6 @@
                                 <th>{% trans 'no_no6' %}</th>
                                 <th>{% trans 'no_combinewell' %}</th>
                                 <th>{% trans 'no_dugwell' %}</th>
-                                <th>{% trans 'no_hhuse' %}</th>
                                 <th>{% trans 'no_user' %}</th>
                                 <th>{% trans 'percentage_of_user' %}</th>                               
                             </tr>
@@ -96,6 +96,7 @@
 
 {% endblock %}
 {% block script %}
+<script src="//cdn.rawgit.com/rainabba/jquery-table2excel/1.1.0/dist/jquery.table2excel.min.js"></script>
 <script type="text/javascript">
     $(function(){
         $('.select2').select2();
@@ -105,6 +106,272 @@
             "setDate": new Date(),
             "autoclose": true
         }).datepicker("setDate",'now');
+
+        $('#btnExportExcel').click(function(){
+            $("#table1").table2excel({
+                exclude: ".noExport",
+                filename: "name-of-the-file",
+            });
+        });
+
+        $('#btnExportCSV').click(function(){
+            var html = document.querySelector("table").outerHTML;
+            export_table_to_csv(html, "table.csv");
+        })
+
+        $('#btnGenerate').click(function(e){
+            $('#btnGenerate').attr("disabled", true);
+            var sd =new Date($('#datefrom').val());
+            var ed = new Date($('#dateto').val());
+            ed.setDate(ed.getDate()+1); 
+            var new_sd= (sd.getMonth()+1)+"%2F"+sd.getDate()+"%2F"+sd.getFullYear();   
+            var new_ed= (ed.getMonth()+1)+"%2F"+ed.getDate()+"%2F"+ed.getFullYear();
+            console.log(new_sd + " "+new_ed);
+            var province=$('#province').val();
+            if(new Date($('#dateto').val()) <  sd)
+            {//compare end <=, not >=
+                //your code here
+                alert("{% trans 'validation_date_range' %}");
+                return;
+            }
+            $('#table1 tbody').empty();
+
+            if(province==0){
+                $.ajax({
+                    type: 'GET',
+                    url:"{% url 'ajax_get_province_list' %}",
+                    success:function(response){
+                        
+                        if(!response["valid"]){
+                            console.log(response);
+                            $.each(response.provinces,function(index_province,item_province){
+                                $.ajax({
+                                    type: 'GET',
+                                    url: "{% url 'ajax_get_report_supply_well_coverage_by_province' %}",
+                                    data: {
+                                        "date_start":new_sd,
+                                        "date_end":new_ed,
+                                        "province":item_province.id,
+                                     },
+                                    success: function (response) {
+                                        
+                                        if(!response["valid"]){
+                                            //console.log(response);
+                                            if(response.data.length==0){
+                                                $('#table1 tbody').append("<tr>"+
+                                                    "<td>"+item_province.name_kh+"</td>"+
+                                                    "<td class='text-center'>0</td>"+
+                                                    "<td class='text-center'>0</td>"+
+                                                    "<td class='text-center'>0</td>"+
+                                                    "<td class='text-center'>0</td>"+
+                                                    "<td class='text-center'>0</td>"+
+                                                    "<td class='text-center'>0</td>"+
+                                                    "<td class='text-center'>0</td>"+
+                                                    "<td class='text-center'>0</td>"+
+                                                    "<td class='text-center'>0.00</td>"+
+                                                    "</tr>"
+                                                );
+                                            }else{
+                                                var beneficiary_total_people=0;
+                                                var no_motor=0;//1
+                                                var no_afridev=0;//2
+                                                var no_markII=0;//3
+                                                var no_markIII=0;//4
+                                                var no_no6=0;//5
+                                                var no_dugwell=0;//6
+                                                var no_combinewell=0;//7
+                    
+                                                $.each(response.data,function(index,item){
+                                                    //console.log(item);
+                                                    beneficiary_total_people=beneficiary_total_people+item.beneficiary_total_people;
+                                                    $.each(item.watersupplywell_watersupply,function(index_well,item_well){
+                                                        //console.log(item_well);
+                                                        $.each(item_well.well_type_obj,function(index_welltype,item_welltype){
+                                                            console.log(item_welltype);
+                                                            if(item_welltype.value_id==1)
+                                                                no_motor++;
+                                                            else if(item_welltype.value_id==2)
+                                                                no_afridev++;
+                                                            else if(item_welltype.value_id==3)
+                                                                no_markII++
+                                                            else if(item_welltype.value_id==4)
+                                                                no_markIII++;
+                                                            else if(item_welltype.value_id==5)
+                                                                no_no6++;
+                                                            else if(item_welltype.value_id==6)
+                                                                no_dugwell++;
+                                                            else if(item_welltype.value_id==7)
+                                                                no_combinewell++;
+                                                        });
+                                                    });
+                                                });
+                    
+                                                var province = response.province;
+                    
+                                                var total_population=province.total_population;
+                                                //beneficiary_total_people = data.beneficiary_total_people==null?0: parseFloat(data.beneficiary_total_people);
+                                                var beneficiary_percentage =total_population==0?0: (beneficiary_total_people*100)/total_population;
+                    
+                                                $('#table1 tbody').append("<tr>"+
+                                                    "<td>"+province.name_kh+"</td>"+
+                                                    "<td class='text-center'>"+no_motor+"</td>"+
+                                                    "<td class='text-center'>"+no_afridev+"</td>"+
+                                                    "<td class='text-center'>"+no_markII+"</td>"+
+                                                    "<td class='text-center'>"+no_markIII+"</td>"+
+                                                    "<td class='text-center'>"+no_no6+"</td>"+
+                                                    "<td class='text-center'>"+no_combinewell+"</td>"+
+                                                    "<td class='text-center'>"+no_dugwell+"</td>"+
+                                                    "<td class='text-center'>"+beneficiary_total_people+"</td>"+
+                                                    "<td class='text-center'>" + parseFloat(beneficiary_percentage).toFixed(2) +"</td>"+
+                                                    "</tr>"
+                                                );
+                                            }
+                    
+                                            //alert("You cannot create a friend with same nick name");   
+                                                                
+                                        }
+                                        $('#btnGenerate').attr("disabled", false);
+                                    },
+                                    error: function (response) {
+                                        console.log(response)
+                                    }
+                                });
+                            });
+                        }
+                    },
+                    error: function (response) {
+                        console.log(response)
+                    }
+                });
+            }else{
+                $.ajax({
+                    type: 'GET',
+                    url: "{% url 'ajax_get_report_supply_well_coverage_by_province' %}",
+                    data: {
+                        "date_start":new_sd,
+                        "date_end":new_ed,
+                        "province":province
+                     },
+                    success: function (response) {
+                        $('#btnGenerate').attr("disabled", false);
+                        if(!response["valid"]){
+                            //console.log(response);
+                            if(response.data.length==0){
+                                $('#table1 tbody').append("<tr><td class='text-center' colspan='10'>{% trans 'NoData' %}</td></tr>")
+                            }else{
+                                var beneficiary_total_people=0;
+                                var no_motor=0;//1
+                                var no_afridev=0;//2
+                                var no_markII=0;//3
+                                var no_markIII=0;//4
+                                var no_no6=0;//5
+                                var no_dugwell=0;//6
+                                var no_combinewell=0;//7
+    
+                                $.each(response.data,function(index,item){
+                                    //console.log(item);
+                                    beneficiary_total_people=beneficiary_total_people+item.beneficiary_total_people;
+                                    $.each(item.watersupplywell_watersupply,function(index_well,item_well){
+                                        //console.log(item_well);
+                                        $.each(item_well.well_type_obj,function(index_welltype,item_welltype){
+                                            console.log(item_welltype);
+                                            if(item_welltype.value_id==1)
+                                                no_motor++;
+                                            else if(item_welltype.value_id==2)
+                                                no_afridev++;
+                                            else if(item_welltype.value_id==3)
+                                                no_markII++
+                                            else if(item_welltype.value_id==4)
+                                                no_markIII++;
+                                            else if(item_welltype.value_id==5)
+                                                no_no6++;
+                                            else if(item_welltype.value_id==6)
+                                                no_dugwell++;
+                                            else if(item_welltype.value_id==7)
+                                                no_combinewell++;
+                                        });
+                                    });
+                                });
+    
+                                var province = response.province;
+    
+                                var total_population=province.total_population;
+                                //beneficiary_total_people = data.beneficiary_total_people==null?0: parseFloat(data.beneficiary_total_people);
+                                var beneficiary_percentage =total_population==0?0: (beneficiary_total_people*100)/total_population;
+    
+                                $('#table1 tbody').append("<tr>"+
+                                    "<td>"+province.name_kh+"</td>"+
+                                    "<td class='text-center'>"+no_motor+"</td>"+
+                                    "<td class='text-center'>"+no_afridev+"</td>"+
+                                    "<td class='text-center'>"+no_markII+"</td>"+
+                                    "<td class='text-center'>"+no_markIII+"</td>"+
+                                    "<td class='text-center'>"+no_no6+"</td>"+
+                                    "<td class='text-center'>"+no_combinewell+"</td>"+
+                                    "<td class='text-center'>"+no_dugwell+"</td>"+
+                                    "<td class='text-center'>"+beneficiary_total_people+"</td>"+
+                                    "<td class='text-center'>" + parseFloat(beneficiary_percentage).toFixed(2) +"</td>"+
+                                    "</tr>"
+                                );
+                            }
+    
+                            //alert("You cannot create a friend with same nick name");   
+                                                
+                        }
+                    },
+                    error: function (response) {
+                        console.log(response)
+                    }
+                });
+    
+            }
+
+
+            
+        });
+
     });
+
+    //EXPORT TO CSV
+    function download_csv(csv, filename) {
+        var csvFile;
+        var downloadLink;
+        var BOM = "\uFEFF"; 
+        // CSV FILE
+        csvFile = new Blob([BOM+csv], {type: "text/csv;charset=utf-8;"});
+        // Download link
+        downloadLink = document.createElement("a");
+        // File name
+        downloadLink.download = filename;
+
+        // We have to create a link to the file
+        downloadLink.href = window.URL.createObjectURL(csvFile);
+
+        // Make sure that the link is not displayed
+        downloadLink.style.display = "none";
+
+        // Add the link to your DOM
+        document.body.appendChild(downloadLink);
+
+        // Lanzamos
+        downloadLink.click();
+    }
+
+    function export_table_to_csv(html, filename) {
+        var csv = [];
+        var rows = document.querySelectorAll("table tr");
+        
+        for (var i = 0; i < rows.length; i++) {
+            var row = [], cols = rows[i].querySelectorAll("td, th");
+            
+            for (var j = 0; j < cols.length; j++) 
+                row.push(cols[j].innerText);
+            
+            csv.push(row.join(","));		
+        }
+
+        // Download CSV
+        download_csv(csv.join("\n"), filename);
+    }
+
 </script>
 {% endblock %}

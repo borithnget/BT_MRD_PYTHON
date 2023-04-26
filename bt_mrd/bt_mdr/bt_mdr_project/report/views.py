@@ -20,4 +20,11 @@ def report_rural_water_supply_coverage_map(request):
                 })
 
 def report_well_sum_by_province(request):
-    return render(request, 'report/report_well_sum_by_province.html')
+    if request.session['user']['is_data_entry']:
+        province_url = settings.API_ENDPOINT + 'province/?id=' + str(request.session['user']['data_entry_province_id'])
+        #print(request.user.data_entry_province_id.id)
+    else:
+        province_url = settings.API_ENDPOINT + 'province'
+    provinces = requests.get(province_url).json()
+    return render(request, 'report/report_well_sum_by_province.html',
+                  { "provinces" : provinces })
