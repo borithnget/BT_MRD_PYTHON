@@ -12,6 +12,7 @@
 {% endblock %}
 
 {% block content %}
+    {% get_current_language as CURRENT_LANGUAGE %}
 
     <!-- {% for watersupplytype in watersupplytypes %}
         <a href="{% url 'watersupply_create' id=watersupplytype.id %}">{{ watersupplytype.name_en }}</a> |
@@ -44,7 +45,7 @@
                 {% for ws in watersupplylist %}
                 {% if ws %}
                     <tr>
-                        <td>{{ ws.watersupply_id.water_supply_code }}</td>
+                        <td>{{ ws.water_supply_code }}</td>
                         <td>{{ ws.province_id.name_en}}</td>
                         <td>{{ ws.district_id.name_en}}</td>
                         <td>{{ ws.commune_id.name_en}}</td>
@@ -52,7 +53,11 @@
                         <td>{{ ws.created_at }}</td>
                         <td>{{ ws.water_supply_type_id.name_kh }}</td>
                         <td>{{ ws.created_by.first_name }} {{ ws.created_by.last_name }}</td>
+                        {% if CURRENT_LANGUAGE == 'en' %}
+                        <td class="text-center"><span class="badge badge-warning">{{ ws.main_status.status_name }}</span></td>
+                        {% else %}
                         <td class="text-center"><span class="badge badge-warning">{{ ws.main_status.status_name_kh }}</span></td>
+                        {% endif %}
                         <td class="text-center">
                             <a href="{% url 'watersupply_detail' id=ws.id %}" class="btn btn-sm btn-outline-primary"><i class="fa fa-eye"></i> {% trans 'btn_view_detail' %}</a>
                         </td>
@@ -71,7 +76,9 @@
 <script type="text/javascript">
     $(function(){
         $(document).ready(function () {
-            $('#table_1').DataTable({});
+            $('#table_1').DataTable({
+                order: [[5, 'desc']],
+            });
         });
     });
 

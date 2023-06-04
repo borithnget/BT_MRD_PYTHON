@@ -1,8 +1,15 @@
 {% extends 'base.html' %}
 {% load i18n %}
+{% get_current_language as CURRENT_LANGUAGE %}
 
 {% block first_breadcrums %}
-<li class="breadcrumb-item">{{ watersupply.water_supply_type_id.name_en }}</li>
+<li class="breadcrumb-item">
+    {% if CURRENT_LANGUAGE == 'en' %}
+    {{ watersupply.water_supply_type_id.name_en }}
+    {% else %}
+    {{ watersupply.water_supply_type_id.name_kh }}
+    {% endif %}
+</li>
 <li class="breadcrumb-item active" aria-current="page">{% trans 'view_detail_title' %}</li>
 {% endblock %}
 
@@ -32,7 +39,7 @@
                 <a class="btn btn-primary btn-sm" href="{% url 'watersupply_edit' id=watersupply.id %}"><i class="fa fa-edit"></i> {% trans 'btn_edit' %}</a>
                 <button class="btn btn-primary btn-sm" type="button" id="btn_submit_water_supply"><i class="fa fa-save"></i> {% trans 'btn_submit' %}</button>
                 <button class="btn btn-primary btn-sm" type="button" id="btn_delete_water_supply"><i class="fa fa-trash"></i> {% trans 'btn_delete' %}</button>
-                {% endif %}
+            {% endif %}
             <button type="button" class="btn btn-secondary btn-sm" id="btn_view_workflow_history"><i class="fa fa-history" aria-hidden="true"></i> {% trans 'btn_view_workflow' %}</button>
             <!-- <button type="button" class="btn btn-secondary btn-sm">Middle</button> -->
           </div>
@@ -44,12 +51,18 @@
                 <div class="col-md-6">
                     <div class="form-group row">
                         <label class="control-label col-md-4 col-sm-4 col-xs-4">{% trans 'water_supply_type' %}</label>              
-                        <label class="col-md-8 col-sm-8 col-xs-8">: {{ watersupply.water_supply_type_id.name_en }}</label>                     
+                        <label class="col-md-8 col-sm-8 col-xs-8">:
+                            {% if CURRENT_LANGUAGE == 'en' %}
+                             {{ watersupply.water_supply_type_id.name_en }}
+                             {% else %}
+                             {{ watersupply.water_supply_type_id.name_kh }}
+                             {% endif %}
+                            </label>                     
                     </div>
-                    <div class="form-group row">
+                    <!-- <div class="form-group row">
                         <label class="control-label col-md-4">{% trans 'water_supply_code' %}</label>              
                         <label class="col-md-8">: {{ watersupply.water_supply_code }}</label>
-                    </div>
+                    </div> -->
                     <div class="form-group row">
                         <label class="control-label col-md-4">{% trans 'province' %} </label>
                         <label class="col-md-8">: {{ watersupply.province_id.name_en }}</label>                      
@@ -152,7 +165,7 @@
                 <label class='col-md-2 control-label'>{% trans 'total_family' %} </label>
                 <label class="col-md-4">: {{ watersupply.total_family }}</label>
                 <label class='col-md-2 control-label'>{% trans 'water_supply_code' %} </label>
-                <label class="col-md-4">: {{ watersupply.water_supply_code }}</label>
+                <label class="col-md-4">: <b>{{ watersupply.water_supply_code }}</b></label>
             </div>
                     
             <div class="form-group row">
@@ -228,7 +241,7 @@
                     {% endfor %}
                 </div>
                 
-                <label class="control-label col-md-2">{% trans 'well_type' %}</label>
+                <label class="control-label col-md-2">{% trans 'well_height' %}</label>
                 <label class="col-md-4">: {{ watersupply.watersupplywell_watersupply.0.well_height }} </label>
             </div>
             <div class="form-group row">

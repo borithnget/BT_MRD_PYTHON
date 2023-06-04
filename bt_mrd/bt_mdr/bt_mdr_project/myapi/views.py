@@ -1,6 +1,7 @@
 import imp
 import json
 from pickle import NONE
+import time
 from urllib import response
 from django.shortcuts import render, get_object_or_404
 from rest_framework import viewsets, generics, permissions, filters, status
@@ -12,6 +13,7 @@ from django.http.response import JsonResponse
 from rest_framework.views import APIView
 
 from mdrapp.models import Commune, Province, District, Village, WaterSupplyType, WaterSupplyOption, WaterSupplyOptionValue, WaterSupplyTypeOption, WaterSupply, WaterSupplyWell, WaterSupplyPipe, WaterSupplyKiosk, WaterSupplyCommunityPond, WaterSupplyRainWaterHarvesting, Status, WaterSupplyWorkFlow, UserDetail, WaterSupplyQRCode, WaterSupplyHistory, WaterSupplyPipeOptionValue, WaterQualityCheckedParamater, WaterSupplyQuanlityCheckParamater, WaterSupplyKioskOptionValue, WaterSupplyPipePrivate, WaterSupplyPipePrivateOptionValue, WaterSupplyAirWater, WaterSupplyAirWaterOptionValue, User, Country
+from mdrapp.views import MAIN_URL_1
 from .serializers import CommuneSerializer, HeroSerializer, UserSerializer, RegisterSerializer, ProvinceSerializer, DistrictSerializer, VillageSerializer, WaterSupplyOptionSerializer, WaterSupplyOptionValueSerializer, WaterSupplyTypeSerializer, WaterSupplySerializer, UserDetailSerializer, StatusSerializer, WaterSupplyWorkflowSerializer,  WaterSupplyWellOptionValue, UserRoleDetailSerializer, WaterSupplyQRCodeSerializer, WaterSupplyUpdateMainStatusSerializer
 from .models import Hero
 from django.contrib.auth import login, authenticate
@@ -20,7 +22,7 @@ from knox.models import AuthToken
 import django_filters.rest_framework
 from . import serializers
 import datetime
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.contrib.auth import get_user_model
 from rest_framework.permissions import IsAdminUser
@@ -32,6 +34,9 @@ from django_filters import DateRangeFilter,DateFilter
 from django.db.models import Sum
 from django_filters.fields import CSVWidget
 from .filters import WaterSupplyMultipleFilterBackend
+import csv
+from django.conf import settings
+from qrcode import *
 
 # Create your views here.
 
@@ -738,3 +743,35 @@ class WaterSupplyFilterDateRangeProvinceCoverageListView(generics.ListAPIView):
         
 class ProvinceListAPIView(generics.ListAPIView):
     serializer_class = serializers.ProvinceSerializer_v2
+
+class ExportCSVWaterSupply(APIView):
+
+    def get(self,request, *args, **kwargs):
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="export.csv"'
+        response.write(u'\ufeff'.encode('utf8'))
+
+        writer = csv.writer(response)
+        writer.writerow(['Name KH','Name KH'])
+
+        for ws in Province.objects.all():
+            # row = ','.join([
+            #     #ws.id,
+            #     ws.name_kh,
+            #     ws.name_en
+            # ])
+
+            writer.writerow([ws.name_kh,ws.name_en])
+
+        return response
+
+class GenerateQRCodeView(APIView):
+
+    def get(self, request, *args, **kwags):
+        id = self.kwargs['id']
+        detail_url = MAIN_URL_1 + "watersupply/detail/" + str(id)
+        img = make(detail_url)
+        img_name = 'qr' + str(time.time()) + '.png'
+        img.save(settings.MEDIA_ROOT + '/' + img_name)
+
+        return Response({"qr_name": img_name})

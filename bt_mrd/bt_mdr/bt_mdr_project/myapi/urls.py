@@ -74,4 +74,6 @@ urlpatterns = [
     path('watersupplyfilterdaterangeprvoincecoverage/<int:province>/<str:sd>/<str:ed>/', views.WaterSupplyFilterDateRangeProvinceCoverageListView.as_view()),
     path('watersupplybeneficiarytotalpeople/<int:type>/<int:province>/', views.WaterSupplyGetBeneficiaryTotalPeople.as_view()),
     path('watersupplybeneficiarytotalpeoplebycountry/<int:type>/', views.WaterSupplyBeneficiaryTotalPeopleByCountry.as_view()),
+    path('exportcsvwatersupply/', views.ExportCSVWaterSupply.as_view()),
+    path('generateqrcode/<int:id>/', views.GenerateQRCodeView.as_view()),
 ]

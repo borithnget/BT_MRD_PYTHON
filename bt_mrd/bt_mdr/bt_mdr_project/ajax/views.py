@@ -105,6 +105,7 @@ def report_supply_well_by_province(request):
     return JsonResponse({}, status=400) 
 
 def report_supply_well_coverage_by_province(request):
+    
     if request.method == "GET":
         date_start = request.GET.get('date_start', NONE)
         date_end = request.GET.get('date_end', NONE)
@@ -160,7 +161,7 @@ def post_approval_watersupply_by_provicial_head_department(request):
         ws_workflow = "http://18.222.12.231/en/api/v2/watersupplyworkflow"
         payload_wsworkflow = {
             "watersupply_id": water_supply_id,
-            "status_id":int(status_id),
+            "status_id":int(status_id),#1
             "user_id": int(request.session['user']['id']),
             "remark": remark
         }
@@ -171,7 +172,7 @@ def post_approval_watersupply_by_provicial_head_department(request):
         ws_update_url = "http://18.222.12.231/en/api/watersupply/"+ str (water_supply_id) +"/update/"
         ws_update_payload = {
             "id": water_supply_id,
-            "main_status": status_id
+            "main_status": status_id #1
         }
         response_ws_upate_mainstatus = requests.put(ws_update_url, json=ws_update_payload, headers=headers).json()
         #print(response_ws_upate_mainstatus)

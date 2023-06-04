@@ -78,7 +78,7 @@ def create_watersupply(request, id):
             "province_id": request.POST['province'],
             "district_id": request.POST['district'],
             "created_by":  request.session['user']['id'],
-            "updated_by":  request.session['user']['id'],
+            "updated_by":  request.session['user']['id'],#
             "is_active": True,
             "is_risk_enviroment_area": request.POST['is_risk_enviroment_area'] ,
             "commune_id": request.POST["commune"],
@@ -256,8 +256,7 @@ def create_watersupply(request, id):
                     "status_no_reason": request.POST["status_no_reason"]  ,
                     "water_quality_checking" : request.POST.get("water_quality_checking")
                 }
-                response_rain_water_harvesting_json = requests.post(ws_rain_water_harvesting_url, json=payload_rain_water_harvesting, headers=headers).json()
-            
+                response_rain_water_harvesting_json = requests.post(ws_rain_water_harvesting_url, json=payload_rain_water_harvesting, headers=headers).json()           
             elif id == 6:
                 ws_pipe_private_url = "http://18.222.12.231/en/api/watersupplypipeprivate/"
                 payload_pipe_private = {
@@ -326,7 +325,7 @@ def create_watersupply(request, id):
             detail_url = MAIN_URL_1 + "watersupply/detail/" + str(res_json['data']['id'])
             img = make(detail_url)
             img_name = 'qr' + str(time.time()) + '.png'
-            img.save(settings.MEDIA_ROOT + '/' + img_name)
+            img.save(settings.MEDIA_ROOT + '/' + img_name)         
             ws_qr_code_url = "http://18.222.12.231/en/api/watersupplyqrcode/"
             payload_qr_code = {
                 "watersupply_id": res_json['data']['id'],
@@ -700,7 +699,7 @@ def watersupply_myreqeust(request):
 def watersupply_myapproval(request):
 
     if request.session['user']['is_provincial_department_head']:
-        my_approval_url = MAIN_URL+"watersupplybyprovince/?province_id="+ str(request.session['user']['provincial_department_head_province_id']) +"&main_status=1"
+        my_approval_url = MAIN_URL+" "
         watersupplylist = requests.get(my_approval_url).json()
         # print(watersupplylist)
         return render(request, 'watersupply/myapproval.html',{'watersupplylist': watersupplylist})
@@ -881,6 +880,6 @@ def report_water_supply_coverage(request):
     return render(request, "report/report_water_supply_coverage.html", { 
         "watersupplytypelist": watersupplytypelist ,
         "provinces" : provinces
-        })
+        });
 
 #END REPORT SECTION
