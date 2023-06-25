@@ -13,8 +13,8 @@ from mdrapp import models
 MAIN_URL = 'http://18.222.12.231/api/' 
 MAIN_URL_1 = 'http://18.222.12.231/en/'
 
-# MAIN_URL = 'http://127.0.0.1:8000/api/' 
-# MAIN_URL_1 = 'http://127.0.0.1:8000/en/'
+# MAIN_URL = 'http://18.222.12.231/api/' 
+# MAIN_URL_1 = 'http://18.222.12.231/en/'
 
 def index(request,id):
     response = requests.get('http://18.222.12.231/en/api/watersupplytype/')
@@ -112,7 +112,7 @@ def create_watersupply(request, id):
             "mds_y_second" : request.POST.get("mds_y_second")
         }
 
-        # print(payload)
+        print(payload)
         headers = {'Content-Type': 'application/json'}
         #response = requests.post(url1, json=payload, headers=headers)
 
@@ -699,7 +699,7 @@ def watersupply_myreqeust(request):
 def watersupply_myapproval(request):
 
     if request.session['user']['is_provincial_department_head']:
-        my_approval_url = MAIN_URL+" "
+        my_approval_url = MAIN_URL+"watersupplybyprovince/?province_id="+ str(request.session['user']['provincial_department_head_province_id']) +"&main_status=1 "
         watersupplylist = requests.get(my_approval_url).json()
         # print(watersupplylist)
         return render(request, 'watersupply/myapproval.html',{'watersupplylist': watersupplylist})

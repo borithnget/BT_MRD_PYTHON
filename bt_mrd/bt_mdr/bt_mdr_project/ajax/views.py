@@ -26,7 +26,7 @@ def get_province_list(request):
 def district(request):
     if request.method == "GET":
         province_id = request.GET.get('province_id', NONE)
-        district_url = settings.API_ENDPOINT + 'district/?search=' + str(province_id)
+        district_url = settings.API_ENDPOINT + 'district/?province_id__id=' + str(province_id)
         districts = requests.get(district_url).json()
         return JsonResponse({"district" : districts}, status=200)
     return JsonResponse({}, status = 400)
@@ -34,7 +34,7 @@ def district(request):
 def get_commnue_list(request):
     if request.method == "GET":
         district_id = request.GET.get('district_id', NONE)
-        commune_url = settings.API_ENDPOINT + 'commune/?search=' + str(district_id)
+        commune_url = settings.API_ENDPOINT + 'commune/?district_id__id=' + str(district_id)
         commnues = requests.get(commune_url).json()
         return JsonResponse({'communes': commnues}, status = 200)
     return JsonResponse({}, status = 400)
@@ -42,7 +42,7 @@ def get_commnue_list(request):
 def get_village_list(request):
     if request.method == "GET":
         commune_id = request.GET.get('commune_id', NONE)
-        village_url = settings.API_ENDPOINT + 'village/?search=' + str(commune_id)
+        village_url = settings.API_ENDPOINT + 'village/?commune_id__id=' + str(commune_id)
         villages = requests.get(village_url).json()
         return JsonResponse({'villages':villages}, status=200)
     return JsonResponse({}, status=400)

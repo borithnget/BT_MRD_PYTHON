@@ -467,6 +467,12 @@ msgid "confirm_password"
 msgstr "បញ្ជាក់លេខសម្ងាត់"
 msgid "Email"
 msgstr "អ៊ីម៉ែល"
+msgid "allrightreserverd"
+msgstr "រក្សាសិទ្ធិគ្រប់យ៉ាងដោយ ក្រសួងអភិវឌ្ឍន៍ជនបទ"
+msgid "label_contact_phone"
+msgstr "លេខទូរសព្ទ័: "
+msgid "label_about_project"
+msgstr "អំពីគម្រោង"
 
 
 #START VALIDATION MESSAGE

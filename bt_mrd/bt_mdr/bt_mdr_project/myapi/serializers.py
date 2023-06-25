@@ -107,22 +107,22 @@ class VillageSerializer(serializers.HyperlinkedModelSerializer):
     #commune_id = CommuneSerializer(many=False, read_only=True)
     class Meta:
         model = Village
-        fields = ('id' ,'code_en', 'code_kh', 'name_en', 'name_kh', 'total_population', 'description' , "commune_id")
+        fields = ('id' ,'code_en', 'code_kh', 'name_en', 'name_kh', 'description' , "commune_id")
 
 class CommuneSerializer(serializers.HyperlinkedModelSerializer):
-    commnuevillage = VillageSerializer(many=True, read_only=True)
+    #commnuevillage = VillageSerializer(many=True, read_only=True)
     class Meta:
         model = Commune
-        fields = ('id' ,'code_en', 'code_kh', 'name_en', 'name_kh', 'total_population', 'description' ,'commnuevillage', "district_id")
+        fields = ('id' ,'code_en', 'code_kh', 'name_en', 'name_kh', 'description' , "district_id") #'commnuevillage',
 
 class DistrictSerializer(serializers.HyperlinkedModelSerializer):
-    districtcommnue = CommuneSerializer(many=True, read_only=True)
+    #districtcommnue = CommuneSerializer(many=True, read_only=True)
     class Meta:
         model = District
-        fields = ('id' ,'code_en', 'code_kh', 'name_en', 'name_kh', 'total_population', 'description' ,'districtcommnue', "province_id")
+        fields = ('id' ,'code_en', 'code_kh', 'name_en', 'name_kh', 'description' , "province_id") #'districtcommnue',
   
 class ProvinceSerializer(serializers.HyperlinkedModelSerializer):
-    provincedistrict = DistrictSerializer(many= True, read_only=True)
+    #provincedistrict = DistrictSerializer(many= True, read_only=True)
     total_district = serializers.SerializerMethodField(read_only=True)
     
     def get_total_district(self, language):
@@ -132,7 +132,7 @@ class ProvinceSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Province
         # fields = '__all__'
-        fields = ('id' ,'code_en', 'code_kh', 'name_en', 'name_kh', 'total_population', 'description', 'coordinate_border', 'coordinate_center',  'total_district' ,'provincedistrict')
+        fields = ('id' ,'code_en', 'code_kh', 'name_en', 'name_kh', 'total_population', 'description', 'coordinate_border', 'coordinate_center',  'total_district' ) #,'provincedistrict'
 
 class ProvinceSerializer_v2(serializers.ModelSerializer):
     class Meta:

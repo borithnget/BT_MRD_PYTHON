@@ -1,7 +1,13 @@
 {% extends 'base.html' %}
 {% load i18n %}
 
-{% block title %}Water Supply{% endblock %}
+{% block title %}
+{% if watersupplytype_id == 0 %}
+{% trans 'menu_water_supply' %}
+{% else %}
+{{ watersupplytype.name_kh }}
+{% endif %}
+{% endblock %}
 
 {% block first_breadcrums %}
 {% if watersupplytype_id == 0 %}
@@ -46,18 +52,49 @@
                 {% if ws %}
                     <tr>
                         <td>{{ ws.water_supply_code }}</td>
-                        <td>{{ ws.province_id.name_en}}</td>
-                        <td>{{ ws.district_id.name_en}}</td>
-                        <td>{{ ws.commune_id.name_en}}</td>
-                        <td>{{ ws.village_id.name_en}}</td>
+                        
+                            {% if CURRENT_LANGUAGE == 'en'  %}
+                            <td>{{ ws.province_id.name_en}}</td>
+                            {% else %}
+                            <td>{{ ws.province_id.name_kh}}</td>
+                            {% endif %}
+
+                            {% if CURRENT_LANGUAGE == 'en'  %}
+                            <td>{{ ws.district_id.name_en}}</td>
+                            {% else %}
+                            <td>{{ ws.district_id.name_kh}}</td>
+                            {% endif %}
+                        
+                            {% if CURRENT_LANGUAGE == 'en'  %}
+                            <td>{{ ws.commune_id.name_en}}</td>
+                            {% else %}
+                            <td>{{ ws.commune_id.name_kh}}</td>
+                            {% endif %}
+                        
+                            {% if CURRENT_LANGUAGE == 'en'  %}
+                            <td>{{ ws.village_id.name_en}}</td>
+                            {% else %}
+                            <td>{{ ws.village_id.name_kh}}</td>
+                            {% endif %}
+                        
+                        
                         <td>{{ ws.created_at }}</td>
-                        <td>{{ ws.water_supply_type_id.name_kh }}</td>
+
+                        {% if CURRENT_LANGUAGE == 'en'  %}
+                        <td>{{ ws.water_supply_type_id.name_en }}</td>
+                            {% else %}
+                            <td>{{ ws.water_supply_type_id.name_kh }}</td>
+                            {% endif %}
+                        
+
                         <td>{{ ws.created_by.first_name }} {{ ws.created_by.last_name }}</td>
+
                         {% if CURRENT_LANGUAGE == 'en' %}
                         <td class="text-center"><span class="badge badge-warning">{{ ws.main_status.status_name }}</span></td>
                         {% else %}
                         <td class="text-center"><span class="badge badge-warning">{{ ws.main_status.status_name_kh }}</span></td>
                         {% endif %}
+
                         <td class="text-center">
                             <a href="{% url 'watersupply_detail' id=ws.id %}" class="btn btn-sm btn-outline-primary"><i class="fa fa-eye"></i> {% trans 'btn_view_detail' %}</a>
                         </td>

@@ -20,10 +20,18 @@
     @import url('https://fonts.googleapis.com/css2?family=Kantumruy+Pro');
     *{
       /* font-family: 'Khmer OS Siemreap' !important; */
-      font-family: 'Kantumruy Pro', sans-serif;
+      font-family: 'Khmer OS Content', sans-serif;
     }
 
     #nav_top{
+      list-style: none !important;
+      display: flex !important;
+      flex-direction:row !important;
+      flex-wrap:wrap !important;
+      float: right !important;
+      position: relative !important;
+    }
+    #nav_top1{
       list-style: none !important;
       display: flex !important;
       flex-direction:row !important;
@@ -87,12 +95,12 @@
             </a>
           </li>
         {% endfor %}
-      <li class="float-right nav-item" style="float: right !important;">
+      <!-- <li class="float-right nav-item" style="float: right !important;">
         <a class="float-right nav-link" href="" style=" color: white;float: right !important;padding-top: 0px !important;padding-right: 5px !important;"><i class="fa fa-facebook"></i> Facebook</a>
       </li>
       <li class="float-right nav-item" style="float: right !important;">
         <a class="float-right nav-link" href="" style=" color: white;float: right !important; padding-top: 0px !important;padding-right: 5px !important;"><i class="fa fa-globe"></i> Website</a>
-      </li>
+      </li> -->
       {% if request.session.token %}
       <li class="nav-item">
         <a class="nav-link" href="{% url 'user_main_account' %}" style=" color: white;float: right !important; padding-top: 0px !important;padding-right: 5px !important;"><i class="fa fa-user-circle" aria-hidden="true"></i> {% trans "Hi" %} {{ request.session.user.first_name }} {{ request.session.user.last_name }}!</a>
@@ -113,19 +121,19 @@
   </nav>
   <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top" style="margin-top: inherit;">
     <a class="navbar-brand" href="/{{ CURRENT_LANGUAGE }}/">
-      <img src="{% static '/assets/MRD_LOGO.png' %}" width="200" height="60" alt="" style="object-fit: center !important;">
+      <img src="{% static '/assets/MRD_LOGO.png' %}" width="250" height="80" alt="" style="object-fit: center !important;">
     </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="nav navbar-nav " style="float:right !important;">      
+    <div class="collapse navbar-collapse pull-right float-right" id="nav_top1">
+      <ul id="" class="nav navbar-nav  float-right" style="float:right !important;">      
         
         {% if request.session.token %}
         <li class="nav-item" style="float: right !important;" >
           <a class="nav-link" href="{% url 'index' id=0 %}" style="float: right !important;">{% trans 'menu_water_supply' %}</a>
         </li>
-        <li class="nav-item dropdown">
+        <li class="nav-item dropdown" style="float: right !important;">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             {% trans 'menu_all_water_supply' %}
           </a>
@@ -141,12 +149,12 @@
         </li>
 
         {% if request.session.user.is_data_entry %}
-          <li class="nav-item">
+          <li class="nav-item" style="float: right !important;">
             <a class="nav-link" href="{% url 'watersupply_myrequest' %}">{% trans 'menu_my_task' %}</a>
           </li>
         {% else %}
 
-          <li class="nav-item dropdown">
+          <li class="nav-item dropdown" style="float: right !important;">
             <a class="nav-link dropdown-toggle" href="javascript:void(0)" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               {% trans 'menu_my_task' %}
             </a>
@@ -202,6 +210,152 @@
     {% block content %}
 
     {% endblock %}
+    <!-- Remove the container if you want to extend the Footer to full width. -->
+<!-- <div class="container"> -->
+  <!-- Footer -->
+  <footer class="text-center text-lg-start bg-light" style=" width: 100%;background-color: #F1F2F6 !important;">
+    <!-- Grid container -->
+    <div class="container">
+      <!-- Section: Links -->
+      <!-- <section class="">
+        
+        <div class="row">
+          
+          <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mt-3">
+            <h6 class="text-uppercase mb-4 font-weight-bold">
+              Company name
+            </h6>
+            <p>
+              Here you can use rows and columns to organize your footer
+              content. Lorem ipsum dolor sit amet, consectetur adipisicing
+              elit.
+            </p>
+          </div>
+          
+
+          <hr class="w-100 clearfix d-md-none" />
+
+          
+          <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mt-3">
+            <h6 class="text-uppercase mb-4 font-weight-bold">Products</h6>
+            <p>
+              <a class="text-white">MDBootstrap</a>
+            </p>
+            <p>
+              <a class="text-white">MDWordPress</a>
+            </p>
+            <p>
+              <a class="text-white">BrandFlow</a>
+            </p>
+            <p>
+              <a class="text-white">Bootstrap Angular</a>
+            </p>
+          </div>
+          
+
+          <hr class="w-100 clearfix d-md-none" />
+
+          
+          <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mt-3">
+            <h6 class="text-uppercase mb-4 font-weight-bold">
+              Useful links
+            </h6>
+            <p>
+              <a class="text-white">Your Account</a>
+            </p>
+            <p>
+              <a class="text-white">Become an Affiliate</a>
+            </p>
+            <p>
+              <a class="text-white">Shipping Rates</a>
+            </p>
+            <p>
+              <a class="text-white">Help</a>
+            </p>
+          </div>
+
+          
+          <hr class="w-100 clearfix d-md-none" />
+
+          
+          <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mt-3">
+            <h6 class="text-uppercase mb-4 font-weight-bold">Contact</h6>
+            <p><i class="fas fa-home mr-3"></i> New York, NY 10012, US</p>
+            <p><i class="fas fa-envelope mr-3"></i> info@gmail.com</p>
+            <p><i class="fas fa-phone mr-3"></i> + 01 234 567 88</p>
+            <p><i class="fas fa-print mr-3"></i> + 01 234 567 89</p>
+          </div>
+          
+        </div>
+        
+      </section> -->
+      <!-- Section: Links -->
+
+      <!-- <hr class="my-3"> -->
+
+      <!-- Section: Copyright -->
+      <section class="" style="background-color: #F1F2F6 !important;">
+        <div class="row d-flex align-items-center bg-light" style="background-color: #F1F2F6 !important;">
+          <!-- Grid column -->
+          <div class="col-md-6 col-lg-6 text-left text-md-start">
+            <!-- Copyright -->
+            <div class="p-3">{% trans 'allrightreserverd' %}
+              <!-- <a class="text-white" href="https://mdbootstrap.com/">MDBootstrap.com</a> -->
+            </div>
+            <!-- Copyright -->
+          </div>
+          <!-- Grid column -->
+
+          <!-- Grid column -->
+          <div class="col-md-6 col-lg-6 ml-lg-0 text-center text-md-end">
+
+            <!-- <div class="p-3">
+              <a class="" href="javascript:void(0)">Privacy </a> 
+              | {% trans 'label_contact_phone' %} +855 12 669 535
+            </div> -->
+
+            <!-- Facebook -->
+            <!-- <a
+               class="btn btn-outline-light btn-floating m-1"
+               class="text-white"
+               role="button"
+               ><i class="fab fa-facebook-f"></i
+              ></a> -->
+
+            
+            <!-- <a
+               class="btn btn-outline-light btn-floating m-1"
+               class="text-white"
+               role="button"
+               ><i class="fab fa-twitter"></i
+              ></a>
+
+            
+            <a
+               class="btn btn-outline-light btn-floating m-1"
+               class="text-white"
+               role="button"
+               ><i class="fab fa-google"></i
+              ></a>
+
+            
+            <a
+               class="btn btn-outline-light btn-floating m-1"
+               class="text-white"
+               role="button"
+               ><i class="fab fa-instagram"></i
+              ></a> -->
+          </div>
+          <!-- Grid column -->
+        </div>
+      </section>
+      <!-- Section: Copyright -->
+    </div>
+    <!-- Grid container -->
+  </footer>
+  <!-- Footer -->
+<!-- </div> -->
+<!-- End of .container -->
   </div>
 
   <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>

@@ -23,6 +23,7 @@ class Country(models.Model):
         return '%s - %s' % (self.code_en, self.name_en)
 
 class Province(models.Model):
+    id = models.BigIntegerField(primary_key=True)
     code_en = models.CharField(max_length=255, default='')
     code_kh = models.CharField(max_length=255, default='')
     name_en = models.CharField(max_length=500)
@@ -32,7 +33,15 @@ class Province(models.Model):
     total_population = models.DecimalField(max_digits=25, decimal_places=0, default=0, null=True, blank=True)
     coordinate_border = models.TextField(null=True, blank=True, default='')
     coordinate_center = models.CharField(max_length=255, default='', null=True, blank=True)
-    
+    t_population = models.IntegerField(default=0, null=True, blank=True)
+    t_hhs = models.IntegerField(default=0, null=True, blank=True)
+    i_p1 = models.IntegerField(default=0, null=True, blank=True)
+    i_p2 = models.IntegerField(default=0, null=True, blank=True)
+    h_p1 = models.IntegerField(default=0, null=True, blank=True)
+    h_p2 = models.IntegerField(default=0, null=True, blank=True)
+    v_family = models.IntegerField(default=0, null=True, blank=True)
+    e_family = models.IntegerField(default=0, null=True, blank=True)
+  
     def __str__(self):
         return '%s - %s' % (self.code_en, self.name_en)
 
@@ -51,6 +60,7 @@ class UserDetail(models.Model):
     provincial_department_head_province_id = models.ForeignKey(Province, on_delete=models.CASCADE, related_name='userdetailprovincialdepartmenthead_province', null=True, blank=True)
 
 class District(models.Model):
+    id = models.BigIntegerField(primary_key=True)
     code_en = models.CharField(max_length=255, default='')
     code_kh = models.CharField(max_length=255, default='')
     name_en = models.CharField(max_length=500)
@@ -61,11 +71,20 @@ class District(models.Model):
     total_population = models.DecimalField(max_digits=25, decimal_places=0, default=0, null=True, blank=True)
     coordinate_border = models.TextField(null=True, blank=True, default='')
     coordinate_center = models.CharField(max_length=255, default='', null=True, blank=True)
+    t_population = models.IntegerField(default=0, null=True, blank=True)
+    t_hhs = models.IntegerField(default=0, null=True, blank=True)
+    i_p1 = models.IntegerField(default=0, null=True, blank=True)
+    i_p2 = models.IntegerField(default=0, null=True, blank=True)
+    h_p1 = models.IntegerField(default=0, null=True, blank=True)
+    h_p2 = models.IntegerField(default=0, null=True, blank=True)
+    v_family = models.IntegerField(default=0, null=True, blank=True)
+    e_family = models.IntegerField(default=0, null=True, blank=True)
     
     def __str__(self):
         return self.name_en
     
 class Commune(models.Model):
+    id = models.BigIntegerField(primary_key=True)
     code_en = models.CharField(max_length=255, default='')
     code_kh = models.CharField(max_length=255, default='')
     name_en = models.CharField(max_length=500)
@@ -76,11 +95,20 @@ class Commune(models.Model):
     total_population = models.DecimalField(max_digits=25, decimal_places=0, default=0, null=True, blank=True)
     coordinate_border = models.TextField(null=True, blank=True, default='')
     coordinate_center = models.CharField(max_length=255, default='', null=True, blank=True)
+    t_population = models.IntegerField(default=0, null=True, blank=True)
+    t_hhs = models.IntegerField(default=0, null=True, blank=True)
+    i_p1 = models.IntegerField(default=0, null=True, blank=True)
+    i_p2 = models.IntegerField(default=0, null=True, blank=True)
+    h_p1 = models.IntegerField(default=0, null=True, blank=True)
+    h_p2 = models.IntegerField(default=0, null=True, blank=True)
+    v_family = models.IntegerField(default=0, null=True, blank=True)
+    e_family = models.IntegerField(default=0, null=True, blank=True)
     
     def __str__(self):
         return self.name_en
     
 class Village(models.Model):
+    id = models.BigIntegerField(primary_key=True)
     code_en = models.CharField(max_length=255, default='')
     code_kh = models.CharField(max_length=255, default='')
     name_en = models.CharField(max_length=500)
@@ -91,6 +119,15 @@ class Village(models.Model):
     total_population = models.DecimalField(max_digits=25, decimal_places=0, default=0, null=True, blank=True)
     coordinate_border = models.TextField(null=True, blank=True, default='')
     coordinate_center = models.CharField(max_length=255, default='', null=True, blank=True)
+    t_population = models.IntegerField(default=0, null=True, blank=True)
+    t_hhs = models.IntegerField(default=0, null=True, blank=True)
+    i_p1 = models.IntegerField(default=0, null=True, blank=True)
+    i_p2 = models.IntegerField(default=0, null=True, blank=True)
+    h_p1 = models.IntegerField(default=0, null=True, blank=True)
+    h_p2 = models.IntegerField(default=0, null=True, blank=True)
+    v_family = models.IntegerField(default=0, null=True, blank=True)
+    e_family = models.IntegerField(default=0, null=True, blank=True)
+
     
     def __str__(self):
         return self.name_en

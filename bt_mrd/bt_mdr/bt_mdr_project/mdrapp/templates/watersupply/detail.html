@@ -65,29 +65,56 @@
                     </div> -->
                     <div class="form-group row">
                         <label class="control-label col-md-4">{% trans 'province' %} </label>
-                        <label class="col-md-8">: {{ watersupply.province_id.name_en }}</label>                      
+                        <label class="col-md-8">:
+                            {% if CURRENT_LANGUAGE == 'en' %}
+                             {{ watersupply.province_id.name_en }}
+                            {% else %}
+                            {{ watersupply.province_id.name_kh }}
+                            {% endif %}
+                        </label>                      
                     </div>
                     <div class="form-group row">
                         <label class="control-label col-md-4">{% trans 'district'%}</label>
-                        <label class="col-md-8">: {{ watersupply.district_id.name_en }}</label>
+                        <label class="col-md-8">:
+                            {% if CURRENT_LANGUAGE == 'en' %}
+                            {{ watersupply.district_id.name_en }}
+                            {% else %}
+                            {{ watersupply.district_id.name_kh }}
+                            {% endif %}
+                             
+                            </label>
                     </div>
                     <div class="form-group row">
                         <label class='col-md-4 control-label'>{% trans 'commune' %} </label>
-                        <label class="col-md-8">: {{ watersupply.commune_id.name_en }}</label>          
+                        <label class="col-md-8">: 
+                            {% if CURRENT_LANGUAGE == 'en' %}
+                            {{ watersupply.commune_id.name_en }}
+                            {% else %}
+                            {{ watersupply.commune_id.name_kh }}
+                            {% endif %}
+                            
+                        </label>          
                     </div>
                     <div class="form-group row">
                         <label class='col-md-4 control-label'>{% trans 'village' %} </label>
-                        <label class="col-md-8">: {{ watersupply.village_id.name_en }}</label>
+                        <label class="col-md-8">: 
+                            
+                            {% if CURRENT_LANGUAGE == 'en' %}
+                            {{ watersupply.village_id.name_en }}
+                            {% else %}
+                            {{ watersupply.village_id.name_kh }}
+                            {% endif %}
+                        </label>
                     </div>
 
                     <div class="form-group row">
                         <label class="control-label col-md-4">ខ្នាតផែនទី</label>
                         {% if watersupply.map_unit == 2 %}
-                        <label class="col-md-8">Decimal Degress</label>
-                        {% elif watersuupply.map_unit == 3 %}
-                        <label class="col-md-8">Degree Minute Seconds</label>
+                        <label class="col-md-8">: Decimal Degress</label>
+                        {% elif watersupply.map_unit == 3 %}
+                        <label class="col-md-8">: Degree Minute Seconds</label>
                         {% else %}
-                        <label class="col-md-8">UTM</label>
+                        <label class="col-md-8">: UTM</label>
                         {% endif %}
                         <input type="hidden" id="map_unit" value="{{ watersupply.map_unit }}" />
                     </div>
@@ -107,12 +134,12 @@
                     <div id="map_unit_dd_panel">
                         <div class="form-group row">
                             <label class='col-md-4 control-label'>{% trans 'decimal_degree_x' %} </label>
-                            <label class="col-md-8">: {{ watersupply.decimal_degress_lat }}</label>  
+                            <label class="col-md-8" id="label_decimal_x">: {{ watersupply.decimal_degress_lat }}</label>  
                            
                         </div>
                         <div class="form-group row">
                             <label class='col-md-4 control-label'>{% trans 'decimal_degree_y' %} </label>
-                            <label class="col-md-8">: {{ watersupply.decimal_degress_lng }}</label>  
+                            <label class="col-md-8" id="label_decimal_y">: {{ watersupply.decimal_degress_lng }}</label>  
                         </div>
                     </div>
                     {% elif watersupply.map_unit == 3 %}
@@ -120,11 +147,11 @@
                         <div class="form-group row">
                             <label class="col-md-4 control-label">{% trans 'decimal_degree_x' %}</label>
                             <div class="col-md-2">
-                                <label class="col-md-8">: {{ watersupply.mds_x_degress }}</label>  
+                                <label class="col-md-8" id="label_mds_x_degree">: {{ watersupply.mds_x_degress }}</label>  
                                 <small>Degree</small>
                             </div>
                             <div class="col-md-2">
-                                <label class="col-md-8">: {{ watersupply.mds_x_minute }}</label>  
+                                <label class="col-md-8" id="label_mds_x_minute">: {{ watersupply.mds_x_minute }}</label>  
                                 <small>Minute (')</small>
                             </div>
                             <div class="col-md-2">
@@ -799,15 +826,25 @@
                         <th>{% trans 'created_at' %}</th>
                         <th>{% trans 'ws_status' %}</th>
                         <th>{% trans 'created_by' %}</th>
-                       
+                        <th>{% trans 'remark' %}</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for ws in watersupply.watersupplyworkflow_watersupply %}
                         <tr>
                             <td>{{ ws.created_at }}</td>
-                            <td>{{ ws.status_id.status_name_kh }}</td>
-                            <td>{{ ws.user_id.first_name }} {{ ws.user_id.last_name }}</td>                            
+                            <td>
+                                {% if CURRENT_LANGUAGE == 'en' %}
+                                {{ ws.status_id.status_name }}
+                            {% else %}
+                            {{ ws.status_id.status_name_kh }}
+                            {% endif %}
+                                
+                            </td>
+                            <td>{{ ws.user_id.first_name }} {{ ws.user_id.last_name }}</td>
+                            <td>
+                                {{ ws.remark }}
+                            </td>                            
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -911,7 +948,8 @@
             $('#label_utm_x').text(': '+parseFloat('{{ watersupply.utm_x }}').toFixed(0));
             $('#label_utm_y').text(': '+parseFloat('{{ watersupply.utm_y }}').toFixed(0));
         }else if(map_unit_id==2){
-            
+            $('#label_decimal_x').text(': '+parseFloat('{{ watersupply.decimal_degress_lat }}').toFixed(6));
+            $('#label_decimal_y').text(': '+parseFloat('{{ watersupply.decimal_degress_lng }}').toFixed(6));
         }
 
         $('#btn_approve').click(function(e){
