@@ -192,33 +192,48 @@
   <a href="{% url 'login' %}">Log In</a>
 {% endif %}-->
 
-<!-- <div id="demo" class="carousel slide" data-ride="carousel" style="height: 500px !important;background-color:lightslategrey;">
+<footer class="text-center text-lg-start bg-light" style=" width: 100%;background-color: #F1F2F6 !important;">
+    <div class="container">
+<!-- Section: Links -->
+      <section class="">
+        
+        <div class="row">
 
-    <ul class="carousel-indicators">
-    <li data-target="#demo" data-slide-to="0" class="active"></li>
-    <li data-target="#demo" data-slide-to="1"></li>
-    <li data-target="#demo" data-slide-to="2"></li>
-  </ul>
-  
-  <div class="carousel-inner">
-    <div class="carousel-item active">
-      <img src="{% static '/assets/slide1.jpg' %}" alt="Los Angeles" max-width="100%" height="500">
+            <div class="col-md-6 col-lg-6 col-xl-6 mx-auto mt-3 text-left">
+                <!-- <h6 class="text-uppercase mb-4 font-weight-bold">Contact</h6> -->
+                <p><i class="fa fa-home mr-3"></i>ដីឡូត៍លេខ ៧៧១-៧៧៣ សង្កាត់ បឹងត្របែក ខណ្ឌចំការមន រាជធានីភ្នំពេញ </p>
+                <p><i class="fa fa-envelope mr-3"></i> info@mrd.gov.kh</p>
+                <p><i class="fa fa-phone mr-3"></i> +855 12 669 535</p>
+                <!-- <p><i class="fa fa-facebook mr-3"></i></p> -->
+              </div>
+              <hr class="w-100 clearfix d-md-none" />    
+          
+          <div class="col-md-6 col-lg-6 col-xl-6 mx-auto mt-3">
+            <!-- <h6 class="text-uppercase mb-4 font-weight-bold">
+              
+              {% trans 'label_about_project' %}
+            </h6>
+            <p>
+              Here you can use rows and columns to organize your footer
+              content. Lorem ipsum dolor sit amet, consectetur adipisicing
+              elit.
+            </p>
+            <a href="javascript:void(0)">
+                <img src="{% static '/assets/app_store.png' %}" width="200" height="80" alt="" style="object-fit: fit !important;">
+            </a>
+            <a href="javascript:void(0)">
+                <img src="{% static '/assets/google_play.png' %}" width="200" height="65" alt="" style="object-fit: fit !important;">
+            </a> -->
+          </div>         
+
+            
+          
+        </div>
+        
+      </section>
+      <!-- Section: Links -->
     </div>
-    <div class="carousel-item">
-      <img src="{% static '/assets/slide2.jpg' %}" alt="Chicago" width="1000" height="700">
-    </div>
-    <div class="carousel-item">
-      <img src="{% static '/assets/slide3.jpg' %}" alt="New York" width="1000" height="700">
-    </div>
-  </div>
-  
-  <a class="carousel-control-prev" href="#demo" data-slide="prev">
-    <span class="carousel-control-prev-icon"></span>
-  </a>
-  <a class="carousel-control-next" href="#demo" data-slide="next">
-    <span class="carousel-control-next-icon"></span>
-  </a> 
-</div> -->
+</footer>
 
 {% endblock %} 
 
@@ -404,8 +419,9 @@ let cambodiaAREADATA="104.5359,10.4477 104.5267,10.4464 104.5173,10.4395 104.504
                     strokeColor: '#0000FF',
                     strokeOpacity: 0.9,
                     strokeWeight: 1,
-                    // fillColor: '#FF0000',
-                    fillOpacity: 0
+                    //fillColor: '#0000FF',
+                    fillColor: '#8AB4F8',
+                    fillOpacity: 0.5
                 }).setMap(map);
             })
 
@@ -442,9 +458,9 @@ let cambodiaAREADATA="104.5359,10.4477 104.5267,10.4464 104.5173,10.4395 104.504
                 success: function (response) {
                     
                     if(!response["valid"]){
-                        
+                        console.log(response.data);
                         $.each(response.data,function(ind,item){
-                            console.log(item);
+                            //console.log(item);
 
                             const contentString =
                                 '<div id="content">' +
@@ -469,7 +485,7 @@ let cambodiaAREADATA="104.5359,10.4477 104.5267,10.4464 104.5173,10.4395 104.504
                             
                             
                             if(item.map_unit == 2){
-                                console.log(item.decimal_degress_lat +" "+item.decimal_degress_lng);
+                                //console.log(item.decimal_degress_lat +" "+item.decimal_degress_lng);
                                 
                                 const marker = new google.maps.Marker({
                                     position: { lat: parseFloat(item.decimal_degress_lat), lng: parseFloat(item.decimal_degress_lng)},
@@ -485,11 +501,11 @@ let cambodiaAREADATA="104.5359,10.4477 104.5267,10.4464 104.5173,10.4395 104.504
                                 });
                                                           
                             }else if (item.map_unit==1){
-                                //console.log(item.utm_x +" "+item.utm_y);
+                                console.log(item.utm_x +" "+item.utm_y);
                                 var utm_x = parseFloat(item.utm_x);
                                 var utm_y = parseFloat(item.utm_y);
 
-                                var utm = "+proj=utm +zone=48N";
+                                var utm = "+proj=utm +zone=48P";
                                 var wgs84 = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
                                 
                                 var latlng=proj4(utm,wgs84,[utm_x, utm_y]);
@@ -499,6 +515,7 @@ let cambodiaAREADATA="104.5359,10.4477 104.5267,10.4464 104.5173,10.4395 104.504
                                 //     content: "Hello",
                                 //     ariaLabel: "Uluru",
                                 // });
+                                console.log(latlng);
                                 const marker = new google.maps.Marker({
                                     position: { lat: parseFloat(latlng[1]), lng: parseFloat(latlng[0])},
                                     map: map,
@@ -512,6 +529,8 @@ let cambodiaAREADATA="104.5359,10.4477 104.5267,10.4464 104.5173,10.4395 104.504
                                     });
                                 });
                             
+                            }else if (item.map_unit == 3){
+                                
                             }
 
 
