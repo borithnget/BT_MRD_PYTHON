@@ -19,4 +19,6 @@ urlpatterns = [
     path('reportwatersupplymap/', views.report_water_supply_map, name='report_watersupply_map'),
     path('reportwellbyprovince/', views.report_well_by_province, name="reportwellbyprovince"),
     path('reportwatersupplycoverage/', views.report_water_supply_coverage, name="reportwatersupplycoverage"),
+
+    path('importruralwatersupply/', views.import_rural_water_supply, name="import_rural_water_supply"),
 ]

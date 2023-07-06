@@ -883,3 +883,7 @@ def report_water_supply_coverage(request):
         });
 
 #END REPORT SECTION
+
+def import_rural_water_supply(request):
+
+    return render(request,'import/import_rural_water_supply.html')

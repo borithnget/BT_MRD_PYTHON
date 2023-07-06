@@ -62,6 +62,7 @@ def get_myrequest_draft_list(request):
             url = settings.API_ENDPOINT + 'watersupplybyuserandstatus/?created_by='+ str(user_id) +'&main_status=3'
         else: 
             url = settings.API_ENDPOINT + 'watersupplybyuserandstatus/?created_by='+ str(user_id) +'&main_status=12'
+        print(url)
         list= requests.get(url).json()
         return JsonResponse({'data':list}, status=200)
     return JsonResponse({}, status = 400)
