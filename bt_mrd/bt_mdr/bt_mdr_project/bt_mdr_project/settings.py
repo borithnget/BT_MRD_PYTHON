@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     # 'mapwidgets',
     'easy_maps',
     'corsheaders',
+    
 ]
 
 MIDDLEWARE = [
@@ -106,7 +107,7 @@ DATABASES = {
     # }
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'br_mrd_1',
+        'NAME': 'bt_mrd',
         'USER': 'postgres',
         'PASSWORD': 'rootuser',
         'HOST': '127.0.0.1', 

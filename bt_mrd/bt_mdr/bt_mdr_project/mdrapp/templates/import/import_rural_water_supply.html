@@ -8,5 +8,77 @@
 {% endblock %}
 
 {% block content %}
+<div class="card" style="width:100%">
+    <div class="card-header"><h4>{% trans 'title_create_new_water_supply' %}</h4></div>
+    <div class="card-body">
+        <form method="post" id="myForm" enctype="multipart/form-data">
+            {% csrf_token %}
 
+            <div class="form-group row">
+                <input type="file" name="myfile" class="form-control">
+            </div>
+
+            <div class="form-group row">
+                <div class="col-md-2"></div>
+                <div class="col-md-10">               
+                    <button class="btn btn-outline-primary" type="submit" onclick="" id="btn_submit"><i class="fa fa-save"></i> {% trans 'btn_submit' %}</button>
+                    <a href="javascript:history.back()" class="btn btn-outline-primary">{% trans 'btn_back' %}</a>
+                </div>      
+            </div> 
+
+            {% if empexceldata.empty %}
+                <p>Empty</p>
+            {% else %}
+                {% comment %} <p>{{ empexceldata }}</p> {% endcomment %}
+                <div class="table-responsive">
+                <table class="table">
+                    {% for exc in empexceldata  %}
+                        <tr>
+                            
+                            <td>{{ exc.1 }}</td>
+                            <td>{{ exc.2 }}</td>
+                            <td>{{ exc.3 }}</td>
+                            <td>{{ exc.4 }}</td>
+                            <td>{{ exc.5 }}</td>
+                            <td>{{ exc.6 }}</td>
+                            <td>{{ exc.7 }}</td>
+                            <td>{{ exc.8 }}</td>
+                            <td>{{ exc.9 }}</td>
+                            <td>{{ exc.10 }}</td>
+                            <td>{{ exc.11 }}</td>
+                            <td>{{ exc.12 }}</td>
+                            <td>{{ exc.13 }}</td>
+                            <td>{{ exc.14 }}</td>
+                            <td>{{ exc.15 }}</td>
+                            <td>{{ exc.16 }}</td>
+                            <td>{{ exc.17 }}</td>
+                            <td>{{ exc.18 }}</td>
+                            <td>{{ exc.19 }}</td>
+                            <td>{{ exc.20 }}</td>
+                            <td>{{ exc.21 }}</td>
+                            <td>{{ exc.22 }}</td>
+                            <td>{{ exc.23 }}</td>
+                            <td>{{ exc.24 }}</td>
+                            <td>{{ exc.25 }}</td>
+                            <td>{{ exc.26 }}</td>
+                            <td>{{ exc.27 }}</td>
+                            <td>{{ exc.28 }}</td>
+                            <td>{{ exc.29 }}</td>
+                            <td>{{ exc.30 }}</td>
+                            <td>{{ exc.31 }}</td>
+                            <td>{{ exc.32 }}</td>
+                            <td>{{ exc.33 }}</td>
+                            <td>{{ exc.34 }}</td>
+                            <td>{{ exc.36 }}</td>
+                            
+                        </tr>
+                        
+                    {% endfor %}
+                <table>
+                </div>
+            {% endif %}
+
+        </form>
+    </div>
+</div>
 {% endblock %}

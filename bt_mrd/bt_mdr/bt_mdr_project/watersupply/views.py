@@ -9,6 +9,10 @@ import datetime, time
 from qrcode import *
 from django.conf import settings
 from mdrapp import models
+import pandas as pd
+import os
+from django.core.files.storage import FileSystemStorage
+
 # Create your views here.
 MAIN_URL = 'http://18.222.12.231/api/' 
 MAIN_URL_1 = 'http://18.222.12.231/en/'
@@ -885,5 +889,46 @@ def report_water_supply_coverage(request):
 #END REPORT SECTION
 
 def import_rural_water_supply(request):
+    if request.method == 'POST' and request.FILES['myfile']:      
+        myfile = request.FILES['myfile']
+        fs = FileSystemStorage()
+        
+        
+        #filename = fs.save(myfile.name, myfile)
+        filename = fs.save(settings.MEDIA_ROOT + '/' + str(time.time())+ '_' + myfile.name, myfile )
+        #print(filename)
+        uploaded_file_url = fs.url(filename)  
+        
+        #GET EVERY SHEET            
+        # excel_sheets = pd.read_excel(settings.MEDIA_ROOT + '/' + filename, None) 
+        # sheet_number = 0   
+        # for sheet in excel_sheets.keys():
+            
+        #     empexceldata = pd.read_excel(settings.MEDIA_ROOT + '/' + filename, sheet_name=sheet_number)  
+        
+        #     dbframe = empexceldata
+        #     PriceList = []
+        #     for dbframe in dbframe.itertuples():
+        #         PriceList.append(dbframe)
+                
+        #     sheet_number = sheet_number + 1
+            
+        #GET ONLY FIRST SHEET
+        PriceList = []
+        empexceldata = pd.read_excel(settings.MEDIA_ROOT + '/' + filename) 
+        dbframe = empexceldata 
+        for dbframe in dbframe.itertuples():
+            PriceList.append(dbframe)
+                
+                
+            #print(dbframe[7])
+        #     obj = Employee.objects.create(Empcode=dbframe.Empcode,firstName=dbframe.firstName, middleName=dbframe.middleName,
+        #                                     lastName=dbframe.lastName, email=dbframe.email, phoneNo=dbframe.phoneNo, address=dbframe.address,
+        #                                     gender=dbframe.gender, DOB=dbframe.DOB,salary=dbframe.Salary )           
+        #     obj.save()
+        
+        return render(request, 'import/import_rural_water_supply.html', {
+            'empexceldata': PriceList
+        })   
 
     return render(request,'import/import_rural_water_supply.html')
