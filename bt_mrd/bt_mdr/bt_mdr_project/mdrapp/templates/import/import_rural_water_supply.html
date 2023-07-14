@@ -33,6 +33,7 @@
                 <div class="table-responsive">
                 <table class="table">
                     {% for exc in empexceldata  %}
+                        {% if forloop.counter0 < 1 or forloop.counter0 > 7 %}
                         <tr>
                             
                             <td>{{ exc.1 }}</td>
@@ -72,6 +73,7 @@
                             <td>{{ exc.36 }}</td>
                             
                         </tr>
+                        {% endif %}
                         
                     {% endfor %}
                 <table>
