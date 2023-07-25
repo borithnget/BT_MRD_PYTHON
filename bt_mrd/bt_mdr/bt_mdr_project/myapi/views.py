@@ -182,10 +182,20 @@ class ProvinceViewSet(viewsets.ModelViewSet):
     model = Province
     queryset = Province.objects.all().order_by('code_en').filter(is_active=True)
     serializer_class = ProvinceSerializer
+
     # filter_backends = [filters.SearchFilter]
-    # search_fields = ['id']
+    # search_fields = ['name_kh']
+
     filter_backends = [DjangoFilterBackend]
-    filterset_fields  = ['id']
+    filterset_fields  = ['id', 'name_kh']
+
+class ProvinceFilterByNameViewSet(viewsets.ModelViewSet):
+    model = Province
+    queryset = Province.objects.all().order_by('code_en').filter(is_active=True)
+    serializer_class = ProvinceSerializer
+
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name_kh']
 
 class DistrictViewSet(viewsets.ModelViewSet):
     model = District
@@ -196,6 +206,13 @@ class DistrictViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields  = ['province_id__id']
 
+class DistrictFilterByNameViewSet(viewsets.ModelViewSet):
+    model = District
+    queryset = District.objects.all().order_by('code_en').filter(is_active=True)
+    serializer_class = DistrictSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name_kh']
+
 class CommnueViewSet(viewsets.ModelViewSet):
     model = Commune
     queryset = Commune.objects.all().order_by('code_en').filter(is_active=True)
@@ -205,6 +222,13 @@ class CommnueViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields  = ['district_id__id']
 
+class CommnueFilterByNameViewSet(viewsets.ModelViewSet):
+    model = Commune
+    queryset = Commune.objects.all().order_by('code_en').filter(is_active=True)
+    serializer_class = CommuneSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name_kh']
+
 class VillageViewSet(viewsets.ModelViewSet):
     model = Village
     queryset = Village.objects.all().order_by('code_en').filter(is_active=True)
@@ -213,6 +237,13 @@ class VillageViewSet(viewsets.ModelViewSet):
     # search_fields = ['commune_id__id']
     filter_backends = [DjangoFilterBackend]
     filterset_fields  = ['commune_id__id']
+
+class VillageFilterByNameViewSet(viewsets.ModelViewSet):
+    model = Village
+    queryset = Village.objects.all().order_by('code_en').filter(is_active=True)
+    serializer_class = VillageSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name_kh']
 
 class CountryViewSet(viewsets.ModelViewSet):
     model = Country

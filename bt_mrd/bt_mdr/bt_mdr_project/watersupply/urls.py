@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-
+#from mdrapp import views
 #app_name = 'mdrapp'
 
 urlpatterns = [

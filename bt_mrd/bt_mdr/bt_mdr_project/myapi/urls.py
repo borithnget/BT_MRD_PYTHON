@@ -41,6 +41,10 @@ router.register(r'watersupplypipeprivateoptionvalue', views.WaterSupplyPipePriva
 router.register(r'watersupplyairwater', views.WaterSupplyAirWaterViewSet)
 router.register(r'watersupplyairwateroptionvalue', views.WatersupplyAirWaterOptionValueViewSet)
 router.register(r'watersupplyreportmap', views.WaterSupplyReportMap)
+router.register(r'provincefilterbyname', views.ProvinceFilterByNameViewSet)
+router.register(r'districtfilterbyname', views.DistrictFilterByNameViewSet)
+router.register(r'communefilterbyname', views.CommnueFilterByNameViewSet)
+router.register(r'villagefilterbyname', views.VillageFilterByNameViewSet)
 #router.register(r'v2/watersupply', views.WaterSupplyViewSet_2)
 
 # Wire up our API using automatic URL routing.

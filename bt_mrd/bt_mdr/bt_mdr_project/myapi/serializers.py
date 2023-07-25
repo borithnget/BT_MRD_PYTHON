@@ -103,23 +103,24 @@ class UserDeactivateSerializer(serializers.ModelSerializer):
         model = User
         fields = ('id', 'is_active')
     
-class VillageSerializer(serializers.HyperlinkedModelSerializer):
+class VillageSerializer(serializers.ModelSerializer):
     #commune_id = CommuneSerializer(many=False, read_only=True)
     class Meta:
         model = Village
         fields = ('id' ,'code_en', 'code_kh', 'name_en', 'name_kh', 'description' , "commune_id")
 
-class CommuneSerializer(serializers.HyperlinkedModelSerializer):
+class CommuneSerializer(serializers.ModelSerializer):
     #commnuevillage = VillageSerializer(many=True, read_only=True)
     class Meta:
         model = Commune
         fields = ('id' ,'code_en', 'code_kh', 'name_en', 'name_kh', 'description' , "district_id") #'commnuevillage',
 
-class DistrictSerializer(serializers.HyperlinkedModelSerializer):
-    #districtcommnue = CommuneSerializer(many=True, read_only=True)
-    class Meta:
-        model = District
-        fields = ('id' ,'code_en', 'code_kh', 'name_en', 'name_kh', 'description' , "province_id") #'districtcommnue',
+# class DistrictSerializer(serializers.ModelSerializer):
+#     #districtcommnue = CommuneSerializer(many=True, read_only=True)
+#     province_id = ProvinceSerializer(many=False)
+#     class Meta:
+#         model = District
+#         fields = ('id' ,'code_en', 'code_kh', 'name_en', 'name_kh', 'description' , "province_id") #'districtcommnue',
   
 class ProvinceSerializer(serializers.HyperlinkedModelSerializer):
     #provincedistrict = DistrictSerializer(many= True, read_only=True)
@@ -133,6 +134,13 @@ class ProvinceSerializer(serializers.HyperlinkedModelSerializer):
         model = Province
         # fields = '__all__'
         fields = ('id' ,'code_en', 'code_kh', 'name_en', 'name_kh', 'total_population', 'description', 'coordinate_border', 'coordinate_center',  'total_district' ) #,'provincedistrict'
+
+class DistrictSerializer(serializers.ModelSerializer):
+    #districtcommnue = CommuneSerializer(many=True, read_only=True)
+    # province_id = ProvinceSerializer(many=False)
+    class Meta:
+        model = District
+        fields = ('id' ,'code_en', 'code_kh', 'name_en', 'name_kh', 'description' , "province_id") 
 
 class ProvinceSerializer_v2(serializers.ModelSerializer):
     class Meta:
