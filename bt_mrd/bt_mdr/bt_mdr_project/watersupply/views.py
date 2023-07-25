@@ -991,8 +991,24 @@ def import_rural_water_supply(request):
                         total_family = float(dbframe[6])
 
                     map_unit_id = 1
+                    utm_x = 0
+                    utm_y = 0
+                    coor_x = 0
+                    coor_y = 0
                     if pd.isnull(dbframe[8]) == False:
-                        
+                        split_coor_x = dbframe[8].split(' ')
+                        if len(split_coor_x) == 1: #UTM
+                            utm_x = dbframe[8]
+                        elif len(split_coor_x) == 2: # decimal degree
+                            map_unit_id = 2
+                            coor_x = split_coor_x[0][:-1] + '.'+split_coor_x[1]
+                    
+                    if pd.isnull(dbframe[9]) == False:
+                        split_coor_y = dbframe[9].split(' ')
+                        if len(split_coor_y) == 1:
+                            utm_y = dbframe[9]
+                        elif len(split_coor_y) == 2:
+                            coor_y = split_coor_y[0][:-1] + '.' + split_coor_y[1]
 
                     if pd.isnull(dbframe[28]) == False:
                         if dbframe[28] == '–':
@@ -1150,8 +1166,8 @@ def import_rural_water_supply(request):
                         "construction_date": construction_date,
                         "water_supply_code" : water_supply_code,
                         "total_family" : total_family,
-                        "utm_x": 0,
-                        "utm_y": 0,
+                        "utm_x": utm_x,
+                        "utm_y": utm_y,
                         "source_budget": source_budget,
                         "constructed_by":construction_by,
                         "management_type":management_type,
@@ -1165,9 +1181,9 @@ def import_rural_water_supply(request):
                         "beneficiary_total_family_indigenous": beneficiary_total_family_indigenous,
                         "main_status":1,
                         "is_water_quality_check": False,
-                        "map_unit" : 1,
-                        "decimal_degress_lat" :0,
-                        "decimal_degress_lng" : 0,
+                        "map_unit" : map_unit_id,
+                        "decimal_degress_lat" :coor_x,
+                        "decimal_degress_lng" : coor_y,
                         "mds_x_degress" : 0,
                         "mds_x_minute" : 0,
                         "mds_x_second" : 0,
@@ -1182,7 +1198,8 @@ def import_rural_water_supply(request):
 
                     response = requests.post(url1, json=payload, headers=headers)
                     res_json  = response.json()
-                    #print(res_json)
+                    print(res_json)
+                    
                     if 'status' in res_json:
                         SucessImported.append(dbframe)
                         #water supply workflow
@@ -1222,7 +1239,7 @@ def import_rural_water_supply(request):
                                 "is_active": True
                             }
                             response_well_option_value = requests.post(ws_option_value_url,json=payload_well_option_value, headers=headers).json()
-                            #print(payload_well_option_value)
+                    #         #print(payload_well_option_value)
                                 
             counter = counter + 1   
                 

@@ -185,6 +185,7 @@
                             <div id="map"></div>
                         </div>
                     </div>
+                    <span id="label_map_full_address"></span>
                 </div>
             </div>           
         
@@ -1164,7 +1165,18 @@
             const marker = new google.maps.Marker({
                 position: { lat: parseFloat('{{ watersupply.decimal_degress_lat }}'), lng: parseFloat('{{ watersupply.decimal_degress_lng }}')},
                 map: map,
-            })
+            });
+            var geocoder = new google.maps.Geocoder();
+            geocoder.geocode({ 
+                'latLng' : new google.maps.LatLng(parseFloat('{{ watersupply.decimal_degress_lat }}'), parseFloat('{{ watersupply.decimal_degress_lng }}') ),  
+            }, function(results, status){
+                if(status == google.maps.GeocoderStatus.OK){
+                    console.log(results[0].formatted_address);
+                    $('#label_map_full_address').html(results[0].formatted_address);
+                }else {
+            alert('Geocoder failed due to: ' + status);
+        }
+            });
         }
         else if($('#map_unit').val()==1){
             var utm_x = parseFloat('{{ watersupply.utm_x }}');
