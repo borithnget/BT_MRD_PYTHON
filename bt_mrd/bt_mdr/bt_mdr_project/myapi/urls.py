@@ -80,4 +80,5 @@ urlpatterns = [
     path('watersupplybeneficiarytotalpeoplebycountry/<int:type>/', views.WaterSupplyBeneficiaryTotalPeopleByCountry.as_view()),
     path('exportcsvwatersupply/', views.ExportCSVWaterSupply.as_view()),
     path('generateqrcode/<int:id>/', views.GenerateQRCodeView.as_view()),
+    path('watersupplycheckisexist/<str:code>/', views.WaterSupplyExistByWaterSupplyCodeAPIView.as_view()),
 ]

@@ -912,22 +912,363 @@ def import_rural_water_supply(request):
         #         PriceList.append(dbframe)
                 
         #     sheet_number = sheet_number + 1
-            
-        #GET ONLY FIRST SHEET
+        
+        url1 = "http://18.222.12.231/en/api/v2/watersupply"
+
+        #GET ONLY FIRST SHEET ## WELL
         PriceList = []
         SucessImported = []
-        empexceldata = pd.read_excel(settings.MEDIA_ROOT + '/' + filename) 
-        dbframe = empexceldata 
-        counter = 0
+        # empexceldata = pd.read_excel(settings.MEDIA_ROOT + '/' + filename) 
+        # dbframe = empexceldata 
+        # counter = 0
+        # for dbframe in dbframe.itertuples():
+        #     PriceList.append(dbframe)
+        #     # Submit data to Database
+        #     if counter > 9 :
+        #         url1 = "http://18.222.12.231/en/api/v2/watersupply"
+
+        #         if pd.isnull(dbframe[1]) == False:
+                    
+        #             total_family = 0
+        #             beneficiary_total_people = 0 #28
+        #             beneficiary_total_women = 0 #29
+        #             beneficiary_total_family = 0 #30
+        #             beneficiary_total_family_poor_1 = 0 #31
+        #             beneficiary_total_family_poor_2 = 0 #32
+        #             beneficiary_total_family_vulnerable = 0 #33
+        #             beneficiary_total_family_indigenous = 0 #34
+
+        #             water_supply_code = ''
+        #             construction_date = '2023-01-01'
+        #             is_water_supply_code_exist= False
+
+        #             if dbframe[7] == '' or pd.isnull(dbframe[8]):
+        #                 water_supply_code = ''
+        #             else:
+        #                 water_supply_code = dbframe[7]
+
+        #                 check_exist_watersupply_url = MAIN_URL + 'watersupplycheckisexist/' + str(water_supply_code) + '/'
+        #                 result_exist = requests.get(check_exist_watersupply_url).json()
+        #                 if 'is_exist' in result_exist:
+        #                     if result_exist['is_exist'] == True:
+        #                         is_water_supply_code_exist = True
+                    
+        #             if is_water_supply_code_exist == False:
+
+        #                 province_id=''
+        #                 if pd.isnull(dbframe[2]) == False:
+        #                     province_filter_url = MAIN_URL + 'provincefilterbyname/?search=' + dbframe[2]                
+        #                     provinces = requests.get(province_filter_url).json()
+        #                     if len(provinces) > 0 :
+        #                         province_id = provinces[0]['id']
+                        
+        #                 district_id = ''
+        #                 if pd.isnull(dbframe[3]) == False:
+        #                     district_filter_url = MAIN_URL + 'districtfilterbyname/?search=' + dbframe[3]
+        #                     districts = requests.get(district_filter_url).json()
+        #                     for district in districts:
+        #                         if district['province_id'] == province_id:
+        #                             district_id = district['id']
+        #                     # if len(districts) > 0:
+        #                     #     district_id = districts[0]['id']
+                        
+        #                 commune_id = ''
+        #                 if pd.isnull(dbframe[4]) == False:
+        #                     commune_filter_url = MAIN_URL + 'communefilterbyname/?search=' + dbframe[4]
+        #                     communes = requests.get(commune_filter_url).json()
+        #                     for commune in communes:
+        #                         if commune['district_id'] == district_id:
+        #                             commune_id = commune['id']
+        #                     # if len(communes) > 0:
+        #                     #     commune_id = communes[0]['id']
+                        
+        #                 village_id = ''
+        #                 if pd.isnull(dbframe[5]) == False:
+        #                     village_filter_url = MAIN_URL + 'villagefilterbyname/?search=' + dbframe[4]
+        #                     villages = requests.get(village_filter_url).json()
+        #                     for village in villages:
+        #                         if village['commune_id'] == commune_id:
+        #                             village_id = village['id']
+
+        #                     # if len(villages) > 0:
+        #                     #     village_id = villages[0]['id']
+
+                        
+                        
+
+        #                 if dbframe[6] == '' or pd.isnull(dbframe[6]):
+        #                     total_family =0 
+        #                 elif dbframe[6] == '–' :
+        #                     total_family = 0
+        #                 else:
+        #                     total_family = float(dbframe[6])
+
+        #                 map_unit_id = 1
+        #                 utm_x = 0
+        #                 utm_y = 0
+        #                 coor_x = 0
+        #                 coor_y = 0
+        #                 if pd.isnull(dbframe[8]) == False:
+        #                     split_coor_x = dbframe[8].split(' ')
+        #                     if len(split_coor_x) == 1: #UTM
+        #                         utm_x = dbframe[8]
+        #                     elif len(split_coor_x) == 2: # decimal degree
+        #                         map_unit_id = 2
+        #                         coor_x = split_coor_x[0][:-1] + '.'+split_coor_x[1]
+                        
+        #                 if pd.isnull(dbframe[9]) == False:
+        #                     split_coor_y = dbframe[9].split(' ')
+        #                     if len(split_coor_y) == 1:
+        #                         utm_y = dbframe[9]
+        #                     elif len(split_coor_y) == 2:
+        #                         coor_y = split_coor_y[0][:-1] + '.' + split_coor_y[1]
+
+        #                 if pd.isnull(dbframe[28]) == False:
+        #                     if dbframe[28] == '–':
+        #                         beneficiary_total_people= 0
+        #                     else:                           
+        #                         beneficiary_total_people = float(dbframe[28])
+        #                 if pd.isnull(dbframe[29]) == False:
+        #                     if dbframe[29] == '–':
+        #                         beneficiary_total_women = 0
+        #                     else:
+        #                         beneficiary_total_women = float(dbframe[29])
+        #                 if pd.isnull(dbframe[30]) == False :
+        #                     if dbframe[30] == '–':
+        #                         beneficiary_total_family = 0
+        #                     else:
+        #                         beneficiary_total_family = float(dbframe[30])
+        #                 if pd.isnull(dbframe[31]) == False:
+        #                     if dbframe[31] == '–':
+        #                         beneficiary_total_family_poor_1 = 0
+        #                     else:
+        #                         beneficiary_total_family_poor_1 = float(dbframe[31])
+        #                 if pd.isnull(dbframe[32]) == False:
+        #                     if dbframe[32] == '–':
+        #                         beneficiary_total_family_poor_2 = 0
+        #                     else:
+        #                         beneficiary_total_family_poor_2 = float(dbframe[32])
+        #                 if pd.isnull(dbframe[33]) == False:
+        #                     if isNum(dbframe[33]) == False:
+        #                         beneficiary_total_family_vulnerable = 0
+        #                     else:
+        #                         beneficiary_total_family_vulnerable = float(dbframe[33])
+        #                 if pd.isnull(dbframe[34]) == False:
+        #                     if dbframe[34] == '–':
+        #                         beneficiary_total_family_indigenous = 0
+        #                     else:
+        #                         beneficiary_total_family_indigenous = float(dbframe[34])
+
+
+        #                 # if pd.isnull(dbframe[10]) == False:
+        #                 #     construction_date = dbframe[10].strftime("%Y-%m-%d")
+                        
+        #                     #print(construction_date)
+
+        #                 source_budget = 0
+        #                 if pd.isnull(dbframe[11]) == False: #Source Budget
+        #                     split_source_budget = dbframe[11].split('.')
+        #                     source_budget = int(split_source_budget[0])                       
+                        
+        #                 construction_by = ''
+        #                 if pd.isnull(dbframe[13]) == False:
+        #                     construction_by = dbframe[13]
+        #                 management_type = 0
+        #                 if pd.isnull(dbframe[14]) == False:
+        #                     split_management_type = dbframe[14].split('.')
+        #                     if isNum(split_management_type[0]):
+        #                         management_type = int(split_management_type[0])
+        #                 managed_by = ''
+        #                 if pd.isnull(dbframe[15]) == False:
+        #                     managed_by = dbframe[15]
+
+        #                 is_risk_enviroment = False
+        #                 if pd.isnull(dbframe[25]) == False:
+        #                     split_risk_enviroment = dbframe[25].split('.')
+        #                     if len(split_risk_enviroment) > 0:
+        #                         if isNum(split_risk_enviroment[0]):
+        #                             num_risk_enviroment = int(split_risk_enviroment[0])
+        #                             if num_risk_enviroment == 0:
+        #                                 is_risk_enviroment = True
+
+        #                 #print(total_family)
+
+        #                 #specific fields of Well 
+        #                 well_type_id = 0
+        #                 if pd.isnull(dbframe[16]) == False:
+        #                     split_well_type = dbframe[16].split('.')
+        #                     if len(split_well_type) > 0:
+        #                         if isNum(split_well_type[0]):
+        #                             well_type_id = int(split_well_type[0])
+        #                     else:
+        #                         split_well_type = dbframe[16].split(':')
+        #                         if len(split_well_type) > 0:
+        #                             if isNum(split_well_type[0]):
+        #                                 well_type_id = int(split_well_type[0])
+        #                     well_type_id = well_type_id + 1
+                        
+        #                 well_height = 0
+        #                 if pd.isnull(dbframe[17]) == False:
+        #                     if isNum(dbframe[17]):
+        #                         well_height = float(dbframe[17])
+        #                 well_filter_height = 0 
+        #                 if pd.isnull(dbframe[18]) == False:
+        #                     if isNum(dbframe[17]):
+        #                         well_filter_height = float(dbframe[18])
+        #                 well_water_supply = 0
+        #                 if pd.isnull(dbframe[19]) == False:
+        #                     if isNum(dbframe[19]):
+        #                         well_water_supply = float(dbframe[19])
+        #                 well_nirostatic = 0
+        #                 if pd.isnull(dbframe[20]) == False:
+        #                     if isNum(dbframe[20]):
+        #                         well_nirostatic = float(dbframe[20])
+        #                 well_nirodynamic = 0
+        #                 if pd.isnull(dbframe[21]) == False:
+        #                     if isNum(dbframe[21]):
+        #                         well_nirodynamic = float(dbframe[21])
+        #                 well_watar_quality = 9
+        #                 if pd.isnull(dbframe[24]) == False:
+        #                     split_well_water_quality = dbframe[24].split(':')
+        #                     if len(split_well_water_quality) > 0:
+        #                         if isNum(split_well_water_quality[0]):
+        #                             well_water_quality_value = int(split_well_water_quality[0])
+        #                             if well_water_quality_value == 0:
+        #                                 well_watar_quality = 8
+        #                             else:
+        #                                 well_watar_quality = 9
+
+                        
+        #                 print(well_watar_quality)
+        #                 well_water_quality_check = 0
+        #                 if pd.isnull(dbframe[22]) == False:
+        #                     split_water_quality_check = dbframe[22].split(':')
+        #                     if len(split_water_quality_check) > 0:
+        #                         if isNum(split_water_quality_check[0]):
+        #                             well_water_quality_check_value = int(split_water_quality_check[0])
+        #                             if well_water_quality_check_value == 0:
+        #                                 well_water_quality_check= 10
+        #                             else:
+        #                                 well_water_quality_check = 11
+
+        #                 well_status = 0
+        #                 if pd.isnull(dbframe[26]) == False:
+        #                     split_well_status = dbframe[26].split(':')
+        #                     if len(split_well_status) > 0:
+        #                         if isNum(split_well_status[0]):
+        #                             well_status_value = int(split_well_status[0])
+        #                             if well_status_value == 0:
+        #                                 well_status = 12
+        #                             else:
+        #                                 well_status = 13
+        #                 well_status_reason = 0
+        #                 if pd.isnull(dbframe[27]) == False:
+        #                     well_status_reason = dbframe[27]
+
+
+        #                 payload = {
+        #                     "water_supply_type_id": 1,
+        #                     "province_id": province_id,
+        #                     "district_id": district_id,
+        #                     "created_by":  request.session['user']['id'],
+        #                     "updated_by":  request.session['user']['id'],#
+        #                     "is_active": True,
+        #                     "is_risk_enviroment_area": is_risk_enviroment,
+        #                     "commune_id": commune_id,
+        #                     "village_id": village_id,
+        #                     "construction_date": construction_date,
+        #                     "water_supply_code" : water_supply_code,
+        #                     "total_family" : total_family,
+        #                     "utm_x": utm_x,
+        #                     "utm_y": utm_y,
+        #                     "source_budget": source_budget,
+        #                     "constructed_by":construction_by,
+        #                     "management_type":management_type,
+        #                     "managed_by":managed_by,
+        #                     "beneficiary_total_people": beneficiary_total_people,
+        #                     "beneficiary_total_women": beneficiary_total_women,
+        #                     "beneficiary_total_family": beneficiary_total_family,
+        #                     "beneficiary_total_family_poor_1": beneficiary_total_family_poor_1,
+        #                     "beneficiary_total_family_poor_2": beneficiary_total_family_poor_2,
+        #                     "beneficiary_total_family_vulnerable": beneficiary_total_family_vulnerable,
+        #                     "beneficiary_total_family_indigenous": beneficiary_total_family_indigenous,
+        #                     "main_status":1,
+        #                     "is_water_quality_check": False,
+        #                     "map_unit" : map_unit_id,
+        #                     "decimal_degress_lat" :coor_x,
+        #                     "decimal_degress_lng" : coor_y,
+        #                     "mds_x_degress" : 0,
+        #                     "mds_x_minute" : 0,
+        #                     "mds_x_second" : 0,
+        #                     "mds_y_degress" : 0,
+        #                     "mds_y_minute" : 0,
+        #                     "mds_y_second" : 0
+        #                 }
+
+        #                 #print(payload)
+        #                 headers = {'Content-Type': 'application/json'}
+        #                 #response = requests.post(url1, json=payload, headers=headers)
+
+        #                 response = requests.post(url1, json=payload, headers=headers)
+        #                 res_json  = response.json()
+        #                 print(res_json)
+                        
+        #                 if 'status' in res_json:
+        #                     SucessImported.append(dbframe)
+        #                     #water supply workflow
+        #                     ws_workflow = "http://18.222.12.231/en/api/v2/watersupplyworkflow"
+        #                     payload_wsworkflow = {
+        #                         "watersupply_id": res_json['data']['id'],
+        #                         "status_id": 1,
+        #                         "user_id": request.session['user']['id'],
+        #                         "remark": ""
+        #                     }
+        #                     response_ws_workflow = requests.post(ws_workflow, json=payload_wsworkflow, headers=headers).json()
+        #                     #WELL Specific Fields 
+        #                     ws_well_url = "http://18.222.12.231/en/api/watersupplywell/"
+        #                     payload_well = {
+        #                         "watersupply_id" : res_json['data']['id'],
+        #                         "well_type" : well_type_id,
+        #                         "well_height": well_height,
+        #                         "well_filter_height" : well_filter_height,
+        #                         "well_water_supply" : well_water_supply,
+        #                         "well_nirostatic": well_nirostatic,
+        #                         "well_watar_quality": well_watar_quality,
+        #                         "well_water_quality_check" : well_water_quality_check,
+        #                         "well_status": well_status,
+        #                         "well_status_reason":well_status_reason,
+        #                         "well_nirodynamic": well_nirodynamic,
+        #                         "is_active": True,
+        #                     }
+        #                     response_well = requests.post(ws_well_url, json=payload_well, headers=headers)
+        #                     well_res_json = response_well.json()                
+        #                     # print(well_res_json)
+        #                     if 'id' in well_res_json:
+        #                         ws_option_value_url = "http://18.222.12.231/en/api/watersupplywelloptionvalue/"
+        #                         payload_well_option_value ={
+        #                             "water_supply_well_id": well_res_json['id'],
+        #                             "option_id": 1,
+        #                             "value_id":int(well_type_id),
+        #                             "is_active": True
+        #                         }
+        #                         response_well_option_value = requests.post(ws_option_value_url,json=payload_well_option_value, headers=headers).json()
+        #                 #         #print(payload_well_option_value)
+                                
+        #     counter = counter + 1   
+                
+            #print(dbframe[7])
+
+
+        #Small PIPE 
+        small_pipe_excel_data = pd.read_excel(settings.MEDIA_ROOT + '/' + filename,sheet_name=1)
+        dbframe = small_pipe_excel_data
+        counter_small_pipe = 0
         for dbframe in dbframe.itertuples():
             PriceList.append(dbframe)
-            # Submit data to Database
-            if counter > 9 :
-                url1 = "http://18.222.12.231/en/api/v2/watersupply"
-
+            if counter_small_pipe > 6:
                 if pd.isnull(dbframe[1]) == False:
                     
-                    total_family = 0
+                    total_family = 0 #6
                     beneficiary_total_people = 0 #28
                     beneficiary_total_women = 0 #29
                     beneficiary_total_family = 0 #30
@@ -938,316 +1279,226 @@ def import_rural_water_supply(request):
 
                     water_supply_code = ''
                     construction_date = '2023-01-01'
+                    is_water_supply_code_exist= False
 
-                    province_id=''
-                    if pd.isnull(dbframe[2]) == False:
-                        province_filter_url = MAIN_URL + 'provincefilterbyname/?search=' + dbframe[2]                
-                        provinces = requests.get(province_filter_url).json()
-                        if len(provinces) > 0 :
-                            province_id = provinces[0]['id']
-                    
-                    district_id = ''
-                    if pd.isnull(dbframe[3]) == False:
-                        district_filter_url = MAIN_URL + 'districtfilterbyname/?search=' + dbframe[3]
-                        districts = requests.get(district_filter_url).json()
-                        for district in districts:
-                            if district['province_id'] == province_id:
-                                district_id = district['id']
-                        # if len(districts) > 0:
-                        #     district_id = districts[0]['id']
-                    
-                    commune_id = ''
-                    if pd.isnull(dbframe[4]) == False:
-                        commune_filter_url = MAIN_URL + 'communefilterbyname/?search=' + dbframe[4]
-                        communes = requests.get(commune_filter_url).json()
-                        for commune in communes:
-                            if commune['district_id'] == district_id:
-                                commune_id = commune['id']
-                        # if len(communes) > 0:
-                        #     commune_id = communes[0]['id']
-                    
-                    village_id = ''
-                    if pd.isnull(dbframe[5]) == False:
-                        village_filter_url = MAIN_URL + 'villagefilterbyname/?search=' + dbframe[4]
-                        villages = requests.get(village_filter_url).json()
-                        for village in villages:
-                            if village['commune_id'] == commune_id:
-                                village_id = village['id']
-
-                        # if len(villages) > 0:
-                        #     village_id = villages[0]['id']
-
-                    
-                    if dbframe[7] == '' or pd.isnull(dbframe[8]):
-                        water_supply_code = ''
-                    else:
-                        water_supply_code = dbframe[7]
-
-                    if dbframe[6] == '' or pd.isnull(dbframe[6]):
-                        total_family =0 
-                    elif dbframe[6] == '–' :
-                        total_family = 0
-                    else:
-                        total_family = float(dbframe[6])
-
-                    map_unit_id = 1
-                    utm_x = 0
-                    utm_y = 0
-                    coor_x = 0
-                    coor_y = 0
                     if pd.isnull(dbframe[8]) == False:
-                        split_coor_x = dbframe[8].split(' ')
-                        if len(split_coor_x) == 1: #UTM
-                            utm_x = dbframe[8]
-                        elif len(split_coor_x) == 2: # decimal degree
-                            map_unit_id = 2
-                            coor_x = split_coor_x[0][:-1] + '.'+split_coor_x[1]
+                        if dbframe[8] == '–':
+                            water_supply_code = ''
+                        else:
+                            water_supply_code = dbframe[7]
+                        
+                            check_exist_watersupply_url = MAIN_URL + 'watersupplycheckisexist/' + str(water_supply_code) + '/'
+                            result_exist = requests.get(check_exist_watersupply_url).json()
+                            if 'is_exist' in result_exist:
+                                if result_exist['is_exist'] == True:
+                                    is_water_supply_code_exist = True
                     
-                    if pd.isnull(dbframe[9]) == False:
-                        split_coor_y = dbframe[9].split(' ')
-                        if len(split_coor_y) == 1:
-                            utm_y = dbframe[9]
-                        elif len(split_coor_y) == 2:
-                            coor_y = split_coor_y[0][:-1] + '.' + split_coor_y[1]
+                    if is_water_supply_code_exist == False:
 
-                    if pd.isnull(dbframe[28]) == False:
-                        if dbframe[28] == '–':
-                            beneficiary_total_people= 0
-                        else:                           
-                            beneficiary_total_people = float(dbframe[28])
-                    if pd.isnull(dbframe[29]) == False:
-                        if dbframe[29] == '–':
-                            beneficiary_total_women = 0
-                        else:
-                            beneficiary_total_women = float(dbframe[29])
-                    if pd.isnull(dbframe[30]) == False :
-                        if dbframe[30] == '–':
-                            beneficiary_total_family = 0
-                        else:
-                            beneficiary_total_family = float(dbframe[30])
-                    if pd.isnull(dbframe[31]) == False:
-                        if dbframe[31] == '–':
-                            beneficiary_total_family_poor_1 = 0
-                        else:
-                            beneficiary_total_family_poor_1 = float(dbframe[31])
-                    if pd.isnull(dbframe[32]) == False:
-                        if dbframe[32] == '–':
-                            beneficiary_total_family_poor_2 = 0
-                        else:
-                            beneficiary_total_family_poor_2 = float(dbframe[32])
-                    if pd.isnull(dbframe[33]) == False:
-                        if isNum(dbframe[33]) == False:
-                            beneficiary_total_family_vulnerable = 0
-                        else:
-                            beneficiary_total_family_vulnerable = float(dbframe[33])
-                    if pd.isnull(dbframe[34]) == False:
-                        if dbframe[34] == '–':
-                            beneficiary_total_family_indigenous = 0
-                        else:
-                            beneficiary_total_family_indigenous = float(dbframe[34])
+                        province_id=''
+                        if pd.isnull(dbframe[2]) == False:
+                            province_filter_url = MAIN_URL + 'provincefilterbyname/?search=' + dbframe[2]                
+                            provinces = requests.get(province_filter_url).json()
+                            if len(provinces) > 0 :
+                                province_id = provinces[0]['id']
+                        
+                        district_id = ''
+                        if pd.isnull(dbframe[3]) == False:
+                            district_filter_url = MAIN_URL + 'districtfilterbyname/?search=' + dbframe[3]
+                            districts = requests.get(district_filter_url).json()
+                            for district in districts:
+                                if district['province_id'] == province_id:
+                                    district_id = district['id']
+                            # if len(districts) > 0:
+                            #     district_id = districts[0]['id']
+                        
+                        commune_id = ''
+                        if pd.isnull(dbframe[4]) == False:
+                            commune_filter_url = MAIN_URL + 'communefilterbyname/?search=' + dbframe[4]
+                            communes = requests.get(commune_filter_url).json()
+                            for commune in communes:
+                                if commune['district_id'] == district_id:
+                                    commune_id = commune['id']
+                            # if len(communes) > 0:
+                            #     commune_id = communes[0]['id']
+                        
+                        village_id = ''
+                        if pd.isnull(dbframe[5]) == False:
+                            village_filter_url = MAIN_URL + 'villagefilterbyname/?search=' + dbframe[4]
+                            villages = requests.get(village_filter_url).json()
+                            for village in villages:
+                                if village['commune_id'] == commune_id:
+                                    village_id = village['id']
 
+                            # if len(villages) > 0:
+                            #     village_id = villages[0]['id']
 
-                    # if pd.isnull(dbframe[10]) == False:
-                    #     construction_date = dbframe[10].strftime("%Y-%m-%d")
-                       
-                        #print(construction_date)
+                        
+                        
 
-                    source_budget = 0
-                    if pd.isnull(dbframe[11]) == False: #Source Budget
-                        split_source_budget = dbframe[11].split('.')
-                        source_budget = int(split_source_budget[0])                       
-                    
-                    construction_by = ''
-                    if pd.isnull(dbframe[13]) == False:
-                        construction_by = dbframe[13]
-                    management_type = 0
-                    if pd.isnull(dbframe[14]) == False:
-                        split_management_type = dbframe[14].split('.')
-                        if isNum(split_management_type[0]):
-                            management_type = int(split_management_type[0])
-                    managed_by = ''
-                    if pd.isnull(dbframe[15]) == False:
-                        managed_by = dbframe[15]
+                        if pd.isnull(dbframe[6]) == False :
+                            if dbframe[6] == '–':
+                                total_family = 0
+                            else:
+                                total_family = float(dbframe[6])                           
+                            
+                        map_unit_id = 1
+                        utm_x = 0
+                        utm_y = 0
+                        coor_x = 0
+                        coor_y = 0
+                        if pd.isnull(dbframe[8]) == False:
+                            if dbframe[8] == '–':
+                                utm_x = 0
+                                coor_x = 0
+                            else:
+                                split_coor_x = dbframe[8].split(' ')
+                                if len(split_coor_x) == 1: #UTM
+                                    utm_x = dbframe[8]
+                                elif len(split_coor_x) == 2: # decimal degree
+                                    map_unit_id = 2
+                                    coor_x = split_coor_x[0][:-1] + '.'+split_coor_x[1]
+                        
+                        if pd.isnull(dbframe[9]) == False:
+                            if dbframe[9] == '–':
+                                utm_y = 0
+                                coor_y = 0
+                            else:
+                                split_coor_y = dbframe[9].split(' ')
+                                if len(split_coor_y) == 1:
+                                    utm_y = dbframe[9]
+                                elif len(split_coor_y) == 2:
+                                    coor_y = split_coor_y[0][:-1] + '.' + split_coor_y[1]
 
-                    is_risk_enviroment = False
-                    if pd.isnull(dbframe[25]) == False:
-                        split_risk_enviroment = dbframe[25].split('.')
-                        if len(split_risk_enviroment) > 0:
-                            if isNum(split_risk_enviroment[0]):
-                                num_risk_enviroment = int(split_risk_enviroment[0])
-                                if num_risk_enviroment == 0:
-                                    is_risk_enviroment = True
-
-                    #print(total_family)
-
-                    #specific fields of Well 
-                    well_type_id = 0
-                    if pd.isnull(dbframe[16]) == False:
-                        split_well_type = dbframe[16].split('.')
-                        if len(split_well_type) > 0:
-                            if isNum(split_well_type[0]):
-                                well_type_id = int(split_well_type[0])
-                        else:
-                            split_well_type = dbframe[16].split(':')
-                            if len(split_well_type) > 0:
-                                if isNum(split_well_type[0]):
-                                    well_type_id = int(split_well_type[0])
-                        well_type_id = well_type_id + 1
-                    
-                    well_height = 0
-                    if pd.isnull(dbframe[17]) == False:
-                        if isNum(dbframe[17]):
-                            well_height = float(dbframe[17])
-                    well_filter_height = 0 
-                    if pd.isnull(dbframe[18]) == False:
-                        if isNum(dbframe[17]):
-                            well_filter_height = float(dbframe[18])
-                    well_water_supply = 0
-                    if pd.isnull(dbframe[19]) == False:
-                        if isNum(dbframe[19]):
-                            well_water_supply = float(dbframe[19])
-                    well_nirostatic = 0
-                    if pd.isnull(dbframe[20]) == False:
-                        if isNum(dbframe[20]):
-                            well_nirostatic = float(dbframe[20])
-                    well_nirodynamic = 0
-                    if pd.isnull(dbframe[21]) == False:
-                        if isNum(dbframe[21]):
-                            well_nirodynamic = float(dbframe[21])
-                    well_watar_quality = 9
-                    if pd.isnull(dbframe[24]) == False:
-                        split_well_water_quality = dbframe[24].split(':')
-                        if len(split_well_water_quality) > 0:
-                            if isNum(split_well_water_quality[0]):
-                                well_water_quality_value = int(split_well_water_quality[0])
-                                if well_water_quality_value == 0:
-                                    well_watar_quality = 8
-                                else:
-                                    well_watar_quality = 9
-
-                    
-                    print(well_watar_quality)
-                    well_water_quality_check = 0
-                    if pd.isnull(dbframe[22]) == False:
-                        split_water_quality_check = dbframe[22].split(':')
-                        if len(split_water_quality_check) > 0:
-                            if isNum(split_water_quality_check[0]):
-                                well_water_quality_check_value = int(split_water_quality_check[0])
-                                if well_water_quality_check_value == 0:
-                                    well_water_quality_check= 10
-                                else:
-                                    well_water_quality_check = 11
-
-                    well_status = 0
-                    if pd.isnull(dbframe[26]) == False:
-                        split_well_status = dbframe[26].split(':')
-                        if len(split_well_status) > 0:
-                            if isNum(split_well_status[0]):
-                                well_status_value = int(split_well_status[0])
-                                if well_status_value == 0:
-                                    well_status = 12
-                                else:
-                                    well_status = 13
-                    well_status_reason = 0
-                    if pd.isnull(dbframe[27]) == False:
-                        well_status_reason = dbframe[27]
+                        if pd.isnull(dbframe[30]) == False:
+                            if dbframe[30] == '–':
+                                beneficiary_total_people= 0
+                            else:                           
+                                beneficiary_total_people = float(dbframe[30])
+                        if pd.isnull(dbframe[31]) == False:
+                            if dbframe[31] == '–':
+                                beneficiary_total_women = 0
+                            else:
+                                beneficiary_total_women = float(dbframe[31])
+                        if pd.isnull(dbframe[32]) == False :
+                            if dbframe[32] == '–':
+                                beneficiary_total_family = 0
+                            else:
+                                beneficiary_total_family = float(dbframe[32])
+                        if pd.isnull(dbframe[33]) == False:
+                            if dbframe[33] == '–':
+                                beneficiary_total_family_poor_1 = 0
+                            else:
+                                beneficiary_total_family_poor_1 = float(dbframe[33])
+                        if pd.isnull(dbframe[34]) == False:
+                            if dbframe[34] == '–':
+                                beneficiary_total_family_poor_2 = 0
+                            else:
+                                beneficiary_total_family_poor_2 = float(dbframe[34])
+                        if pd.isnull(dbframe[35]) == False:
+                            if isNum(dbframe[35]) == False:
+                                beneficiary_total_family_vulnerable = 0
+                            else:
+                                beneficiary_total_family_vulnerable = float(dbframe[35])
+                        if pd.isnull(dbframe[36]) == False:
+                            if dbframe[36] == '–':
+                                beneficiary_total_family_indigenous = 0
+                            else:
+                                beneficiary_total_family_indigenous = float(dbframe[36])
 
 
-                    payload = {
-                        "water_supply_type_id": 1,
-                        "province_id": province_id,
-                        "district_id": district_id,
-                        "created_by":  request.session['user']['id'],
-                        "updated_by":  request.session['user']['id'],#
-                        "is_active": True,
-                        "is_risk_enviroment_area": is_risk_enviroment,
-                        "commune_id": commune_id,
-                        "village_id": village_id,
-                        "construction_date": construction_date,
-                        "water_supply_code" : water_supply_code,
-                        "total_family" : total_family,
-                        "utm_x": utm_x,
-                        "utm_y": utm_y,
-                        "source_budget": source_budget,
-                        "constructed_by":construction_by,
-                        "management_type":management_type,
-                        "managed_by":managed_by,
-                        "beneficiary_total_people": beneficiary_total_people,
-                        "beneficiary_total_women": beneficiary_total_women,
-                        "beneficiary_total_family": beneficiary_total_family,
-                        "beneficiary_total_family_poor_1": beneficiary_total_family_poor_1,
-                        "beneficiary_total_family_poor_2": beneficiary_total_family_poor_2,
-                        "beneficiary_total_family_vulnerable": beneficiary_total_family_vulnerable,
-                        "beneficiary_total_family_indigenous": beneficiary_total_family_indigenous,
-                        "main_status":1,
-                        "is_water_quality_check": False,
-                        "map_unit" : map_unit_id,
-                        "decimal_degress_lat" :coor_x,
-                        "decimal_degress_lng" : coor_y,
-                        "mds_x_degress" : 0,
-                        "mds_x_minute" : 0,
-                        "mds_x_second" : 0,
-                        "mds_y_degress" : 0,
-                        "mds_y_minute" : 0,
-                        "mds_y_second" : 0
-                    }
+                        # if pd.isnull(dbframe[10]) == False:
+                        #     construction_date = dbframe[10].strftime("%Y-%m-%d")
+                        
+                            #print(construction_date)
 
-                    #print(payload)
-                    headers = {'Content-Type': 'application/json'}
-                    #response = requests.post(url1, json=payload, headers=headers)
+                        source_budget = 0
+                        if pd.isnull(dbframe[11]) == False: #Source Budget
+                            split_source_budget = dbframe[11].split('.')
+                            source_budget = int(split_source_budget[0])                       
+                        
+                        construction_by = ''
+                        if pd.isnull(dbframe[13]) == False:
+                            construction_by = dbframe[13]
+                        management_type = 0
+                        if pd.isnull(dbframe[14]) == False:
+                            split_management_type = dbframe[14].split('.')
+                            if isNum(split_management_type[0]):
+                                management_type = int(split_management_type[0])
+                        managed_by = ''
+                        if pd.isnull(dbframe[15]) == False:
+                            managed_by = dbframe[15]
 
-                    response = requests.post(url1, json=payload, headers=headers)
-                    res_json  = response.json()
-                    print(res_json)
-                    
-                    if 'status' in res_json:
-                        SucessImported.append(dbframe)
-                        #water supply workflow
-                        ws_workflow = "http://18.222.12.231/en/api/v2/watersupplyworkflow"
-                        payload_wsworkflow = {
-                            "watersupply_id": res_json['data']['id'],
-                            "status_id": 1,
-                            "user_id": request.session['user']['id'],
-                            "remark": ""
-                        }
-                        response_ws_workflow = requests.post(ws_workflow, json=payload_wsworkflow, headers=headers).json()
-                        #WELL Specific Fields 
-                        ws_well_url = "http://18.222.12.231/en/api/watersupplywell/"
-                        payload_well = {
-                            "watersupply_id" : res_json['data']['id'],
-                            "well_type" : well_type_id,
-                            "well_height": well_height,
-                            "well_filter_height" : well_filter_height,
-                            "well_water_supply" : well_water_supply,
-                            "well_nirostatic": well_nirostatic,
-                            "well_watar_quality": well_watar_quality,
-                            "well_water_quality_check" : well_water_quality_check,
-                            "well_status": well_status,
-                            "well_status_reason":well_status_reason,
-                            "well_nirodynamic": well_nirodynamic,
+                        is_risk_enviroment = False
+                        if pd.isnull(dbframe[27]) == False:
+                            split_risk_enviroment = dbframe[27].split('.')
+                            if len(split_risk_enviroment) > 0:
+                                if isNum(split_risk_enviroment[0]):
+                                    num_risk_enviroment = int(split_risk_enviroment[0])
+                                    if num_risk_enviroment == 0:
+                                        is_risk_enviroment = True
+
+                        payload = {
+                            "water_supply_type_id": 2,
+                            "province_id": province_id,
+                            "district_id": district_id,
+                            "created_by":  request.session['user']['id'],
+                            "updated_by":  request.session['user']['id'],#
                             "is_active": True,
+                            "is_risk_enviroment_area": is_risk_enviroment,
+                            "commune_id": commune_id,
+                            "village_id": village_id,
+                            "construction_date": construction_date,
+                            "water_supply_code" : water_supply_code,
+                            "total_family" : total_family,
+                            "utm_x": utm_x,
+                            "utm_y": utm_y,
+                            "source_budget": source_budget,
+                            "constructed_by":construction_by,
+                            "management_type":management_type,
+                            "managed_by":managed_by,
+                            "beneficiary_total_people": beneficiary_total_people,
+                            "beneficiary_total_women": beneficiary_total_women,
+                            "beneficiary_total_family": beneficiary_total_family,
+                            "beneficiary_total_family_poor_1": beneficiary_total_family_poor_1,
+                            "beneficiary_total_family_poor_2": beneficiary_total_family_poor_2,
+                            "beneficiary_total_family_vulnerable": beneficiary_total_family_vulnerable,
+                            "beneficiary_total_family_indigenous": beneficiary_total_family_indigenous,
+                            "main_status":1,
+                            "is_water_quality_check": False,
+                            "map_unit" : map_unit_id,
+                            "decimal_degress_lat" :coor_x,
+                            "decimal_degress_lng" : coor_y,
+                            "mds_x_degress" : 0,
+                            "mds_x_minute" : 0,
+                            "mds_x_second" : 0,
+                            "mds_y_degress" : 0,
+                            "mds_y_minute" : 0,
+                            "mds_y_second" : 0
                         }
-                        response_well = requests.post(ws_well_url, json=payload_well, headers=headers)
-                        well_res_json = response_well.json()                
-                        # print(well_res_json)
-                        if 'id' in well_res_json:
-                            ws_option_value_url = "http://18.222.12.231/en/api/watersupplywelloptionvalue/"
-                            payload_well_option_value ={
-                                "water_supply_well_id": well_res_json['id'],
-                                "option_id": 1,
-                                "value_id":int(well_type_id),
-                                "is_active": True
+
+                        #print(payload)
+                        headers = {'Content-Type': 'application/json'}
+                        #response = requests.post(url1, json=payload, headers=headers)
+
+                        response = requests.post(url1, json=payload, headers=headers)
+                        res_json  = response.json()
+                        print(res_json)
+                        
+                        if 'status' in res_json:
+                            SucessImported.append(dbframe)
+                            #water supply workflow
+                            ws_workflow = "http://18.222.12.231/en/api/v2/watersupplyworkflow"
+                            payload_wsworkflow = {
+                                "watersupply_id": res_json['data']['id'],
+                                "status_id": 1,
+                                "user_id": request.session['user']['id'],
+                                "remark": ""
                             }
-                            response_well_option_value = requests.post(ws_option_value_url,json=payload_well_option_value, headers=headers).json()
-                    #         #print(payload_well_option_value)
-                                
-            counter = counter + 1   
-                
-            #print(dbframe[7])
-        #     obj = Employee.objects.create(Empcode=dbframe.Empcode,firstName=dbframe.firstName, middleName=dbframe.middleName,
-        #                                     lastName=dbframe.lastName, email=dbframe.email, phoneNo=dbframe.phoneNo, address=dbframe.address,
-        #                                     gender=dbframe.gender, DOB=dbframe.DOB,salary=dbframe.Salary )           
-        #     obj.save()
+                            response_ws_workflow = requests.post(ws_workflow, json=payload_wsworkflow, headers=headers).json()
+
+            counter_small_pipe = counter_small_pipe + 1
+
 
 
         

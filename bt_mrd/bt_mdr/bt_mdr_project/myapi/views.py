@@ -464,6 +464,35 @@ class WaterSupplyCountPendingApprovalGenericAPIVIew(generics.ListAPIView):
         # return Response({"count":count, "data":serializer.data})
         return Response({"count":count})
 
+    
+class WaterSupplyExistByWaterSupplyCodeAPIView(generics.ListAPIView):
+    serializer_class = serializers.WaterSupplySerializer
+    permission_classes = (AllowAny,)
+
+    def get_queryset(self):
+        watersupply_code = self.kwargs['code']
+        return WaterSupply.objects.filter(is_active=True).filter(water_supply_code=watersupply_code)
+    
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        count = queryset.count()
+        is_exist = False
+        if count > 0:
+            is_exist = True
+        # return Response({"count":count, "data":serializer.data})
+        return Response({
+            "is_exist":is_exist,
+            "data":serializer.data
+            })
+        
+
 class WaterSupplyHistoryViewSet(viewsets.ModelViewSet):
     model = WaterSupplyHistory
     queryset = WaterSupplyHistory.objects.all().order_by('-id')
