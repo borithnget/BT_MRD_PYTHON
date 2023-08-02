@@ -464,13 +464,14 @@ msgid "last_name"
 msgstr "Lastname"
 msgid "FullName"
 msgstr "Fullname"
-
 msgid "allrightreserverd"
 msgstr "All Rights Reserved : Ministry of Rural Development"
 msgid "label_contact_phone"
 msgstr "Contact Phone: "
 msgid "label_about_project"
 msgstr "ABOUT PROJECT"
+msgid "menu_import_rural_water_supply"
+msgstr "Import Rural Water Supply"
 
 #START VALIDATION MESSAGE
 msgid "validation_district"

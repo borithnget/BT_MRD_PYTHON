@@ -473,6 +473,8 @@ msgid "label_contact_phone"
 msgstr "លេខទូរសព្ទ័: "
 msgid "label_about_project"
 msgstr "អំពីគម្រោង"
+msgid "menu_import_rural_water_supply"
+msgstr "Import Rural Water Supply"
 
 
 #START VALIDATION MESSAGE

@@ -460,7 +460,9 @@ let cambodiaAREADATA="104.5359,10.4477 104.5267,10.4464 104.5173,10.4395 104.504
                     if(!response["valid"]){
                         console.log(response.data);
                         $.each(response.data,function(ind,item){
-                            //console.log(item);
+                            console.log(item);
+
+                            var village = item.village_id==null?"":item.village_id.name_kh;
 
                             const contentString =
                                 '<div id="content">' +
@@ -471,7 +473,7 @@ let cambodiaAREADATA="104.5359,10.4477 104.5267,10.4464 104.5173,10.4395 104.504
                                 "<p><b>{% trans 'province' %} : "+item.province_id.name_kh+"</b></p>" +
                                 "<p><b>{% trans 'district' %} : "+item.district_id.name_kh+"</b></p>" +
                                 "<p><b>{% trans 'commune' %} : "+item.commune_id.name_kh+"</b></p>" +
-                                "<p><b>{% trans 'village' %} : "+item.village_id.name_kh+"</b></p>" +
+                                "<p><b>{% trans 'village' %} : "+village+"</b></p>" +
                                 '<p><b>{% trans "view_detail" %} : <a href="watersupply/detail/'+item.id+'">{% trans "click_here" %}</a></b> </p>' +
                                 "</div>" +
                                 "</div>";
@@ -515,7 +517,7 @@ let cambodiaAREADATA="104.5359,10.4477 104.5267,10.4464 104.5173,10.4395 104.504
                                 //     content: "Hello",
                                 //     ariaLabel: "Uluru",
                                 // });
-                                console.log(latlng);
+                                //console.log(latlng);
                                 const marker = new google.maps.Marker({
                                     position: { lat: parseFloat(latlng[1]), lng: parseFloat(latlng[0])},
                                     map: map,
