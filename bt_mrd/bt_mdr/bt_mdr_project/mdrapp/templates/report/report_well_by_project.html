@@ -253,12 +253,13 @@
                                     well_water_quality_check_obj="<td>"+well.well_water_quality_check_obj[0].name_kh+"</td>";
                                     well_status="<td>"+well.well_status_obj[0].name_kh+"</td>";
                                 }
+                                var village=item.village_id == null?'':item.village_id.name_kh;
                                 $('#table1 tbody').append("<tr>"+
                                     "<td>"+Number(index+1)+"</td>"+
                                     "<td>"+item.province_id.name_kh + "</td>"+
                                     "<td>"+item.district_id.name_kh + "</td>"+
                                     "<td>"+item.commune_id.name_kh + "</td>"+
-                                    "<td>"+item.village_id.name_kh + "</td>"+
+                                    "<td>"+village + "</td>"+
                                     well_type+
                                     //coordinate
                                     coordinate+
