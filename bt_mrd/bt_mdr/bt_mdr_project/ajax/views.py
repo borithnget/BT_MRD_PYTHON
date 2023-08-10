@@ -6,12 +6,12 @@ import requests
 from django.conf import settings
 # Create your views here.
 
-MAIN_URL = 'http://18.222.12.231/api/' 
+MAIN_URL = 'http://13.212.250.28/api/' 
 #MAIN_URL = 'http://127.0.0.1:8000/en/api/'
 
 def get_country_km(request):
     if request.method == "GET":
-        country_url = "http://18.222.12.231/en/api/country/1/"     # settings.API_ENDPOINT +  
+        country_url = "http://13.212.250.28/en/api/country/1/"     # settings.API_ENDPOINT +  
         country = requests.get(country_url).json()
         return JsonResponse({"country":country}, status=200)
     return JsonResponse({}, status = 400)
@@ -89,7 +89,8 @@ def get_water_supply_report_map(request):
     if request.method == "GET":
         headers = {'Content-Type': 'application/json'}
         water_supply_id = request.GET.get('water_supply_id', NONE)
-        url = settings.API_ENDPOINT + "watersupplyreportmap/?water_supply_type_id="+ str(water_supply_id)
+        #url = settings.API_ENDPOINT + "watersupplyreportmap/?water_supply_type_id="+ str(water_supply_id)
+        url = settings.API_ENDPOINT + "watersupplymap/"
         list = requests.get(url).json()
         return JsonResponse({'data': list}, status=200)
     return JsonResponse({}, status=400)
@@ -159,7 +160,7 @@ def post_approval_watersupply_by_provicial_head_department(request):
         remark = request.GET.get('remark',NONE)
 
         #print(water_supply_id + " " + status_id)
-        ws_workflow = "http://18.222.12.231/en/api/v2/watersupplyworkflow"
+        ws_workflow = "http://13.212.250.28/en/api/v2/watersupplyworkflow"
         payload_wsworkflow = {
             "watersupply_id": water_supply_id,
             "status_id":int(status_id),#1
@@ -170,7 +171,7 @@ def post_approval_watersupply_by_provicial_head_department(request):
         response_ws_workflow = requests.post(ws_workflow, json=payload_wsworkflow, headers=headers).json()
 
         #Update Water Supply MainStatus
-        ws_update_url = "http://18.222.12.231/en/api/watersupply/"+ str (water_supply_id) +"/update/"
+        ws_update_url = "http://13.212.250.28/en/api/watersupply/"+ str (water_supply_id) +"/update/"
         ws_update_payload = {
             "id": water_supply_id,
             "main_status": status_id #1
@@ -186,7 +187,7 @@ def put_water_supply_delete(request):
         headers = {'Content-Type': 'application/json'}
         water_supply_id = request.GET.get('water_supply_id', NONE)
 
-        ws_delete_url = "http://18.222.12.231/en/api/v2/watersupply/" + str(water_supply_id) + "/delete/"
+        ws_delete_url = "http://13.212.250.28/en/api/v2/watersupply/" + str(water_supply_id) + "/delete/"
         ws_delete_payload = {
             "id": water_supply_id,
             "updated_by": int(request.session['user']['id']),

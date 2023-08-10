@@ -326,6 +326,12 @@ class WaterSupplyViewSet_2(viewsets.ModelViewSet):
     queryset = WaterSupply.objects.all().order_by('-created_at').filter(is_active=True)
     serializer_class = serializers.WaterSupplySerializer_v2
 
+class WaterSupplyMapViewSet(viewsets.ModelViewSet):
+    model = WaterSupply
+    queryset = WaterSupply.objects.all().order_by('-created_at').filter(is_active=True).filter(main_status=9)
+    serializer_class = serializers.WaterSupplyMapSerializer
+
+
 class WaterSupplyCreateAPIView(generics.CreateAPIView):
   permission_classes = (AllowAny,)
   serializer_class = serializers.WaterSupplySerializer_v2

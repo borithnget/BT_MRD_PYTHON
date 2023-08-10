@@ -45,6 +45,7 @@ router.register(r'provincefilterbyname', views.ProvinceFilterByNameViewSet)
 router.register(r'districtfilterbyname', views.DistrictFilterByNameViewSet)
 router.register(r'communefilterbyname', views.CommnueFilterByNameViewSet)
 router.register(r'villagefilterbyname', views.VillageFilterByNameViewSet)
+router.register(r'watersupplymap', views.WaterSupplyMapViewSet)
 #router.register(r'v2/watersupply', views.WaterSupplyViewSet_2)
 
 # Wire up our API using automatic URL routing.
@@ -81,4 +82,5 @@ urlpatterns = [
     path('exportcsvwatersupply/', views.ExportCSVWaterSupply.as_view()),
     path('generateqrcode/<int:id>/', views.GenerateQRCodeView.as_view()),
     path('watersupplycheckisexist/<str:code>/', views.WaterSupplyExistByWaterSupplyCodeAPIView.as_view()),
+
 ]
