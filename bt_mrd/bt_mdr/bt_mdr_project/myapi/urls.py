@@ -46,6 +46,7 @@ router.register(r'districtfilterbyname', views.DistrictFilterByNameViewSet)
 router.register(r'communefilterbyname', views.CommnueFilterByNameViewSet)
 router.register(r'villagefilterbyname', views.VillageFilterByNameViewSet)
 router.register(r'watersupplymap', views.WaterSupplyMapViewSet)
+router.register(r'watersupplylistbytype', views.WaterSupplyListByTypeViewSet)
 #router.register(r'v2/watersupply', views.WaterSupplyViewSet_2)
 
 # Wire up our API using automatic URL routing.

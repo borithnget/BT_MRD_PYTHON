@@ -12,6 +12,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
 from rest_framework.views import APIView
+from rest_framework import pagination
 
 from mdrapp.models import Commune, Province, District, Village, WaterSupplyType, WaterSupplyOption, WaterSupplyOptionValue, WaterSupplyTypeOption, WaterSupply, WaterSupplyWell, WaterSupplyPipe, WaterSupplyKiosk, WaterSupplyCommunityPond, WaterSupplyRainWaterHarvesting, Status, WaterSupplyWorkFlow, UserDetail, WaterSupplyQRCode, WaterSupplyHistory, WaterSupplyPipeOptionValue, WaterQualityCheckedParamater, WaterSupplyQuanlityCheckParamater, WaterSupplyKioskOptionValue, WaterSupplyPipePrivate, WaterSupplyPipePrivateOptionValue, WaterSupplyAirWater, WaterSupplyAirWaterOptionValue, User, Country
 from mdrapp.views import MAIN_URL_1
@@ -40,6 +41,21 @@ from django.conf import settings
 from qrcode import *
 
 # Create your views here.
+class CustomPagination(pagination.PageNumberPagination):
+    # page_size = 50
+    # page_size_query_param = 'page_size'
+    # max_page_size = 100
+    # page_query_param = 'p'
+    def get_paginated_response(self, data):
+        return Response({
+            'links': {
+               'next': self.get_next_link(),
+               'previous': self.get_previous_link()
+            },
+            'count': self.page.paginator.count,
+            'total_pages': self.page.paginator.num_pages,
+            'results': data
+        })
 
 class HeroViewSet(viewsets.ModelViewSet):
     queryset = Hero.objects.all().order_by('name')
@@ -188,6 +204,7 @@ class ProvinceViewSet(viewsets.ModelViewSet):
 
     filter_backends = [DjangoFilterBackend]
     filterset_fields  = ['id', 'name_kh']
+    pagination_class = CustomPagination
 
 class ProvinceFilterByNameViewSet(viewsets.ModelViewSet):
     model = Province
@@ -290,6 +307,13 @@ class WaterSupplyReportMap(viewsets.ModelViewSet):
     serializer_class = serializers.WaterSupplySerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields  = ['water_supply_type_id']
+
+class WaterSupplyListByTypeViewSet(viewsets.ModelViewSet):
+    model = WaterSupply
+    queryset = WaterSupply.objects.all().order_by('-created_at').filter(is_active=True).filter(main_status=9)
+    serializer_class = serializers.WaterSupplyListSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields  = ['water_supply_type_id', 'province_id']
 
 class WaterSupplyByUserAndStatusViewSet(viewsets.ModelViewSet):
     model = WaterSupply
@@ -853,3 +877,9 @@ class GenerateQRCodeView(APIView):
         img.save(settings.MEDIA_ROOT + '/' + img_name)
 
         return Response({"qr_name": img_name})
+    
+class CustomPagination(pagination.PageNumberPagination):
+    page_size = 2
+    page_size_query_param = 'page_size'
+    max_page_size = 50
+    page_query_param = 'p'

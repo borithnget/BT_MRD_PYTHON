@@ -18,6 +18,8 @@
 {% endblock %}
 
 {% block content %}
+<input type="hidden" id="hidden_lan" value="{{ CURRENT_LANGUAGE }}" />
+<input type="hidden" id="hidden_ws_type" value="{{ watersupplytype_id }}"/>
     {% get_current_language as CURRENT_LANGUAGE %}
 
     <!-- {% for watersupplytype in watersupplytypes %}
@@ -29,6 +31,25 @@
             </div>
         
     {% endif %}
+    <div class="row form-group">
+        <label class="col-md-2 control-label">{% trans 'province' %}</label>
+        <div class="col-md-4">
+            <select class="form-control" id="ddr_province">
+                <option value="0">{% trans 'select_option' %}</option>
+                {% if provinces %}
+                    {% for province in provinces %}
+                        {% if CURRENT_LANGUAGE == 'en'  %}
+                        <option value="{{ province.id}}">{{ province.code_en}}.{{ province.name_en }}</option>
+                            {% else %}
+                            <option value="{{ province.id }}">{{ province.code_kh}}.{{ province.name_kh }}</option>
+                        {% endif %}
+                    
+                    {% endfor %}
+                {% endif %}
+            </select>
+        </div>
+        <button class="btn btn-sm btn-primary" id="btn_filter">{% trans 'btn_filter' %}</button>
+    </div> 
 
     <div class="table-responsive">
         <table class='table table-bordered' id="table_1">
@@ -113,11 +134,98 @@
 <script type="text/javascript">
     $(function(){
         $(document).ready(function () {
-            $('#table_1').DataTable({
-                order: [[5, 'desc']],
+
+            $('#ddr_province').select2();
+            initialDataTable();
+
+            $('#btn_filter').click(function(){
+                initialDataTable();
             });
+            
         });
     });
+
+    function initialDataTable(){
+        var current_lan=$('#hidden_lan').val();
+        $('#table_1').DataTable({
+            "destroy":true,
+                "processing" : true,
+                // "serverSide": true,
+                // dom: 'Bfrtip',
+                //         retrieve: true,
+                "ajax": {
+                    "url": "{% url 'ajax_get_watersupply_list_by_province' %}",
+                    "data":{
+                        'ws_type': $('#hidden_ws_type').val()==0?'':$('#hidden_ws_type').val(),
+                        'province_id': $('#ddr_province').val()
+                    }
+                },
+                "columns": [
+                    { "data": "water_supply_code" },
+                    { 
+                        "render": function (data, type, row){
+                        if(current_lan=='en')
+                            return row.province_id.name_en;
+                        else
+                            return row.province_id.name_kh;
+                    } 
+                    },
+                    { "render": function (data, type, row){
+                            if(current_lan=='en')
+                                return row.district_id.name_en;
+                            else
+                                return row.district_id.name_kh;
+                        } 
+                    },
+                    { "render": function (data, type, row){
+                            if(current_lan=='en')
+                                return row.commune_id.name_en;
+                            else
+                                return row.commune_id.name_kh;
+                        } 
+                    },
+                    { "render": function (data, type, row){
+                        if(row.village_id ==null)
+                            return '';
+                            if(current_lan=='en')
+                                return row.village_id.name_en;
+                            else
+                                return row.village_id.name_kh;
+                        } 
+                    },
+                    { "data": "created_at" },
+                    { "render": function (data, type, row){
+                        
+                            if(current_lan=='en')
+                                return row.water_supply_type_id.name_en;
+                            else
+                                return row.water_supply_type_id.name_kh;
+                        } 
+                    },
+                    { "render": function (data, type, row){
+                        
+                        return row.created_by.first_name + ' '+row.created_by.last_name;
+                    } 
+                },
+                { "render": function (data, type, row){
+                        
+                        if(current_lan == 'en')
+                            return '<span class="badge badge-warning">'+ row.main_status.status_name +'</span>';
+                        else
+                        return '<span class="badge badge-warning">'+ row.main_status.status_name_kh +'</span>';
+                    } 
+                },
+                    {   
+                        "render":function (data, type, row) {
+                            //console.log(row);
+                            return "<a href='/"+current_lan+"/watersupply/detail/" + row.id + "' class='btn btn-sm btn-outline-primary'><i class='fa fa-eye'></i>  {% trans 'btn_view_detail' %}</a>";
+                        } 
+                    }
+                    
+                ],
+                order: [[5, 'desc']],
+            });
+    }
 
 </script>
 {% endblock %}

@@ -670,6 +670,21 @@ class WaterSupplyMapSerializer(serializers.ModelSerializer):
         model = models.WaterSupply
         fields = ['id', 'water_supply_type_id', 'province_id', 'district_id', 'commune_id', 'village_id', 'water_supply_code', 'utm_x', 'utm_y', 'map_unit', 'decimal_degress_lat', 'decimal_degress_lng', 'mds_x_degress', 'mds_x_minute', 'mds_x_second', 'mds_y_degress', 'mds_y_minute', 'mds_y_second',]
 
+class WaterSupplyListSerializer(serializers.ModelSerializer):
+    created_by = UserSerializer(read_only=True)
+    water_supply_type_id = WaterSupplyTypeSerializer(many=False, read_only=True)
+    province_id = ProvinceSerializer_v2(many=False, read_only=True)
+    district_id = DistrictSerializer_v2(many=False, read_only=True)
+    commune_id = CommuneSerializer_v2(many=False, read_only=True)
+    village_id = VillageSerializer_v2(many=False, read_only=True)
+    main_status = StatusSerializer(many=False, read_only=True)
+    created_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S")
+    crated_at_1 = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S")
+
+    class Meta:
+        model = models.WaterSupply
+        fields = ['id', 'water_supply_type_id', 'province_id', 'district_id', 'commune_id', 'village_id', 'water_supply_code', 'created_by', 'created_at', 'crated_at_1', 'main_status',]
+
 class WaterSupplyHistortSerializer(serializers.ModelSerializer):
     created_at = serializers.DateTimeField(default=datetime.now())
     class Meta:
