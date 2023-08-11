@@ -659,6 +659,17 @@ class WaterSupplySerializer_v2(serializers.ModelSerializer):
         'management_type', 'managed_by', 'beneficiary_total_people', 'beneficiary_total_women', 'beneficiary_total_family', 'beneficiary_total_family_poor_1', 'beneficiary_total_family_poor_2', 'beneficiary_total_family_vulnerable', 'beneficiary_total_family_indigenous', 'main_status', 'is_water_quality_check',
         'map_unit', 'decimal_degress_lat', 'decimal_degress_lng', 'mds_x_degress', 'mds_x_minute', 'mds_x_second', 'mds_y_degress', 'mds_y_minute', 'mds_y_second', 'crated_at_1']
 
+class WaterSupplyMapSerializer(serializers.ModelSerializer):
+
+    water_supply_type_id = WaterSupplyTypeSerializer(many=False, read_only=True)
+    province_id = ProvinceSerializer_v2(many=False, read_only=True)
+    district_id = DistrictSerializer_v2(many=False, read_only=True)
+    commune_id = CommuneSerializer_v2(many=False, read_only=True)
+    village_id = VillageSerializer_v2(many=False, read_only=True)
+    class Meta:
+        model = models.WaterSupply
+        fields = ['id', 'water_supply_type_id', 'province_id', 'district_id', 'commune_id', 'village_id', 'water_supply_code', 'utm_x', 'utm_y', 'map_unit', 'decimal_degress_lat', 'decimal_degress_lng', 'mds_x_degress', 'mds_x_minute', 'mds_x_second', 'mds_y_degress', 'mds_y_minute', 'mds_y_second',]
+
 class WaterSupplyHistortSerializer(serializers.ModelSerializer):
     created_at = serializers.DateTimeField(default=datetime.now())
     class Meta:

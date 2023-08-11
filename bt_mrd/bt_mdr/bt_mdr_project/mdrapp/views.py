@@ -12,8 +12,8 @@ from django.conf import settings
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 # Create your views here.
 
-MAIN_URL = 'http://18.188.96.242/api/' 
-MAIN_URL_1 = 'http://18.188.96.242/en/'
+MAIN_URL = 'http://13.212.250.28/api/' 
+MAIN_URL_1 = 'http://13.212.250.28/en/'
 
 def geocode(request):
     gmaps = googlemaps.Client(key= settings.GOOGLE_API_KEY)
@@ -77,7 +77,7 @@ def user_login(request):
     error_msgs = []
 
     if request.method == "POST":
-        #login_url = "http://18.188.96.242/en/api/login/"
+        #login_url = "http://13.212.250.28/en/api/login/"
         #login_url = "http://127.0.0.1:8000/en/api/login/"
         login_url = settings.API_ENDPOINT + "login/"
         payload = {
