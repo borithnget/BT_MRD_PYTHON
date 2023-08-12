@@ -42,20 +42,20 @@ from qrcode import *
 
 # Create your views here.
 class CustomPagination(pagination.PageNumberPagination):
-    # page_size = 50
-    # page_size_query_param = 'page_size'
-    # max_page_size = 100
-    # page_query_param = 'p'
-    def get_paginated_response(self, data):
-        return Response({
-            'links': {
-               'next': self.get_next_link(),
-               'previous': self.get_previous_link()
-            },
-            'count': self.page.paginator.count,
-            'total_pages': self.page.paginator.num_pages,
-            'results': data
-        })
+    page_size = 50
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+    page_query_param = 'p'
+    # def get_paginated_response(self, data):
+    #     return Response({
+    #         'links': {
+    #            'next': self.get_next_link(),
+    #            'previous': self.get_previous_link()
+    #         },
+    #         'count': self.page.paginator.count,
+    #         'total_pages': self.page.paginator.num_pages,
+    #         'results': data
+    #     })
 
 class HeroViewSet(viewsets.ModelViewSet):
     queryset = Hero.objects.all().order_by('name')
@@ -204,7 +204,7 @@ class ProvinceViewSet(viewsets.ModelViewSet):
 
     filter_backends = [DjangoFilterBackend]
     filterset_fields  = ['id', 'name_kh']
-    pagination_class = CustomPagination
+    #pagination_class = CustomPagination
 
 class ProvinceFilterByNameViewSet(viewsets.ModelViewSet):
     model = Province

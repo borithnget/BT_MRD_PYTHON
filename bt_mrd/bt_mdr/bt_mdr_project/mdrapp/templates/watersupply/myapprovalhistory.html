@@ -32,7 +32,8 @@
             {% if watersupplylist %}
             {% for ws in watersupplylist %}
                 <tr>
-                    <td>{{ ws.watersupply_id.water_supply_code }}</td>
+                    <td>{{ ws.watersupply_id.water_supply_code }}</td>\
+                    
                     <td>{{ ws.watersupply_id.province_id.name_en}}</td>
                     <td>{{ ws.watersupply_id.district_id.name_en}}</td>
                     <td>{{ ws.watersupply_id.commune_id.name_en}}</td>

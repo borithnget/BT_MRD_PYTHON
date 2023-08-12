@@ -139,7 +139,7 @@ def get_beneficiary_total_people(request):
 
 def get_watersupply_list_by_province(request):
     if request.method == "GET":
-        province_id = request.GET.get('province_id', 0)
+        province_id = request.GET.get('province_id', '')
         ws_type = request.GET.get('ws_type', '')
         if ws_type == 0:
             ws_type = ''

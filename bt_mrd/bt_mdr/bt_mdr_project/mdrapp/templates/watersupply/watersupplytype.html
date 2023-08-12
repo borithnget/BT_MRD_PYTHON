@@ -157,7 +157,7 @@
                     "url": "{% url 'ajax_get_watersupply_list_by_province' %}",
                     "data":{
                         'ws_type': $('#hidden_ws_type').val()==0?'':$('#hidden_ws_type').val(),
-                        'province_id': $('#ddr_province').val()
+                        'province_id': $('#ddr_province').val()==0?'':$('#ddr_province').val(),
                     }
                 },
                 "columns": [

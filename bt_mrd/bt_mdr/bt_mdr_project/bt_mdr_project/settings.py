@@ -17,6 +17,8 @@ from django.utils.translation import gettext_lazy as _
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+TIME_ZONE = 'Asia/Kuala_Lumpur'
+LANGUAGE_CODE = 'km'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -70,6 +72,7 @@ MIDDLEWARE = [
     
     'corsheaders.middleware.CorsMiddleware',
     # 'django.middleware.common.CommonMiddleware',
+   
     
 ]
 
@@ -101,18 +104,18 @@ AUTH_USER_MODEL = 'mdrapp.User'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
     # 'default': {
-    #     'ENGINE': 'django.db.backends.postgresql',
-    #     'NAME': 'br_mrd_1',
-    #     'USER': 'postgres',
-    #     'PASSWORD': 'rootuser',
-    #     'HOST': '127.0.0.1', 
-    #     'PORT': '5432',
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
     # }
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'br_mrd_1',
+        'USER': 'postgres',
+        'PASSWORD': 'rootuser',
+        'HOST': '127.0.0.1', 
+        'PORT': '5432',
+    }
     # 'default': {
     #     'ENGINE': 'django.db.backends.postgresql',
     #     'NAME': 'br_mrd',
@@ -158,7 +161,10 @@ REST_FRAMEWORK = {
     # ],
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
-        )
+        ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 50
+    
 }
 
 CSRF_COOKIE_SAMESITE = 'Strict'
@@ -170,13 +176,11 @@ SESSION_COOKIE_HTTPONLY = True
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
 #LANGUAGE_CODE = 'en-us'
-LANGUAGE_CODE = 'km'
+
 
 TIME_ZONE = 'UTC'
 
-USE_I18N = True
-USE_L10N = True
-USE_TZ = True
+
 
 LANGUAGES = (
     ('km', _('Khmer')),
@@ -206,6 +210,10 @@ PARLER_LANGUAGES = {
         'hide_untranslated': False,
     }
 }
+
+USE_I18N = True
+USE_L10N = True
+USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
@@ -240,7 +248,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 #API_ENDPOINT = "http://127.0.0.1:8000/en/api/"
 # API_ENDPOINT = "http://18.222.12.231/en/api/"
-API_ENDPOINT = "http://18.188.96.242/en/api/"
+API_ENDPOINT = "http://13.212.250.28/en/api/"
 
 
 
