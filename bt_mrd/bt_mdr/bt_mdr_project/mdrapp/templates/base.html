@@ -83,7 +83,7 @@
     <ul id="nav_top" class="float-right nav navbar-nav ml-auto" >
       {% for language in languages %}
           <li ​class="float-right nav-item" style="float: right !important;">
-            <a href="/{{ language.code }}/" class="float-right nav-link" style=" color: white;float: right !important;padding-top: 0px !important;padding-right: 5px !important;"
+            <a href="javascript:void(0)" onclick="change_language(this)" data-lang="{{ language.code }}" class="float-right nav-link" style=" color: white;float: right !important;padding-top: 0px !important;padding-right: 5px !important;"
               {% if language.code == CURRENT_LANGUAGE %} class="active"{% endif %}>
               <!-- {{ language.name_local }} -->
               <!-- {{ language.code }} -->
@@ -376,6 +376,24 @@
   <script src="{% static '/assets/daterangepicker/moment.min.js' %}" type="text/javascript"></script>
   <script src="{% static '/assets/daterangepicker/daterangepicker.js' %}" type="text/javascript"></script>
   <!-- <script src="{% static '/js/UTMLatLng.js' %}" type="text/javascript"></script> -->
+  <script type="text/javascript">
+    function change_language(att){
+      var lang=$(att).attr('data-lang');
+      var pathname = window.location.pathname;
+      var spitPathName=pathname.split('/');
+      var newPathName='/';
+      for(var i=0;i<spitPathName.length;i++){
+        if(i==1)
+          newPathName=newPathName+lang;
+        else if(i>1){
+          newPathName=newPathName+'/'+spitPathName[i];
+        }
+
+      }
+      window.location.href=newPathName;
+      //console.log(newPathName);
+    }
+  </script>
   {% block script %}{% endblock %}
 </body>
 </html>

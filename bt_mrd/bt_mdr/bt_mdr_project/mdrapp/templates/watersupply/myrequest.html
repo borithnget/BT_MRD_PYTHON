@@ -13,6 +13,7 @@
 
 {% block content %}
 <input type="hidden" id="is_data_entry" value="{{ request.session.user.is_data_entry }}" />
+<input type="hidden" id="current_lang" value="{{ CURRENT_LANGUAGE }}" />
 <div class="row">
     <div class="col-md-12">
         {% if request.session.user.is_data_entry %}
@@ -119,9 +120,10 @@
                     },
                     { render : function (data, type, row) {
                         //console.log(row);
+                        var current_lang=$('#current_lang').val();
                         var btn ='<div class="btn-group" role="group" aria-label="Basic example">'+
-                            '<a href="/watersupply/detail/'+row.id+'" class="btn btn-outline-primary btn-sm"><i class="fa fa-eye"></i> {% trans "btn_view_detail" %}</a>'+
-                            '<a href="/watersupply/edit/'+row.id+'" class="btn btn-outline-primary btn-sm" ><i class="fa fa-edit"></i> {% trans "btn_edit" %}</a>'+
+                            '<a href="/'+current_lang+'/watersupply/detail/'+row.id+'" class="btn btn-outline-primary btn-sm"><i class="fa fa-eye"></i> {% trans "btn_view_detail" %}</a>'+
+                            '<a href="'+current_lang+'/watersupply/edit/'+row.id+'" class="btn btn-outline-primary btn-sm" ><i class="fa fa-edit"></i> {% trans "btn_edit" %}</a>'+
                             //'<a href="" class="btn btn-outline-primary btn-sm" ><i class="fa fa-trash"></i> </a>'+
                             '</div>';
                             return btn;
@@ -175,8 +177,9 @@
                             },
                         },
                         { render : function (data, type, row) {
-                                console.log(row);
-                                return '<a href="/watersupply/detail/'+row.id+'" class="btn btn-sm btn-outline-primary">{% trans "btn_view_detail" %}</a>';
+                                 //console.log(row);
+                                var current_lang = $('#current_lang').val();
+                                return '<a href="/'+current_lang+'/watersupply/detail/'+row.id+'" class="btn btn-sm btn-outline-primary">{% trans "btn_view_detail" %}</a>';
                             },
                         },
                     ]
