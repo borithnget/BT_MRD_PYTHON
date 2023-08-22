@@ -22,6 +22,7 @@ from django.views.generic.base import TemplateView # new
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 from django.conf.urls.static import static
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 
 # urlpatterns = [
 #     # path('mdr/', include('mdrapp.urls')),
@@ -34,6 +35,11 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path(r'^i18n/', include(django.conf.urls.i18n)),
+     # API Schema:
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    # Optional UI:
+    path('api/schema/swagger-ui/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path('api/schema/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
 ]
 
 
@@ -48,7 +54,8 @@ urlpatterns += i18n_patterns (
     path('report/', include('report.urls')),
     path('ajax/', include('ajax.urls')),
     path('app/', include('mdrapp.urls')),
-    path(r'', include('mdrapp.urls'))
+    path(r'', include('mdrapp.urls')),
+    
 )
 
 if settings.DEBUG:
