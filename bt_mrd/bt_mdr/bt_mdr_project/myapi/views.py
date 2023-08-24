@@ -41,6 +41,7 @@ import csv
 from django.conf import settings
 from qrcode import *
 from drf_spectacular.utils import extend_schema,OpenApiResponse,OpenApiParameter
+from docx import Document
 
 # Create your views here.
 class CustomPagination(pagination.PageNumberPagination):
@@ -898,6 +899,27 @@ class DownloadViewSet(APIView):
         writer.close()
         return byte_buffer,file_name
     
+    def get_document(self,queryset):
+        """generate docx response"""
+        df = pd.DataFrame.from_dict(queryset[:10].values('id','code_en','code_kh'))
+        file_name = "Sample.docx"
+        document = Document()
+        document.add_heading("Employee List Sample")
+        document.add_paragraph("This is sample document for employee list detail")
+        table = document.add_table(rows=1, cols=len(df.columns.values.tolist()))
+        table.autofit = True
+        hdr_cells = table.rows[0].cells
+        for i,col in enumerate(df.columns.values.tolist()):
+            hdr_cells[i].text = col
+        
+        for index, row in df.iterrows():
+            row_cells = table.add_row().cells
+            for i,col in enumerate(df.columns.values.tolist()):
+                row_cells[i].text = str(row[col])
+        document.add_page_break()
+        byte_buffer = io.BytesIO()
+        document.save(byte_buffer)  # save your memory stream
+        return byte_buffer,file_name
 
     @extend_schema(
         summary='Send Binary response',
@@ -916,7 +938,7 @@ class DownloadViewSet(APIView):
         elif res_type == 'text':
             pass
         elif res_type == 'docs':
-            pass
+            byte_buffer,file_name = self.get_document(employee)
         else:
             return Response({"error":"Invalid res_type"},status=status.HTTP_400_BAD_REQUEST)
         byte_buffer.seek(0)
