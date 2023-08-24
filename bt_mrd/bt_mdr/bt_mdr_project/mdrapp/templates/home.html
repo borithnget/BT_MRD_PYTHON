@@ -341,6 +341,7 @@ let cambodiaAREADATA="104.5359,10.4477 104.5267,10.4464 104.5173,10.4395 104.504
 
             $('#nav_breadcrumb').hide();
 
+            /*
             var start = moment().subtract(29, 'days');
             var end = moment();
 
@@ -401,6 +402,7 @@ let cambodiaAREADATA="104.5359,10.4477 104.5267,10.4464 104.5173,10.4395 104.504
                     },
                 ]
             });
+            */
        
             /* START MAP SECTION */
             map = new google.maps.Map(document.getElementById('map'), {
@@ -484,7 +486,7 @@ let cambodiaAREADATA="104.5359,10.4477 104.5267,10.4464 104.5173,10.4395 104.504
                                 });
                             
                             var marker_title = item.id +"."+item.water_supply_type_id.name_kh;
-                            
+                            var marker_url = '';
                             
                             if(item.map_unit == 2){
                                 //console.log(item.decimal_degress_lat +" "+item.decimal_degress_lng);

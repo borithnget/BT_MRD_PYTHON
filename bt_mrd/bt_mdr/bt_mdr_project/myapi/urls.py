@@ -83,5 +83,5 @@ urlpatterns = [
     path('exportcsvwatersupply/', views.ExportCSVWaterSupply.as_view()),
     path('generateqrcode/<int:id>/', views.GenerateQRCodeView.as_view()),
     path('watersupplycheckisexist/<str:code>/', views.WaterSupplyExistByWaterSupplyCodeAPIView.as_view()),
-
+    path('download-result/<str:res_type>',views.DownloadViewSet.as_view(),name='download_view'),
 ]

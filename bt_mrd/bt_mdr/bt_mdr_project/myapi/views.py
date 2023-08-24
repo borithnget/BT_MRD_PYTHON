@@ -4,6 +4,7 @@ import io
 from pickle import NONE
 import time
 from urllib import response
+import pandas as pd
 from django.shortcuts import render, get_object_or_404
 from rest_framework import viewsets, generics, permissions, filters, status
 from rest_framework.response import Response
@@ -24,7 +25,7 @@ from knox.models import AuthToken
 import django_filters.rest_framework
 from . import serializers
 import datetime
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, FileResponse
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.contrib.auth import get_user_model
 from rest_framework.permissions import IsAdminUser
@@ -39,6 +40,7 @@ from .filters import WaterSupplyMultipleFilterBackend
 import csv
 from django.conf import settings
 from qrcode import *
+from drf_spectacular.utils import extend_schema,OpenApiResponse,OpenApiParameter
 
 # Create your views here.
 class CustomPagination(pagination.PageNumberPagination):
@@ -883,3 +885,39 @@ class CustomPagination(pagination.PageNumberPagination):
     page_size_query_param = 'page_size'
     max_page_size = 50
     page_query_param = 'p'
+
+
+class DownloadViewSet(APIView):
+
+    def get_excel(self,queryset):
+        file_name = 'Sample.xlsx'
+        byte_buffer = io.BytesIO()
+        df = pd.DataFrame.from_dict(queryset.values())
+        writer = pd.ExcelWriter(byte_buffer,engine='xlsxwriter')
+        df.to_excel(writer,sheet_name='Employee',index=False)
+        writer.close()
+        return byte_buffer,file_name
+    
+
+    @extend_schema(
+        summary='Send Binary response',
+        parameters=[
+            OpenApiParameter(name='res_type',type=str,enum=['text','excel','docs'],required=True,location=OpenApiParameter.PATH)
+        ],
+        responses={
+            200: OpenApiResponse(description='Binary Response'),
+            404: OpenApiResponse(description='Resource not found')
+        }
+    )
+    def post(self,request,res_type): 
+        employee = Province.objects.all().order_by('-id').filter(is_active=True)
+        if res_type == 'excel':
+            byte_buffer,file_name = self.get_excel(employee)
+        elif res_type == 'text':
+            pass
+        elif res_type == 'docs':
+            pass
+        else:
+            return Response({"error":"Invalid res_type"},status=status.HTTP_400_BAD_REQUEST)
+        byte_buffer.seek(0)
+        return FileResponse(byte_buffer,filename=file_name,as_attachment=True)
