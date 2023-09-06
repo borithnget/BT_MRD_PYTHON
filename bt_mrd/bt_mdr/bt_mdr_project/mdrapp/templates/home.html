@@ -101,6 +101,44 @@
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <div class="row">
+                {% for watersupplytype in watersupplytypelist %}
+                    <span style="font-size: 10px !important; font-weight: bold !important;">
+                        {% if watersupplytype.id == 1 %}
+                            <img src="http://maps.google.com/mapfiles/ms/icons/orange-dot.png">
+                            {{ count_well }}
+                        {% elif watersupplytype.id == 2 %}
+                            <img src="http://maps.google.com/mapfiles/ms/icons/yellow-dot.png">
+                            {{ count_small_pipe }}
+                        {% elif watersupplytype.id == 3 %}
+                            <img src="http://maps.google.com/mapfiles/ms/icons/green-dot.png">
+                            {{ count_water_kiosk }}
+                        {% elif watersupplytype.id == 4 %}
+                        <img src="http://maps.google.com/mapfiles/ms/icons/red-dot.png">
+                        {{ count_community_pond }}
+                        {% elif watersupplytype.id == 5 %}
+                        <img src="http://maps.google.com/mapfiles/ms/icons/purple-dot.png">
+                        {{ count_rain_water_harvesting }}
+                        {% elif watersupplytype.id == 6 %}
+                        <img src="http://maps.google.com/mapfiles/ms/icons/pink-dot.png">
+                        {{ count_pipe }}
+                        {% elif watersupplytype.id == 7 %}
+                        <img src="http://maps.google.com/mapfiles/ms/icons/ltblue-dot.png">
+                        {{ count_air_to_water }}
+                        {% endif %}
+                     
+                        {% if CURRENT_LANGUAGE == 'en'  %}
+                                    {{ watersupplytype.name_en }}
+                                {% else %}
+                                    {{ watersupplytype.name_kh }}
+                                {% endif %}
+                    </span>   
+            
+
+
+                {% endfor %}
+            </div>
+            <div class="row">
+
                 <div class="col-md-12">
                     <div class="pageholder">
                         <div class="linkholder">
@@ -108,6 +146,7 @@
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
 
@@ -178,6 +217,7 @@
     
     
     {% endif %} -->
+
 
 
 </div>
@@ -341,68 +381,6 @@ let cambodiaAREADATA="104.5359,10.4477 104.5267,10.4464 104.5173,10.4395 104.504
 
             $('#nav_breadcrumb').hide();
 
-            /*
-            var start = moment().subtract(29, 'days');
-            var end = moment();
-
-            function cb(start, end) {
-                $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
-            }
-
-            $('#reportrange').daterangepicker({
-                startDate: start,
-                endDate: end,
-                ranges: {
-                'Today': [moment(), moment()],
-                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                'This Month': [moment().startOf('month'), moment().endOf('month')],
-                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-                }
-            }, cb);
-
-            cb(start, end);
-
-            $('#table_1').DataTable({
-                ajax: {
-                    url: "{% url 'ajax_get_watersupply_publish' %}",
-                    type: "get"
-                },
-                columns: [
-                    { render : function (data, type, row) {
-                            return row.province_id.name_kh;
-                        },
-                    },
-                    { render : function (data, type, row) {
-                            return row.district_id.name_kh;
-                        },
-                    },
-                    { render : function (data, type, row) {
-                            return row.commune_id.name_kh;
-                        },
-                    },
-                    { render : function (data, type, row) {
-                            return row.village_id.name_kh;
-                        },
-                    },
-                    { data : "created_at"},
-                    { render : function (data, type, row) {
-                            return row.water_supply_type_id.name_kh;
-                        },
-                    },
-                    { render : function (data, type, row) {
-                            return row.created_by.first_name + " "+ row.created_by.last_name;
-                        },
-                    },
-                    { render : function (data, type, row) {
-                            //console.log(row);
-                            return '<a href="/watersupply/detail/'+row.id+'" class="btn btn-sm btn-outline-primary">{% trans "btn_view_detail" %}</a>';
-                        },
-                    },
-                ]
-            });
-            */
        
             /* START MAP SECTION */
             map = new google.maps.Map(document.getElementById('map'), {
@@ -460,9 +438,10 @@ let cambodiaAREADATA="104.5359,10.4477 104.5267,10.4464 104.5173,10.4395 104.504
                 success: function (response) {
                     
                     if(!response["valid"]){
-                        console.log(response.data);
+                        //console.log(response.data);
                         $.each(response.data,function(ind,item){
                             console.log(item);
+                            let url = "http://maps.google.com/mapfiles/ms/icons/";
 
                             var village = item.village_id==null?"":item.village_id.name_kh;
 
@@ -490,11 +469,35 @@ let cambodiaAREADATA="104.5359,10.4477 104.5267,10.4464 104.5173,10.4395 104.504
                             
                             if(item.map_unit == 2){
                                 //console.log(item.decimal_degress_lat +" "+item.decimal_degress_lng);
+
+                                if(item.water_supply_type_id.id==1)
+                                    url += "orange-dot.png";
+                                else if (item.water_supply_type_id.id==2){
+                                    url += "yellow-dot.png";
+                                }
+                                else if (item.water_supply_type_id.id==3){
+                                    url += "green-dot.png";
+                                }
+                                else if (item.water_supply_type_id.id==4){
+                                    url += "red-dot.png";
+                                }
+                                else if (item.water_supply_type_id.id==5){
+                                    url += "purple-dot.png";
+                                }
+                                else if (item.water_supply_type_id.id==6){
+                                    url += "pink-dot.png";
+                                }
+                                else if (item.water_supply_type_id.id==7){
+                                    url += "ltblue-dot.png";
+                                }
                                 
                                 const marker = new google.maps.Marker({
                                     position: { lat: parseFloat(item.decimal_degress_lat), lng: parseFloat(item.decimal_degress_lng)},
                                     map: map,
-                                    title : marker_title
+                                    title : marker_title,
+                                    icon: {
+      url: url
+    }
                                 });
                                 markers.push(marker);
                                 marker.addListener("click", () => {
@@ -505,7 +508,30 @@ let cambodiaAREADATA="104.5359,10.4477 104.5267,10.4464 104.5173,10.4395 104.504
                                 });
                                                           
                             }else if (item.map_unit==1){
-                                console.log(item.utm_x +" "+item.utm_y);
+
+                                //console.log(item.utm_x +" "+item.utm_y);
+
+                                if(item.water_supply_type_id.id==1)
+                                    url += "orange-dot.png";
+                                else if (item.water_supply_type_id.id==2){
+                                    url += "yellow-dot.png";
+                                }
+                                else if (item.water_supply_type_id.id==3){
+                                    url += "green-dot.png";
+                                }
+                                else if (item.water_supply_type_id.id==4){
+                                    url += "red-dot.png";
+                                }
+                                else if (item.water_supply_type_id.id==5){
+                                    url += "purple-dot.png";
+                                }
+                                else if (item.water_supply_type_id.id==6){
+                                    url += "pink-dot.png";
+                                }
+                                else if (item.water_supply_type_id.id==7){
+                                    url += "ltblue-dot.png";
+                                }
+
                                 var utm_x = parseFloat(item.utm_x);
                                 var utm_y = parseFloat(item.utm_y);
 
@@ -523,7 +549,10 @@ let cambodiaAREADATA="104.5359,10.4477 104.5267,10.4464 104.5173,10.4395 104.504
                                 const marker = new google.maps.Marker({
                                     position: { lat: parseFloat(latlng[1]), lng: parseFloat(latlng[0])},
                                     map: map,
-                                    title : marker_title
+                                    title : marker_title,
+                                    icon: {
+                                        url: url
+                                    }
                                 });
                                 markers.push(marker);
                                 marker.addListener("click", () => {

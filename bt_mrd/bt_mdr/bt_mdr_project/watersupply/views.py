@@ -903,6 +903,18 @@ def report_water_supply_coverage(request):
         "provinces" : provinces
         });
 
+def report_water_supply_coverage_token(request, token):
+    url = MAIN_URL + 'watersupplytype/'
+    watersupplytypelist = requests.get(url).json()
+    province_url = MAIN_URL + 'province'       
+    provinces = requests.get(province_url).json()
+    
+    return render(request, "report/report_water_supply_coverage.html", { 
+        "watersupplytypelist": watersupplytypelist ,
+        "provinces" : provinces
+        });
+
+
 #END REPORT SECTION
 
 def import_rural_water_supply(request):

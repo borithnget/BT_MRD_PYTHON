@@ -815,6 +815,26 @@ class WaterSupplyBeneficiaryTotalPeopleByCountry(generics.ListAPIView):
 
         return Response({"count":count, "beneficiary_total_people" : beneficiary_total_people})
 
+class GetWaterSupplyByTypeCount(generics.ListAPIView):
+    serializer_class = serializers.WaterSupplyListSerializer
+
+    def get_queryset(self):
+        wstype = self.kwargs['type']
+        return WaterSupply.objects.all().order_by('-id').filter(is_active=True).filter(main_status=9).filter(water_supply_type_id=wstype)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        count = queryset.count()
+
+        return Response({"count":count,})
+
 class WaterSupplyFilterDateRangeProvinceCoverageListView(generics.ListAPIView):
     serializer_class = serializers.WaterSupplySerializer
 
