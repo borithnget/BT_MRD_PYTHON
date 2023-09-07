@@ -124,6 +124,7 @@ def set_csrf_token(request):
 
 @api_view(['POST',])
 @permission_classes((AllowAny,))
+
 def login_view(request):
     """
     POST API for login

@@ -99,7 +99,7 @@
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
 <div class="container-fluid">
     <div class="row">
-        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <!-- <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <div class="row">
                 {% for watersupplytype in watersupplytypelist %}
                     <span style="font-size: 10px !important; font-weight: bold !important;">
@@ -136,21 +136,89 @@
 
 
                 {% endfor %}
-            </div>
-            <div class="row">
-
-                <div class="col-md-12">
+            </div> -->
+            <div class="row col-md-12">
+                
+                <div class="col-md-10">
                     <div class="pageholder">
                         <div class="linkholder">
                             <div id="map"></div>
                         </div>
                     </div>
                 </div>
+                <div class="col-md-2">
+                    <table>
+                        {% for watersupplytype in watersupplytypelist %}
+                    
+                        <tr>
+                            
+                                {% if watersupplytype.id == 1 %}
+                                <td><img src="http://maps.google.com/mapfiles/ms/icons/orange-dot.png"></td>
+                                <!-- <td style="font-size: 10px !important; font-weight: bold !important;">{{ count_well }}</td> -->
+                                
+                            {% elif watersupplytype.id == 2 %}
+                                <td><img src="http://maps.google.com/mapfiles/ms/icons/yellow-dot.png"></td>
+                                <!-- <td style="font-size: 10px !important; font-weight: bold !important;">{{ count_small_pipe }}</td> -->
+                            {% elif watersupplytype.id == 3 %}
+                                <td><img src="http://maps.google.com/mapfiles/ms/icons/green-dot.png"></td>
+                                <!-- <td style="font-size: 10px !important; font-weight: bold !important;">{{ count_water_kiosk }}</td> -->
+                            {% elif watersupplytype.id == 4 %}
+                            <td><img src="http://maps.google.com/mapfiles/ms/icons/red-dot.png"></td>
+                            <!-- <td style="font-size: 10px !important; font-weight: bold !important;">{{ count_community_pond }}</td> -->
+                            {% elif watersupplytype.id == 5 %}
+                            <td><img src="http://maps.google.com/mapfiles/ms/icons/purple-dot.png"></td>
+                            <!-- <td style="font-size: 10px !important; font-weight: bold !important;">{{ count_rain_water_harvesting }}</td> -->
+                            {% elif watersupplytype.id == 6 %}
+                            <td ><img src="http://maps.google.com/mapfiles/ms/icons/pink-dot.png"></td>
+                            <!-- <td style="font-size: 10px !important; font-weight: bold !important;">{{ count_pipe }}</td> -->
+                            {% elif watersupplytype.id == 7 %}
+                            <td><img src="http://maps.google.com/mapfiles/ms/icons/ltblue-dot.png"></td>
+                            <!-- <td style="font-size: 10px !important; font-weight: bold !important;">{{ count_air_to_water }}</td> -->
+                            {% endif %}
+                            
+                            <td style="font-size: 10px !important; font-weight: bold !important;">
+                                {% if CURRENT_LANGUAGE == 'en'  %}
+                                {{ watersupplytype.name_en }}
+                            {% else %}
+                                {{ watersupplytype.name_kh }}
+                            {% endif %}
+                            </td>
+
+                            {% if watersupplytype.id == 1 %}
+                                
+                                <td style="font-size: 11px !important; font-weight: bold !important; width: 50px !important;">: {{ count_well }}</td>
+                                
+                            {% elif watersupplytype.id == 2 %}
+                                
+                                <td style="font-size: 11px !important; font-weight: bold !important; width: 50px !important;">: {{ count_small_pipe }}</td>
+                            {% elif watersupplytype.id == 3 %}
+                                
+                                <td style="font-size: 11px !important; font-weight: bold !important; width: 50px !important;">: {{ count_water_kiosk }}</td>
+                            {% elif watersupplytype.id == 4 %}
+                            
+                            <td style="font-size: 11px !important; font-weight: bold !important; width: 50px !important;">: {{ count_community_pond }}</td>
+                            {% elif watersupplytype.id == 5 %}
+                            
+                            <td style="font-size: 11px !important; font-weight: bold !important; width: 50px !important;">: {{ count_rain_water_harvesting }}</td>
+                            {% elif watersupplytype.id == 6 %}
+                            
+                            <td style="font-size: 11px !important; font-weight: bold !important; width: 50px !important;">: {{ count_pipe }}</td>
+                            {% elif watersupplytype.id == 7 %}
+                            
+                            <td style="font-size: 11px !important; font-weight: bold !important; width: 50px !important;">: {{ count_air_to_water }}</td>
+                            {% endif %}
+
+                        </tr>
+                        
+                {% endfor %}
+                    </table>
+                </div>
 
             </div>
+        
         </div>
 
-        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <!-- <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12"> -->
            
             <!-- {% if 'token' in request.session or 'user' in request.session %}
             <div class="well well-sm" style="background-color: #E4E4E4 !important;padding-left: 8px !important;">
