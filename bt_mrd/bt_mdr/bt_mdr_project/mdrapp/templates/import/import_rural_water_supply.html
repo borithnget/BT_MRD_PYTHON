@@ -15,7 +15,7 @@
             {% csrf_token %}
 
             <div class="form-group row">
-                <input type="file" name="myfile" class="form-control">
+                <input type="file" name="myfile" class="form-control" accept=".xlsx, .xls, .csv">
             </div>
 
             <div class="form-group row">
@@ -29,13 +29,22 @@
             {% if empexceldata.empty %}
                 <p>Empty</p>
             {% else %}
-                {% comment %} <p>{{ empexceldata }}</p> {% endcomment %}
-                <div class="table-responsive">
-                <table class="table">
-                    {% for exc in empexceldata  %}
-                        {% if forloop.counter0 < 1 or forloop.counter0 > 7 %}
-                        <tr>
-                            
+                <p>Total Data : <b>{{ empexceldata|length }}</b></p> 
+                
+            {% endif %}
+
+            {% if successimported.empty %}
+                <p></p>
+            {% else %}
+                <p>Success Imported Data : <b>{{ successimported|length }}</b></p>
+            {% endif %}
+
+            <p class="text-danger">Village Error Imported {{ villageerrorimported|length }}</p>
+            <div class="table-responsive">
+                <table class="table table-border">
+                    {% for exc in villageerrorimported  %}
+                        
+                        <tr>                          
                             <td>{{ exc.1 }}</td>
                             <td>{{ exc.2 }}</td>
                             <td>{{ exc.3 }}</td>
@@ -45,7 +54,7 @@
                             <td>{{ exc.7 }}</td>
                             <td>{{ exc.8 }}</td>
                             <td>{{ exc.9 }}</td>
-                            <td>{{ exc.10 }}</td>
+                            <!-- <td>{{ exc.10 }}</td> -->
                             <td>{{ exc.11 }}</td>
                             <td>{{ exc.12 }}</td>
                             <td>{{ exc.13 }}</td>
@@ -73,20 +82,18 @@
                             <td>{{ exc.36 }}</td>
                             
                         </tr>
-                        {% endif %}
+                        
                         
                     {% endfor %}
-                <table>
-                </div>
-            {% endif %}
+                </table>
+            </div> 
 
-            <h4>Success Imported</h4>
+            <p class="text-danger">Error Imported {{ errorimported|length }}</p>
             <div class="table-responsive">
-                <table class="table">
-                    {% for exc in successimported  %}
+                <table class="table table-border">
+                    {% for exc in errorimported  %}
                         
-                        <tr>
-                            
+                        <tr>                          
                             <td>{{ exc.1 }}</td>
                             <td>{{ exc.2 }}</td>
                             <td>{{ exc.3 }}</td>
@@ -128,7 +135,7 @@
                         
                     {% endfor %}
                 </table>
-            </div>
+            </div>     
 
         </form>
     </div>

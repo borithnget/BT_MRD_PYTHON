@@ -16,7 +16,7 @@ from rest_framework.views import APIView
 from rest_framework import pagination
 
 from mdrapp.models import Commune, Province, District, Village, WaterSupplyType, WaterSupplyOption, WaterSupplyOptionValue, WaterSupplyTypeOption, WaterSupply, WaterSupplyWell, WaterSupplyPipe, WaterSupplyKiosk, WaterSupplyCommunityPond, WaterSupplyRainWaterHarvesting, Status, WaterSupplyWorkFlow, UserDetail, WaterSupplyQRCode, WaterSupplyHistory, WaterSupplyPipeOptionValue, WaterQualityCheckedParamater, WaterSupplyQuanlityCheckParamater, WaterSupplyKioskOptionValue, WaterSupplyPipePrivate, WaterSupplyPipePrivateOptionValue, WaterSupplyAirWater, WaterSupplyAirWaterOptionValue, User, Country
-from mdrapp.views import MAIN_URL_1
+#from mdrapp.views import MAIN_URL_1
 from .serializers import CommuneSerializer, HeroSerializer, UserSerializer, RegisterSerializer, ProvinceSerializer, DistrictSerializer, VillageSerializer, WaterSupplyOptionSerializer, WaterSupplyOptionValueSerializer, WaterSupplyTypeSerializer, WaterSupplySerializer, UserDetailSerializer, StatusSerializer, WaterSupplyWorkflowSerializer,  WaterSupplyWellOptionValue, UserRoleDetailSerializer, WaterSupplyQRCodeSerializer, WaterSupplyUpdateMainStatusSerializer
 from .models import Hero
 from django.contrib.auth import login, authenticate

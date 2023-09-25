@@ -11,6 +11,8 @@ import myapi
 from .models import Hero
 from mdrapp.models import Commune, User, Province, District, Village, WaterSupplyType, WaterSupplyOption, WaterSupplyOptionValue, WaterSupply, Status, WaterSupplyWorkFlow, WaterSupplyWellOptionValue, UserDetail, WaterSupplyQRCode, WaterSupplyHistory, WaterQualityCheckedParamater, WaterSupplyQuanlityCheckParamater, WaterSupplyPipePrivate, WaterSupplyPipePrivateOptionValue, WaterSupplyAirWater, WaterSupplyAirWaterOptionValue, Country
 from rest_framework import exceptions
+import pandas as pd
+from pyproj import Proj, transform
 
 class HeroSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -666,9 +668,26 @@ class WaterSupplyMapSerializer(serializers.ModelSerializer):
     district_id = DistrictSerializer_v2(many=False, read_only=True)
     commune_id = CommuneSerializer_v2(many=False, read_only=True)
     village_id = VillageSerializer_v2(many=False, read_only=True)
+
+    lat = serializers.SerializerMethodField()
+    lng = serializers.SerializerMethodField()
+
     class Meta:
         model = models.WaterSupply
-        fields = ['id', 'water_supply_type_id', 'province_id', 'district_id', 'commune_id', 'village_id', 'water_supply_code', 'utm_x', 'utm_y', 'map_unit', 'decimal_degress_lat', 'decimal_degress_lng', 'mds_x_degress', 'mds_x_minute', 'mds_x_second', 'mds_y_degress', 'mds_y_minute', 'mds_y_second',]
+        fields = ['id', 'water_supply_type_id', 'province_id', 'district_id', 'commune_id', 'village_id', 'water_supply_code', 'utm_x', 'utm_y', 'map_unit', 'decimal_degress_lat', 'decimal_degress_lng', 'mds_x_degress', 'mds_x_minute', 'mds_x_second', 'mds_y_degress', 'mds_y_minute', 'mds_y_second', 'lat', 'lng']
+    def get_lat(self, obj):
+
+        utm_proj = Proj(proj='utm', zone=48, ellps='WGS84')
+        lonlat_proj = Proj(proj='latlong', datum='WGS84')
+        
+        lon, lat = transform(utm_proj, lonlat_proj, obj.utm_x, obj.utm_y)
+        return lat
+    def get_lng(self, obj):
+        utm_proj = Proj(proj='utm', zone=48, ellps='WGS84')
+        lonlat_proj = Proj(proj='latlong', datum='WGS84')
+        
+        lon, lat = transform(utm_proj, lonlat_proj, obj.utm_x, obj.utm_y)
+        return lon
 
 class WaterSupplyListSerializer(serializers.ModelSerializer):
     created_by = UserSerializer(read_only=True)
@@ -684,6 +703,9 @@ class WaterSupplyListSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.WaterSupply
         fields = ['id', 'water_supply_type_id', 'province_id', 'district_id', 'commune_id', 'village_id', 'water_supply_code', 'created_by', 'created_at', 'crated_at_1', 'main_status',]
+
+    
+
 
 class WaterSupplyHistortSerializer(serializers.ModelSerializer):
     created_at = serializers.DateTimeField(default=datetime.now())
@@ -740,10 +762,12 @@ class WaterQuanlityCheckParameterSerializer(serializers.ModelSerializer):
 
 #START REPORT
 class WaterSupplyReportMapSerializer(serializers.ModelSerializer):
+    
 
     class Meta:
         model = WaterSupply
-        fields = ('id', 'water_supply_type_id', 'map_unit', 'decimal_degress_lat', 'decimal_degress_lng', 'utm_x', 'utm_y', 'mds_x_degress', 'mds_x_minute', 'mds_x_second', 'mds_y_degress', 'mds_y_minute', 'mds_y_second')
+        fields = ('id', 'water_supply_type_id', 'map_unit', 'decimal_degress_lat', 'decimal_degress_lng', 'utm_x', 'utm_y', 'mds_x_degress', 
+                  'mds_x_minute', 'mds_x_second', 'mds_y_degress', 'mds_y_minute', 'mds_y_second', 'lat', 'lng')
 
-
+    
 #END REPORT

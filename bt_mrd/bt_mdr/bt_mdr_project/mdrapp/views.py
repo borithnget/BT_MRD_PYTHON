@@ -12,8 +12,8 @@ from django.conf import settings
 from rest_framework.authentication import BasicAuthentication, SessionAuthentication
 # Create your views here.
 
-MAIN_URL = 'http://13.212.250.28/api/' 
-MAIN_URL_1 = 'http://13.212.250.28/en/'
+# MAIN_URL = 'http://13.212.250.28/api/' 
+# MAIN_URL_1 = 'http://13.212.250.28/en/'
 
 def geocode(request):
     gmaps = googlemaps.Client(key= settings.GOOGLE_API_KEY)

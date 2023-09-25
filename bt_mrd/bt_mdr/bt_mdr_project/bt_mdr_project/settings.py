@@ -106,18 +106,18 @@ AUTH_USER_MODEL = 'mdrapp.User'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
     # 'default': {
-    #     'ENGINE': 'django.db.backends.postgresql',
-    #     'NAME': 'br_mrd_1',
-    #     'USER': 'postgres',
-    #     'PASSWORD': 'rootuser',
-    #     'HOST': '127.0.0.1', 
-    #     'PORT': '5432',
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
     # }
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'rwsdm',
+        'USER': 'postgres',
+        'PASSWORD': 'rootuser',
+        'HOST': '127.0.0.1', 
+        'PORT': '5432',
+    }
     # 'default': {
     #     'ENGINE': 'django.db.backends.postgresql',
     #     'NAME': 'br_mrd',
@@ -164,8 +164,8 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
         ),
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 50,
+    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    # 'PAGE_SIZE': 50,
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     
 }
@@ -257,9 +257,9 @@ EASY_MAPS_CENTER = (-41.3, 32)
 #CORS_ALLOWED_ORIGINS = ['*']
 CORS_ORIGIN_ALLOW_ALL = True
 
-#API_ENDPOINT = "http://127.0.0.1:8000/en/api/"
+API_ENDPOINT = "http://127.0.0.1:8000/en/api/"
 # API_ENDPOINT = "http://18.222.12.231/en/api/"
-API_ENDPOINT = "http://13.212.250.28/en/api/"
+#API_ENDPOINT = "http://13.212.250.28/en/api/"
 
 
 

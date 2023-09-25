@@ -512,6 +512,9 @@ let cambodiaAREADATA="104.5359,10.4477 104.5267,10.4464 104.5173,10.4395 104.504
                             let url = "http://maps.google.com/mapfiles/ms/icons/";
 
                             var village = item.village_id==null?"":item.village_id.name_kh;
+                            var province = item.province_id==null?"":item.province_id.name_kh;
+                            var district = item.district_id==null?"":item.district_id.name_kh;
+                            var commune=item.commune_id==null?"":item.commune_id.name_kh;
 
                             const contentString =
                                 '<div id="content">' +
@@ -519,9 +522,9 @@ let cambodiaAREADATA="104.5359,10.4477 104.5267,10.4464 104.5173,10.4395 104.504
                                 "</div>" +
                                 //'<h1 id="firstHeading" class="firstHeading">Uluru</h1>' +
                                 '<div id="bodyContent">' +
-                                "<p><b>{% trans 'province' %} : "+item.province_id.name_kh+"</b></p>" +
-                                "<p><b>{% trans 'district' %} : "+item.district_id.name_kh+"</b></p>" +
-                                "<p><b>{% trans 'commune' %} : "+item.commune_id.name_kh+"</b></p>" +
+                                "<p><b>{% trans 'province' %} : "+province+"</b></p>" +
+                                "<p><b>{% trans 'district' %} : "+district+"</b></p>" +
+                                "<p><b>{% trans 'commune' %} : "+commune+"</b></p>" +
                                 "<p><b>{% trans 'village' %} : "+village+"</b></p>" +
                                 '<p><b>{% trans "view_detail" %} : <a href="watersupply/detail/'+item.id+'">{% trans "click_here" %}</a></b> </p>' +
                                 "</div>" +
