@@ -297,7 +297,7 @@ class WaterSupplyTypeOptionViewSet(viewsets.ModelViewSet):
 
 class WaterSupplyViewSet(viewsets.ModelViewSet):
     model = WaterSupply
-    queryset = WaterSupply.objects.all().order_by('-created_at').filter(is_active=True)
+    queryset = WaterSupply.objects.all().order_by('-id').filter(is_active=True)
     serializer_class = serializers.WaterSupplySerializer
     # filter_backends = [filters.SearchFilter]
     # filter_fields = ['water_supply_type_id__id']
@@ -307,21 +307,21 @@ class WaterSupplyViewSet(viewsets.ModelViewSet):
 
 class WaterSupplyReportMap(viewsets.ModelViewSet):
     model = WaterSupply
-    queryset = WaterSupply.objects.all().order_by('-created_at').filter(is_active=True).filter(main_status=9)
+    queryset = WaterSupply.objects.all().order_by('-id').filter(is_active=True).filter(main_status=9)
     serializer_class = serializers.WaterSupplySerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields  = ['water_supply_type_id']
 
 class WaterSupplyListByTypeViewSet(viewsets.ModelViewSet):
     model = WaterSupply
-    queryset = WaterSupply.objects.all().order_by('-created_at').filter(is_active=True).filter(main_status=9)
+    queryset = WaterSupply.objects.all().order_by('-id').filter(is_active=True).filter(main_status=9)
     serializer_class = serializers.WaterSupplyListSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields  = ['water_supply_type_id', 'province_id']
 
 class WaterSupplyByUserAndStatusViewSet(viewsets.ModelViewSet):
     model = WaterSupply
-    queryset = WaterSupply.objects.all().order_by('-created_at').filter(is_active=True)
+    queryset = WaterSupply.objects.all().order_by('-id').filter(is_active=True)
     serializer_class = serializers.WaterSupplySerializer
     # filter_backends = [filters.SearchFilter]
     # filter_fields = ['water_supply_type_id__id']
@@ -333,7 +333,7 @@ class WaterSupplyByUserAndStatusViewSet(viewsets.ModelViewSet):
 
 class WaterSupplyByUserViewSet(viewsets.ModelViewSet):
     model = WaterSupply
-    queryset = WaterSupply.objects.all().order_by('-created_at').filter(is_active=True).exclude(main_status=3)
+    queryset = WaterSupply.objects.all().order_by('-id').filter(is_active=True).exclude(main_status=3)
     serializer_class = serializers.WaterSupplySerializer
     filter_backends = [filters.SearchFilter]
     filter_fields = ['created_by__id']
@@ -344,19 +344,19 @@ class WaterSupplyByUserViewSet(viewsets.ModelViewSet):
 
 class WaterSupplyByProvinceViewSet(viewsets.ModelViewSet):
     model = WaterSupply
-    queryset = WaterSupply.objects.all().order_by('-created_at').filter(is_active=True)
+    queryset = WaterSupply.objects.all().order_by('-id').filter(is_active=True)
     serializer_class = serializers.WaterSupplySerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields  = ['province_id', 'main_status']
 
 class WaterSupplyViewSet_2(viewsets.ModelViewSet):
     model = WaterSupply
-    queryset = WaterSupply.objects.all().order_by('-created_at').filter(is_active=True)
+    queryset = WaterSupply.objects.all().order_by('-id').filter(is_active=True)
     serializer_class = serializers.WaterSupplySerializer_v2
 
 class WaterSupplyMapViewSet(viewsets.ModelViewSet):
     model = WaterSupply
-    queryset = WaterSupply.objects.all().order_by('-created_at').filter(is_active=True).filter(main_status=9)
+    queryset = WaterSupply.objects.all().order_by('-id').filter(is_active=True).filter(main_status=9)
     serializer_class = serializers.WaterSupplyMapSerializer
 
 

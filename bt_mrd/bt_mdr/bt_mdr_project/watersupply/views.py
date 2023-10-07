@@ -14,11 +14,11 @@ import os
 from django.core.files.storage import FileSystemStorage
 
 # Create your views here.
-MAIN_URL = 'http://13.212.250.28/api/' 
-MAIN_URL_1 = 'http://13.212.250.28/en/'
+# MAIN_URL = 'http://13.212.250.28/api/' 
+# MAIN_URL_1 = 'http://13.212.250.28/en/'
 
-# MAIN_URL = 'http://127.0.0.1:8000/api/' 
-# MAIN_URL_1 = 'http://127.0.0.1:8000/en/'
+MAIN_URL = 'http://127.0.0.1:8000/api/' 
+MAIN_URL_1 = 'http://127.0.0.1:8000/en/'
 
 def index(request,id):
     watersupply_type_url = settings.API_ENDPOINT + 'watersupplytype/'
@@ -417,7 +417,7 @@ def edit(request, id):
 
     if request.method == "POST":
         
-        url_update = "http://13.212.250.28/en/api/v2/watersupply/"+str(id)+"/update/"
+        url_update = "http://13.212.250.28/en/api/v2/watersupply/"+str(id)
 
         main_status = request.POST.get('main_status')
         
@@ -959,7 +959,7 @@ def import_rural_water_supply(request):
             for dbframe in dbframe.itertuples():
                 PriceList.append(dbframe)
                 # Submit data to Database
-                if counter > 0 :
+                if counter > 10 :
                     #url1 = "http://13.212.250.28/en/api/v2/watersupply"
                     url1 = settings.API_ENDPOINT + 'v2/watersupply'
 

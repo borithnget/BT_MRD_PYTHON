@@ -582,8 +582,10 @@ let cambodiaAREADATA="104.5359,10.4477 104.5267,10.4464 104.5173,10.4395 104.504
 
                                 //console.log(item.utm_x +" "+item.utm_y);
 
-                                if(item.water_supply_type_id.id==1)
-                                    url += "orange-dot.png";
+                                if(item.water_supply_type_id.id==1){
+                                    //url += "orange-dot.png";
+                                    url = 'http://13.212.250.28/static/well.png';
+                                }
                                 else if (item.water_supply_type_id.id==2){
                                     url += "yellow-dot.png";
                                 }
