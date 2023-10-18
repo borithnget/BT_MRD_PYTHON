@@ -471,6 +471,10 @@ let cambodiaAREADATA="104.5359,10.4477 104.5267,10.4464 104.5173,10.4395 104.504
                     fillColor: '#8AB4F8',
                     fillOpacity: 0.5
                 }).setMap(map);
+
+                //initMapPin(item.id)
+
+
             })
 
             /* END MAP SECTION */
@@ -496,15 +500,19 @@ let cambodiaAREADATA="104.5359,10.4477 104.5267,10.4464 104.5173,10.4395 104.504
         return finalData;
     }
 
-    let markers = [];
+    //let markers = [];
 
     function initMapPin(){
+        let markers = [];
         $.ajax({
                 type: 'GET',
                 url: "{% url 'ajax_get_water_supply_report_map' %}",
-                data: {"water_supply_id":'' },
+                data: {
+                    "water_supply_id":'',
+                    //"province_id":province_id 
+                },
                 success: function (response) {
-                    
+                    console.log('Start ' + new Date());
                     if(!response["valid"]){
                         //console.log(response.data);
                         $.each(response.data,function(ind,item){
@@ -538,7 +546,7 @@ let cambodiaAREADATA="104.5359,10.4477 104.5267,10.4464 104.5173,10.4395 104.504
                             var marker_title = item.id +"."+item.water_supply_type_id.name_kh;
                             var marker_url = '';
                             
-                            if(item.map_unit == 2){
+                            // if(item.map_unit == 2){
                                 //console.log(item.decimal_degress_lat +" "+item.decimal_degress_lng);
 
                                 if(item.water_supply_type_id.id==1)
@@ -567,8 +575,8 @@ let cambodiaAREADATA="104.5359,10.4477 104.5267,10.4464 104.5173,10.4395 104.504
                                     map: map,
                                     title : marker_title,
                                     icon: {
-      url: url
-    }
+                                        url: url
+                                        }
                                 });
                                 markers.push(marker);
                                 marker.addListener("click", () => {
@@ -578,13 +586,15 @@ let cambodiaAREADATA="104.5359,10.4477 104.5267,10.4464 104.5173,10.4395 104.504
                                     });
                                 });
                                                           
-                            }else if (item.map_unit==1){
-
+                            /*}
+                            else if (item.map_unit==1){
+                            
+                                
                                 //console.log(item.utm_x +" "+item.utm_y);
 
                                 if(item.water_supply_type_id.id==1){
-                                    //url += "orange-dot.png";
-                                    url = 'http://13.212.250.28/static/well.png';
+                                    url += "orange-dot.png";
+                                    //url = 'http://13.212.250.28/static/well.png';
                                 }
                                 else if (item.water_supply_type_id.id==2){
                                     url += "yellow-dot.png";
@@ -611,7 +621,7 @@ let cambodiaAREADATA="104.5359,10.4477 104.5267,10.4464 104.5173,10.4395 104.504
                                 var utm = "+proj=utm +zone=48P";
                                 var wgs84 = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
                                 
-                                var latlng=proj4(utm,wgs84,[utm_x, utm_y]);
+                                //var latlng=proj4(utm,wgs84,[utm_x, utm_y]);
                                 //var latlng=proj4(firstProjection,secondProjection,[utm_x, utm_y])
                                 //console.log(latlng);
                                 // const infowindow = new google.maps.InfoWindow({
@@ -634,16 +644,20 @@ let cambodiaAREADATA="104.5359,10.4477 104.5267,10.4464 104.5173,10.4395 104.504
                                     map,
                                     });
                                 });
-                            
-                            }else if (item.map_unit == 3){
-                                
+                            /*
                             }
+                            
+                            else if (item.map_unit == 3){
+                                
+                            } */
 
 
                         });
                         //alert("You cannot create a friend with same nick name");   
                                             
                     }
+                    
+                    console.log('Start ' + new Date());
                 },
                 error: function (response) {
                     console.log(response)

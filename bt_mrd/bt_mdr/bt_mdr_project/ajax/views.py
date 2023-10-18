@@ -5,8 +5,9 @@ from django.http import HttpResponse, JsonResponse
 import requests
 from django.conf import settings
 # Create your views here.
+from datetime import datetime
 
-MAIN_URL = 'http://13.212.250.28/api/' 
+MAIN_URL = 'http://3.0.166.20/api/' 
 #MAIN_URL = 'http://127.0.0.1:8000/en/api/'
 
 def get_country_km(request):
@@ -89,8 +90,10 @@ def get_water_supply_report_map(request):
     if request.method == "GET":
         headers = {'Content-Type': 'application/json'}
         water_supply_id = request.GET.get('water_supply_id', NONE)
+        province_id = request.GET.get('province_id', NONE)
         #url = settings.API_ENDPOINT + "watersupplyreportmap/?water_supply_type_id="+ str(water_supply_id)
-        url = settings.API_ENDPOINT + "watersupplymap/"
+        #url = settings.API_ENDPOINT + "watersupplymap/?province_id="+str(province_id)
+        url = settings.API_ENDPOINT + "watersupplymap/?province_id="
         list = requests.get(url).json()
         return JsonResponse({'data': list}, status=200)
     return JsonResponse({}, status=400)
@@ -139,6 +142,7 @@ def get_beneficiary_total_people(request):
 
 def get_watersupply_list_by_province(request):
     if request.method == "GET":
+        starttime = datetime.now()
         province_id = request.GET.get('province_id', '')
         ws_type = request.GET.get('ws_type', '')
         if ws_type == 0:
@@ -146,6 +150,14 @@ def get_watersupply_list_by_province(request):
         url = settings.API_ENDPOINT + 'watersupplylistbytype/?water_supply_type_id='+ str(ws_type) + '&province_id=' + str(province_id)
         print(url)
         response = requests.get(url).json()
+        endtime = datetime.now()
+        duration = endtime - starttime
+        f = open( 'filename_ajax.txt', 'w+' )
+        f.write('Start Time: '+ str(starttime) + '\n')
+        f.write('End time : ' + str(endtime) + '\n')
+        f.write( 'Duration : ' + str(duration) + '\n')
+        f.close()
+
         return JsonResponse({'data':response}, status=200)
     return JsonResponse({}, status=400)
 
@@ -166,30 +178,35 @@ def get_beneficiary_people_by_country(request):
 #START POST SECTION
 def post_approval_watersupply_by_provicial_head_department(request):
     if request.method == "GET":
-        headers = {'Content-Type': 'application/json'}
-        water_supply_id = request.GET.get('water_supply_id', NONE)
-        status_id = request.GET.get('status_id',NONE)
-        remark = request.GET.get('remark',NONE)
+        try:
+            headers = {'Content-Type': 'application/json'}
+            water_supply_id = request.GET.get('water_supply_id', 0)
+            status_id = request.GET.get('status_id',NONE)
+            remark = request.GET.get('remark',NONE)
 
-        #print(water_supply_id + " " + status_id)
-        ws_workflow = "http://13.212.250.28/en/api/v2/watersupplyworkflow"
-        payload_wsworkflow = {
-            "watersupply_id": water_supply_id,
-            "status_id":int(status_id),#1
-            "user_id": int(request.session['user']['id']),
-            "remark": remark
-        }
-        #print(payload_wsworkflow)
-        response_ws_workflow = requests.post(ws_workflow, json=payload_wsworkflow, headers=headers).json()
+            #print(water_supply_id + " " + status_id)
+            ws_workflow = "http://3.0.166.20/en/api/v2/watersupplyworkflow"
+            payload_wsworkflow = {
+                "watersupply_id":int(water_supply_id),
+                "status_id":int(status_id),#1
+                "user_id": int(request.session['user']['id']),
+                "remark": remark
+            }
+            print(payload_wsworkflow)
+            response_ws_workflow = requests.post(ws_workflow, json=payload_wsworkflow, headers=headers).json()
+            print(response_ws_workflow)
 
-        #Update Water Supply MainStatus
-        ws_update_url = "http://13.212.250.28/en/api/watersupply/"+ str (water_supply_id) +"/update/"
-        ws_update_payload = {
-            "id": water_supply_id,
-            "main_status": status_id #1
-        }
-        response_ws_upate_mainstatus = requests.put(ws_update_url, json=ws_update_payload, headers=headers).json()
-        #print(response_ws_upate_mainstatus)
+            #Update Water Supply MainStatus
+            ws_update_url = "http://3.0.166.20/en/api/watersupply/"+ str (water_supply_id) +"/update/"
+            ws_update_payload = {
+                "id": water_supply_id,
+                "main_status": status_id #1
+            }
+            response_ws_upate_mainstatus = requests.put(ws_update_url, json=ws_update_payload, headers=headers).json()
+            #print(response_ws_upate_mainstatus)
+        except Exception as e:
+
+            raise e
 
         return JsonResponse({'is_success':True},status=200)
     return JsonResponse({}, status=400)
@@ -197,11 +214,11 @@ def post_approval_watersupply_by_provicial_head_department(request):
 def put_water_supply_delete(request):
     if request.method == "GET":
         headers = {'Content-Type': 'application/json'}
-        water_supply_id = request.GET.get('water_supply_id', NONE)
+        water_supply_id = request.GET.get('water_supply_id', 0)
 
-        ws_delete_url = "http://13.212.250.28/en/api/v2/watersupply/" + str(water_supply_id) + "/delete/"
+        ws_delete_url = "http://3.0.166.20/en/api/v2/watersupply/" + str(water_supply_id) + "/delete/"
         ws_delete_payload = {
-            "id": water_supply_id,
+            "id":int(water_supply_id),
             "updated_by": int(request.session['user']['id']),
             "is_active": False
         }

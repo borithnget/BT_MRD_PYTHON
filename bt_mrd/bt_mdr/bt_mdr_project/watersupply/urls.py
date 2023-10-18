@@ -24,4 +24,6 @@ urlpatterns = [
 
     path('reportwellbyprovince/<str:token>/', views.report_well_by_province_token, name="reportwellbyprovincetoken"),
     path('reportwatersupplycoverage/<str:token>/', views.report_water_supply_coverage_token, name="reportwatersupplycoveragetoken"),
+
+    path('syncwatersupplymap/', views.sync_water_supply_map, name='syncwatersupplymap')
 ]

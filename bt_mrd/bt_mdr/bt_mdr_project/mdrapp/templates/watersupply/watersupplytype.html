@@ -68,61 +68,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% if watersupplylist %}
-                {% for ws in watersupplylist %}
-                {% if ws %}
-                    <tr>
-                        <td>{{ ws.water_supply_code }}</td>
-                        
-                            {% if CURRENT_LANGUAGE == 'en'  %}
-                            <td>{{ ws.province_id.name_en}}</td>
-                            {% else %}
-                            <td>{{ ws.province_id.name_kh}}</td>
-                            {% endif %}
-
-                            {% if CURRENT_LANGUAGE == 'en'  %}
-                            <td>{{ ws.district_id.name_en}}</td>
-                            {% else %}
-                            <td>{{ ws.district_id.name_kh}}</td>
-                            {% endif %}
-                        
-                            {% if CURRENT_LANGUAGE == 'en'  %}
-                            <td>{{ ws.commune_id.name_en}}</td>
-                            {% else %}
-                            <td>{{ ws.commune_id.name_kh}}</td>
-                            {% endif %}
-                        
-                            {% if CURRENT_LANGUAGE == 'en'  %}
-                            <td>{{ ws.village_id.name_en}}</td>
-                            {% else %}
-                            <td>{{ ws.village_id.name_kh}}</td>
-                            {% endif %}
-                        
-                        
-                        <td>{{ ws.created_at }}</td>
-
-                        {% if CURRENT_LANGUAGE == 'en'  %}
-                        <td>{{ ws.water_supply_type_id.name_en }}</td>
-                            {% else %}
-                            <td>{{ ws.water_supply_type_id.name_kh }}</td>
-                            {% endif %}
-                        
-
-                        <td>{{ ws.created_by.first_name }} {{ ws.created_by.last_name }}</td>
-
-                        {% if CURRENT_LANGUAGE == 'en' %}
-                        <td class="text-center"><span class="badge badge-warning">{{ ws.main_status.status_name }}</span></td>
-                        {% else %}
-                        <td class="text-center"><span class="badge badge-warning">{{ ws.main_status.status_name_kh }}</span></td>
-                        {% endif %}
-
-                        <td class="text-center">
-                            <a href="{% url 'watersupply_detail' id=ws.id %}" class="btn btn-sm btn-outline-primary"><i class="fa fa-eye"></i> {% trans 'btn_view_detail' %}</a>
-                        </td>
-                    </tr>
-                    {% endif %}
-                {% endfor %}
-                {% endif %}
+                
             </tbody>
         </table>
     </div>
@@ -132,6 +78,18 @@
 {% block script %}
 
 <script type="text/javascript">
+
+    // let data = [
+    // {% for watersupply in watersupplylist %}
+    //     {
+    //   'code': '{{ watersupply.water_supply_code }}',
+    //   'watersupply_type': '{{ watersupply.water_supply_type_id.name_kh }}',
+      
+    //     }
+    //     {% if not forloop.last %},{% endif %}
+    // {% endfor %}
+    // ];
+
     $(function(){
         $(document).ready(function () {
 
@@ -145,11 +103,50 @@
         });
     });
 
+    function initialDataTable_V2(){
+        $('#table_1').DataTable( {
+            dom: 'Bfrtip',
+            "pageLength": 50,
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    exportOptions: {
+                        columns: [ 0, 1, 2, 3, 4 ]
+                    }
+                },
+                {
+                    extend: 'pdfHtml5',
+                    exportOptions: {
+                        columns: [ 0, 1, 2, 3, 4 ]
+                    }
+                },
+            ],
+            data: data,
+            columns: [
+                { data: 'code'},
+                //{ data: 'watersupply_type'},
+                { 
+                        "render": function (data, type, row){
+                            console.log(row);
+                        // if(current_lan=='en')
+                        //     return row.province_id.name_en;
+                        // else
+                        //     return row.province_id.name_kh;
+                        return row.watersupply_type;
+                    }
+                },
+            ]
+        } );
+    }
+
     function initialDataTable(){
+        var startDate=new Date();
+        console.log(startDate);
         var current_lan=$('#hidden_lan').val();
         $('#table_1').DataTable({
             "destroy":true,
-                "processing" : true,
+            "processing": true,
+            //"serverSide": true,
                 // "serverSide": true,
                 // dom: 'Bfrtip',
                 //         retrieve: true,
@@ -168,6 +165,7 @@
                             return row.province_id.name_en;
                         else
                             return row.province_id.name_kh;
+                       // return '1';
                     } 
                     },
                     { "render": function (data, type, row){
@@ -217,14 +215,19 @@
                 },
                     {   
                         "render":function (data, type, row) {
-                            //console.log(row);
+                            //console.log("Row " + new DateTime());
                             return "<a href='/"+current_lan+"/watersupply/detail/" + row.id + "' class='btn btn-sm btn-outline-primary'><i class='fa fa-eye'></i>  {% trans 'btn_view_detail' %}</a>";
                         } 
                     }
                     
                 ],
                 order: [[5, 'desc']],
+                //order: [[0, 'desc']],
             });
+            var endDate = new Date();
+            console.log("End time " +endDate);
+            var duration=endDate-startDate;
+            console.log(duration);
     }
 
 </script>

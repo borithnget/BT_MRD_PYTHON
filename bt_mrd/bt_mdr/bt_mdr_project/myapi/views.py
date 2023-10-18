@@ -42,6 +42,11 @@ from django.conf import settings
 from qrcode import *
 from drf_spectacular.utils import extend_schema,OpenApiResponse,OpenApiParameter
 from docx import Document
+from datetime import datetime
+from drf_eager_fields.serializers import EagerFieldsSerializer
+from rest_framework import generics
+from drf_eager_fields.views import EagerFieldsViewMixin,EagerFieldsAPIView
+# from .watersupply_serializer import WaterSupplyMapSerializer_V1
 
 # Create your views here.
 class CustomPagination(pagination.PageNumberPagination):
@@ -210,6 +215,11 @@ class ProvinceViewSet(viewsets.ModelViewSet):
     filterset_fields  = ['id', 'name_kh']
     #pagination_class = CustomPagination
 
+class ProvinceListView(EagerFieldsViewMixin, generics.ListAPIView):
+    model = Province
+    queryset = Province.objects.all().order_by('code_en').filter(is_active=True)
+    serializer_class = serializers.ProvinceSerializer_v3
+
 class ProvinceFilterByNameViewSet(viewsets.ModelViewSet):
     model = Province
     queryset = Province.objects.all().order_by('code_en').filter(is_active=True)
@@ -313,11 +323,20 @@ class WaterSupplyReportMap(viewsets.ModelViewSet):
     filterset_fields  = ['water_supply_type_id']
 
 class WaterSupplyListByTypeViewSet(viewsets.ModelViewSet):
+    starttime = datetime.now()
     model = WaterSupply
     queryset = WaterSupply.objects.all().order_by('-id').filter(is_active=True).filter(main_status=9)
     serializer_class = serializers.WaterSupplyListSerializer
+    #serializer_class = serializers.serialize_watersupply
     filter_backends = [DjangoFilterBackend]
     filterset_fields  = ['water_supply_type_id', 'province_id']
+    endtime = datetime.now()
+    duration = endtime - starttime
+    f = open( 'filename.txt', 'w+' )
+    f.write('Start Time: '+ str(starttime) + '\n')
+    f.write('End time : ' + str(endtime) + '\n')
+    f.write( 'Duration : ' + str(duration) + '\n')
+    f.close()
 
 class WaterSupplyByUserAndStatusViewSet(viewsets.ModelViewSet):
     model = WaterSupply
@@ -355,9 +374,21 @@ class WaterSupplyViewSet_2(viewsets.ModelViewSet):
     serializer_class = serializers.WaterSupplySerializer_v2
 
 class WaterSupplyMapViewSet(viewsets.ModelViewSet):
+    starttime = datetime.now()
+    
     model = WaterSupply
     queryset = WaterSupply.objects.all().order_by('-id').filter(is_active=True).filter(main_status=9)
     serializer_class = serializers.WaterSupplyMapSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields  = ['province_id']
+
+    endtime = datetime.now()
+    duration = endtime - starttime
+    f = open( 'filename_map.txt', 'w+' )
+    f.write('Start Time: '+ str(starttime) + '\n')
+    f.write('End time : ' + str(endtime) + '\n')
+    f.write( 'Duration : ' + str(duration) + '\n')
+    f.close()
 
 
 class WaterSupplyCreateAPIView(generics.CreateAPIView):
@@ -964,3 +995,8 @@ class DownloadViewSet(APIView):
             return Response({"error":"Invalid res_type"},status=status.HTTP_400_BAD_REQUEST)
         byte_buffer.seek(0)
         return FileResponse(byte_buffer,filename=file_name,as_attachment=True)
+    
+class WaterSupplyMapList_V2(generics.ListAPIView, EagerFieldsAPIView):
+    queryset = WaterSupply.objects.all().order_by('-id').filter(is_active=True).filter(main_status=9)
+    serializer_class = serializers.WaterSupplyMapSerializer_V1
+    serializer_extra = "watersupplytype"

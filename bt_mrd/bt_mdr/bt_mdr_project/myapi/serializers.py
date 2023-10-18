@@ -1,8 +1,10 @@
+
 from dataclasses import field, fields
 from datetime import datetime
 from email.policy import default
 from pyexpat import model
 from time import timezone
+from typing import Any
 from rest_framework import serializers
 from django.contrib.auth import authenticate
 
@@ -13,6 +15,12 @@ from mdrapp.models import Commune, User, Province, District, Village, WaterSuppl
 from rest_framework import exceptions
 import pandas as pd
 from pyproj import Proj, transform
+from typing import Dict, Any
+from drf_eager_fields.serializers import EagerFieldsSerializer
+
+from django.db.models import Prefetch, Subquery
+from django.db.models.expressions import OuterRef
+from django.utils.functional import classproperty
 
 class HeroSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -149,6 +157,17 @@ class ProvinceSerializer_v2(serializers.ModelSerializer):
         model = Province
         fields = '__all__'
 
+class ProvinceSerializer_v3( serializers.ModelSerializer, EagerFieldsSerializer):
+    class Meta:
+        model = District
+        fields = ('id' ,'code_en', 'code_kh', 'name_en', 'name_kh')
+
+class DistrictSerializer_v3(serializers.ModelSerializer):
+    
+    class Meta:
+        model = District
+        fields = ('id' ,'code_en', 'code_kh', 'name_en', 'name_kh')
+
 class DistrictSerializer_v2(serializers.ModelSerializer):
     
     class Meta:
@@ -160,11 +179,22 @@ class CommuneSerializer_v2(serializers.ModelSerializer):
         model = Commune
         fields = '__all__'
 
+class CommuneSerializer_v3(serializers.ModelSerializer):
+    class Meta:
+        model = Commune
+        fields = ('id' ,'code_en', 'code_kh', 'name_en', 'name_kh')
+
 class VillageSerializer_v2(serializers.ModelSerializer):
     #commune_id = CommuneSerializer(many=False, read_only=True)
     class Meta:
         model = Village
         fields = '__all__'
+
+class VillageSerializer_v3(serializers.ModelSerializer):
+
+    class Meta:
+        model = Village
+        fields = ('id' ,'code_en', 'code_kh', 'name_en', 'name_kh')
 
 class CountrySerializer(serializers.ModelSerializer):
     class Meta:
@@ -661,33 +691,88 @@ class WaterSupplySerializer_v2(serializers.ModelSerializer):
         'management_type', 'managed_by', 'beneficiary_total_people', 'beneficiary_total_women', 'beneficiary_total_family', 'beneficiary_total_family_poor_1', 'beneficiary_total_family_poor_2', 'beneficiary_total_family_vulnerable', 'beneficiary_total_family_indigenous', 'main_status', 'is_water_quality_check',
         'map_unit', 'decimal_degress_lat', 'decimal_degress_lng', 'mds_x_degress', 'mds_x_minute', 'mds_x_second', 'mds_y_degress', 'mds_y_minute', 'mds_y_second', 'crated_at_1']
 
+# def serialize_user(user: User) -> Dict[str, Any]:
+#     return {
+#         'id': user.id,
+#         'last_login': user.last_login.isoformat() if user.last_login is not None else None,
+#         'is_superuser': user.is_superuser,
+#         'username': user.username,
+#         'first_name': user.first_name,
+#         'last_name': user.last_name,
+#         'email': user.email,
+#         'is_staff': user.is_staff,
+#         'is_active': user.is_active,
+#         'date_joined': user.date_joined.isoformat(),
+#     }
+
+#class WaterSupplyMapSerializer(serializers.serialier_user):
 class WaterSupplyMapSerializer(serializers.ModelSerializer):
 
     water_supply_type_id = WaterSupplyTypeSerializer(many=False, read_only=True)
-    province_id = ProvinceSerializer_v2(many=False, read_only=True)
-    district_id = DistrictSerializer_v2(many=False, read_only=True)
-    commune_id = CommuneSerializer_v2(many=False, read_only=True)
-    village_id = VillageSerializer_v2(many=False, read_only=True)
+    province_id = ProvinceSerializer_v3(many=False, read_only=True)
+    district_id = DistrictSerializer_v3(many=False, read_only=True)
+    commune_id = CommuneSerializer_v3(many=False, read_only=True)
+    village_id = VillageSerializer_v3(many=False, read_only=True)
 
-    lat = serializers.SerializerMethodField()
-    lng = serializers.SerializerMethodField()
+    # lat = serializers.SerializerMethodField()
+    # lng = serializers.SerializerMethodField()
 
     class Meta:
         model = models.WaterSupply
-        fields = ['id', 'water_supply_type_id', 'province_id', 'district_id', 'commune_id', 'village_id', 'water_supply_code', 'utm_x', 'utm_y', 'map_unit', 'decimal_degress_lat', 'decimal_degress_lng', 'mds_x_degress', 'mds_x_minute', 'mds_x_second', 'mds_y_degress', 'mds_y_minute', 'mds_y_second', 'lat', 'lng']
-    def get_lat(self, obj):
+        fields = ['id', 'water_supply_type_id', 'province_id', 'district_id', 'commune_id', 'village_id', 'water_supply_code', 'utm_x', 'utm_y', 'map_unit', 'decimal_degress_lat', 'decimal_degress_lng', 'mds_x_degress', 'mds_x_minute', 'mds_x_second', 'mds_y_degress', 'mds_y_minute', 'mds_y_second'] #, 'lat', 'lng'
+    # def get_lat(self, obj):
+    #     starttime = datetime.now()
 
-        utm_proj = Proj(proj='utm', zone=48, ellps='WGS84')
-        lonlat_proj = Proj(proj='latlong', datum='WGS84')
+    #     utm_proj = Proj(proj='utm', zone=48, ellps='WGS84')
+    #     lonlat_proj = Proj(proj='latlong', datum='WGS84')
         
-        lon, lat = transform(utm_proj, lonlat_proj, obj.utm_x, obj.utm_y)
-        return lat
-    def get_lng(self, obj):
-        utm_proj = Proj(proj='utm', zone=48, ellps='WGS84')
-        lonlat_proj = Proj(proj='latlong', datum='WGS84')
+    #     lon, lat = transform(utm_proj, lonlat_proj, obj.utm_x, obj.utm_y)
         
-        lon, lat = transform(utm_proj, lonlat_proj, obj.utm_x, obj.utm_y)
-        return lon
+    #     endtime = datetime.now()
+    #     duration = endtime - starttime
+    #     f = open( 'filename_ser.txt', 'w+' )
+    #     f.write('Start Time: '+ str(starttime) + '\n')
+    #     f.write('End time : ' + str(endtime) + '\n')
+    #     f.write( 'Duration : ' + str(duration) + '\n')
+    #     f.close()
+
+
+    #     return lat
+    
+    # def get_lng(self, obj):
+    #     utm_proj = Proj(proj='utm', zone=48, ellps='WGS84')
+    #     lonlat_proj = Proj(proj='latlong', datum='WGS84')
+        
+    #     lon, lat = transform(utm_proj, lonlat_proj, obj.utm_x, obj.utm_y)
+    #     return lon
+    
+def serialize_user(user: User) -> Dict[str, Any]:
+    return {
+        'id': user.id,
+        'last_login': user.last_login.isoformat() if user.last_login is not None else None,
+        'is_superuser': user.is_superuser,
+        'username': user.username,
+        'first_name': user.first_name,
+        'last_name': user.last_name,
+        'email': user.email,
+        'is_staff': user.is_staff,
+        'is_active': user.is_active,
+        'date_joined': user.date_joined.isoformat(),
+    }
+
+# def serialize_watersupply(ws: WaterSupply) -> Dict[str, Any]:
+#     return {
+#         'id' : ws.id,
+#         'water_supply_code': ws.water_supply_code,
+#         'water_supply_type_id' : ws.water_supply_type_id,
+#         'province_id' : ws.province_id
+#     }
+
+# class WaterSupplyListSerializer(serialize_watersupply):
+
+#     class Meta:
+#         model = models.WaterSupply
+#         fields = ['id', 'water_supply_type_id', 'province_id', 'water_supply_code']
 
 class WaterSupplyListSerializer(serializers.ModelSerializer):
     created_by = UserSerializer(read_only=True)
@@ -697,16 +782,30 @@ class WaterSupplyListSerializer(serializers.ModelSerializer):
     commune_id = CommuneSerializer_v2(many=False, read_only=True)
     village_id = VillageSerializer_v2(many=False, read_only=True)
     main_status = StatusSerializer(many=False, read_only=True)
+    
     created_at = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S")
     crated_at_1 = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S")
+    start_time = serializers.DateTimeField(default=datetime.now())
 
     class Meta:
         model = models.WaterSupply
-        fields = ['id', 'water_supply_type_id', 'province_id', 'district_id', 'commune_id', 'village_id', 'water_supply_code', 'created_by', 'created_at', 'crated_at_1', 'main_status',]
+        fields = ['id', 'water_supply_type_id', 'province_id', 'district_id', 'commune_id', 'village_id', 'water_supply_code', 'created_by', 'created_at', 'crated_at_1', 'main_status', 'start_time']
+
+class WaterSupplyMapSerializer_V1(serializers.ModelSerializer, EagerFieldsSerializer):
+    class Meta:
+        model = models.WaterSupply
+        fields = ('id', 'decimal_degress_lat', 'decimal_degress_lng', 'water_supply_type_id', 'water_supply_code')
+
+    @classproperty
+    def extra(self):
+        return{
+            "watersupplytype" : {
+                "field": WaterSupplyTypeSerializer(),
+                "prefetch": True,
+            }
+        }
 
     
-
-
 class WaterSupplyHistortSerializer(serializers.ModelSerializer):
     created_at = serializers.DateTimeField(default=datetime.now())
     class Meta:

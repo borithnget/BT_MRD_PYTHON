@@ -85,4 +85,6 @@ urlpatterns = [
     path('generateqrcode/<int:id>/', views.GenerateQRCodeView.as_view()),
     path('watersupplycheckisexist/<str:code>/', views.WaterSupplyExistByWaterSupplyCodeAPIView.as_view()),
     path('download-result/<str:res_type>',views.DownloadViewSet.as_view(),name='download_view'),
+    path('provincelist', views.ProvinceListView.as_view()),
+    path('watersupplymap_v2/', views.WaterSupplyMapList_V2.as_view())
 ]
