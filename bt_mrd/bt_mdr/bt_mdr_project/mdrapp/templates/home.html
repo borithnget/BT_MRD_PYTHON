@@ -500,7 +500,7 @@ let cambodiaAREADATA="104.5359,10.4477 104.5267,10.4464 104.5173,10.4395 104.504
         return finalData;
     }
 
-    //let markers = [];
+    let markers = [];
 
     function initMapPin(){
         let markers = [];
@@ -512,17 +512,18 @@ let cambodiaAREADATA="104.5359,10.4477 104.5267,10.4464 104.5173,10.4395 104.504
                     //"province_id":province_id 
                 },
                 success: function (response) {
-                    console.log('Start ' + new Date());
+                    //console.log('Start ' + new Date());
+
                     if(!response["valid"]){
                         //console.log(response.data);
                         $.each(response.data,function(ind,item){
                             console.log(item);
                             let url = "http://maps.google.com/mapfiles/ms/icons/";
 
-                            var village = item.village_id==null?"":item.village_id.name_kh;
-                            var province = item.province_id==null?"":item.province_id.name_kh;
-                            var district = item.district_id==null?"":item.district_id.name_kh;
-                            var commune=item.commune_id==null?"":item.commune_id.name_kh;
+                            // var village = item.village_id==null?"":item.village_id.name_kh;
+                            // var province = item.province_id==null?"":item.province_id.name_kh;
+                            // var district = item.district_id==null?"":item.district_id.name_kh;
+                            // var commune=item.commune_id==null?"":item.commune_id.name_kh;
 
                             const contentString =
                                 '<div id="content">' +
@@ -530,10 +531,10 @@ let cambodiaAREADATA="104.5359,10.4477 104.5267,10.4464 104.5173,10.4395 104.504
                                 "</div>" +
                                 //'<h1 id="firstHeading" class="firstHeading">Uluru</h1>' +
                                 '<div id="bodyContent">' +
-                                "<p><b>{% trans 'province' %} : "+province+"</b></p>" +
-                                "<p><b>{% trans 'district' %} : "+district+"</b></p>" +
-                                "<p><b>{% trans 'commune' %} : "+commune+"</b></p>" +
-                                "<p><b>{% trans 'village' %} : "+village+"</b></p>" +
+                                // "<p><b>{% trans 'province' %} : "+province+"</b></p>" +
+                                // "<p><b>{% trans 'district' %} : "+district+"</b></p>" +
+                                // "<p><b>{% trans 'commune' %} : "+commune+"</b></p>" +
+                                // "<p><b>{% trans 'village' %} : "+village+"</b></p>" +
                                 '<p><b>{% trans "view_detail" %} : <a href="watersupply/detail/'+item.id+'">{% trans "click_here" %}</a></b> </p>' +
                                 "</div>" +
                                 "</div>";
@@ -543,30 +544,52 @@ let cambodiaAREADATA="104.5359,10.4477 104.5267,10.4464 104.5173,10.4395 104.504
                                     ariaLabel: "Uluru",
                                 });
                             
-                            var marker_title = item.id +"."+item.water_supply_type_id.name_kh;
+                            //var marker_title = item.id +"."+item.water_supply_type_id.name_kh;
+                            var marker_title = item.water_supply_code;
+
                             var marker_url = '';
                             
-                            // if(item.map_unit == 2){
-                                //console.log(item.decimal_degress_lat +" "+item.decimal_degress_lng);
+                            
 
-                                if(item.water_supply_type_id.id==1)
+                                // if(item.water_supply_type_id.id==1)
+                                //     url += "orange-dot.png";
+                                // else if (item.water_supply_type_id.id==2){
+                                //     url += "yellow-dot.png";
+                                // }
+                                // else if (item.water_supply_type_id.id==3){
+                                //     url += "green-dot.png";
+                                // }
+                                // else if (item.water_supply_type_id.id==4){
+                                //     url += "red-dot.png";
+                                // }
+                                // else if (item.water_supply_type_id.id==5){
+                                //     url += "purple-dot.png";
+                                // }
+                                // else if (item.water_supply_type_id.id==6){
+                                //     url += "pink-dot.png";
+                                // }
+                                // else if (item.water_supply_type_id.id==7){
+                                //     url += "ltblue-dot.png";
+                                // }
+
+                                if(item.water_supply_type_id==1)
                                     url += "orange-dot.png";
-                                else if (item.water_supply_type_id.id==2){
+                                else if (item.water_supply_type_id==2){
                                     url += "yellow-dot.png";
                                 }
-                                else if (item.water_supply_type_id.id==3){
+                                else if (item.water_supply_type_id==3){
                                     url += "green-dot.png";
                                 }
-                                else if (item.water_supply_type_id.id==4){
+                                else if (item.water_supply_type_id==4){
                                     url += "red-dot.png";
                                 }
-                                else if (item.water_supply_type_id.id==5){
+                                else if (item.water_supply_type_id==5){
                                     url += "purple-dot.png";
                                 }
-                                else if (item.water_supply_type_id.id==6){
+                                else if (item.water_supply_type_id==6){
                                     url += "pink-dot.png";
                                 }
-                                else if (item.water_supply_type_id.id==7){
+                                else if (item.water_supply_type_id==7){
                                     url += "ltblue-dot.png";
                                 }
                                 
@@ -586,70 +609,7 @@ let cambodiaAREADATA="104.5359,10.4477 104.5267,10.4464 104.5173,10.4395 104.504
                                     });
                                 });
                                                           
-                            /*}
-                            else if (item.map_unit==1){
                             
-                                
-                                //console.log(item.utm_x +" "+item.utm_y);
-
-                                if(item.water_supply_type_id.id==1){
-                                    url += "orange-dot.png";
-                                    //url = 'http://13.212.250.28/static/well.png';
-                                }
-                                else if (item.water_supply_type_id.id==2){
-                                    url += "yellow-dot.png";
-                                }
-                                else if (item.water_supply_type_id.id==3){
-                                    url += "green-dot.png";
-                                }
-                                else if (item.water_supply_type_id.id==4){
-                                    url += "red-dot.png";
-                                }
-                                else if (item.water_supply_type_id.id==5){
-                                    url += "purple-dot.png";
-                                }
-                                else if (item.water_supply_type_id.id==6){
-                                    url += "pink-dot.png";
-                                }
-                                else if (item.water_supply_type_id.id==7){
-                                    url += "ltblue-dot.png";
-                                }
-
-                                var utm_x = parseFloat(item.utm_x);
-                                var utm_y = parseFloat(item.utm_y);
-
-                                var utm = "+proj=utm +zone=48P";
-                                var wgs84 = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
-                                
-                                //var latlng=proj4(utm,wgs84,[utm_x, utm_y]);
-                                //var latlng=proj4(firstProjection,secondProjection,[utm_x, utm_y])
-                                //console.log(latlng);
-                                // const infowindow = new google.maps.InfoWindow({
-                                //     content: "Hello",
-                                //     ariaLabel: "Uluru",
-                                // });
-                                //console.log(latlng);
-                                const marker = new google.maps.Marker({
-                                    position: { lat: parseFloat(latlng[1]), lng: parseFloat(latlng[0])},
-                                    map: map,
-                                    title : marker_title,
-                                    icon: {
-                                        url: url
-                                    }
-                                });
-                                markers.push(marker);
-                                marker.addListener("click", () => {
-                                    infowindow.open({
-                                    anchor: marker,
-                                    map,
-                                    });
-                                });
-                            /*
-                            }
-                            
-                            else if (item.map_unit == 3){
-                                
-                            } */
 
 
                         });
@@ -657,7 +617,7 @@ let cambodiaAREADATA="104.5359,10.4477 104.5267,10.4464 104.5173,10.4395 104.504
                                             
                     }
                     
-                    console.log('Start ' + new Date());
+                    //console.log('Start ' + new Date());
                 },
                 error: function (response) {
                     console.log(response)

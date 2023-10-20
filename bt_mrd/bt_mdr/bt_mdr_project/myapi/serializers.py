@@ -213,6 +213,8 @@ class WaterSupplyTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = WaterSupplyType
         fields = '__all__'
+
+
         
 class WaterSupplyOptionValueSerializer(serializers.ModelSerializer):
     class Meta:
@@ -791,7 +793,35 @@ class WaterSupplyListSerializer(serializers.ModelSerializer):
         model = models.WaterSupply
         fields = ['id', 'water_supply_type_id', 'province_id', 'district_id', 'commune_id', 'village_id', 'water_supply_code', 'created_by', 'created_at', 'crated_at_1', 'main_status', 'start_time']
 
+class WaterSupplyTypeSerializer_V2(serializers.ModelSerializer, EagerFieldsSerializer):
+    class Meta:
+        
+        fields = ('id', 'name_kh', 'name_en')
+        model = WaterSupplyType
+
+        @classproperty
+        def extra(self):
+
+            return {
+                "watersupplys" : {
+                    "field": WaterSupplyMapSerializer_V1(many=True),
+                    "prefetch": True,
+                },
+                "filtered_watersupplys": {
+                    "field": WaterSupplyMapSerializer_V1(many=True),
+                },
+                "description": {
+                    "field": serializers.CharField(),
+                    "prefetch": [
+                        
+                        Prefetch('articles', queryset=WaterSupplyMapSerializer_V1.Meta.model.objects.all()),
+                    ],
+                },
+            }
+
 class WaterSupplyMapSerializer_V1(serializers.ModelSerializer, EagerFieldsSerializer):
+    #watersupplytype = WaterSupplyTypeSerializer_V2(many=False, read_only=True)
+    #water_supply_type_name =serializers.ReadOnlyField(source='water_supply_type_id.name_kh')
     class Meta:
         model = models.WaterSupply
         fields = ('id', 'decimal_degress_lat', 'decimal_degress_lng', 'water_supply_type_id', 'water_supply_code')
@@ -799,11 +829,17 @@ class WaterSupplyMapSerializer_V1(serializers.ModelSerializer, EagerFieldsSerial
     @classproperty
     def extra(self):
         return{
-            "watersupplytype" : {
-                "field": WaterSupplyTypeSerializer(),
+            "water_supply_type_id" : {
+                "field": WaterSupplyTypeSerializer_V2(),
                 "prefetch": True,
             }
         }
+
+class WaterSupplyListSerializer_V2(serializers.ModelSerializer, EagerFieldsSerializer):
+    
+    class Meta:
+        model = models.WaterSupply
+        fields = ('id', 'water_supply_code', 'province_id', 'district_id', 'commune_id', 'village_id', 'water_supply_type_id')
 
     
 class WaterSupplyHistortSerializer(serializers.ModelSerializer):

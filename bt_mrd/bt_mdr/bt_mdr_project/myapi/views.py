@@ -332,11 +332,11 @@ class WaterSupplyListByTypeViewSet(viewsets.ModelViewSet):
     filterset_fields  = ['water_supply_type_id', 'province_id']
     endtime = datetime.now()
     duration = endtime - starttime
-    f = open( 'filename.txt', 'w+' )
-    f.write('Start Time: '+ str(starttime) + '\n')
-    f.write('End time : ' + str(endtime) + '\n')
-    f.write( 'Duration : ' + str(duration) + '\n')
-    f.close()
+    # f = open( 'filename.txt', 'w+' )
+    # f.write('Start Time: '+ str(starttime) + '\n')
+    # f.write('End time : ' + str(endtime) + '\n')
+    # f.write( 'Duration : ' + str(duration) + '\n')
+    # f.close()
 
 class WaterSupplyByUserAndStatusViewSet(viewsets.ModelViewSet):
     model = WaterSupply
@@ -384,11 +384,11 @@ class WaterSupplyMapViewSet(viewsets.ModelViewSet):
 
     endtime = datetime.now()
     duration = endtime - starttime
-    f = open( 'filename_map.txt', 'w+' )
-    f.write('Start Time: '+ str(starttime) + '\n')
-    f.write('End time : ' + str(endtime) + '\n')
-    f.write( 'Duration : ' + str(duration) + '\n')
-    f.close()
+    # f = open( 'filename_map.txt', 'w+' )
+    # f.write('Start Time: '+ str(starttime) + '\n')
+    # f.write('End time : ' + str(endtime) + '\n')
+    # f.write( 'Duration : ' + str(duration) + '\n')
+    # f.close()
 
 
 class WaterSupplyCreateAPIView(generics.CreateAPIView):
@@ -1000,3 +1000,8 @@ class WaterSupplyMapList_V2(generics.ListAPIView, EagerFieldsAPIView):
     queryset = WaterSupply.objects.all().order_by('-id').filter(is_active=True).filter(main_status=9)
     serializer_class = serializers.WaterSupplyMapSerializer_V1
     serializer_extra = "watersupplytype"
+
+class WaterSupplyTypeList_V2(generics.ListAPIView, EagerFieldsAPIView):
+    queryset = WaterSupplyType.objects.all()
+    serializer_class = serializers.WaterSupplyTypeSerializer_V2
+    #serializer_extra = "watersupplys"

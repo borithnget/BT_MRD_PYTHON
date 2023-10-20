@@ -129,7 +129,7 @@ def user_login(request):
 
     if request.method == "POST":
         #login_url = "http://3.0.166.20/en/api/login/"
-        #login_url = "http://127.0.0.1:8000/en/api/login/"
+        #login_url = "http://3.0.166.20/en/api/login/"
         login_url = settings.API_ENDPOINT + "login/"
         payload = {
             "username": request.POST["username"],

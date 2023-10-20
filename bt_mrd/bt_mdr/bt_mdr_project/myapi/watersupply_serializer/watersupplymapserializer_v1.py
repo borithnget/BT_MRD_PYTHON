@@ -15,7 +15,7 @@ class WaterSupplyMapSerializer_V1(serializer.ModelSerializer, EagerFieldsSeriali
     def extra(self):
         return{
             "watersupplytype" : {
-                "field": serializers.WaterSupplyType(),
+                "field": serializers.WaterSupplyTypeSerializer_V2(),
                 "prefetch": True,
             }
         }
