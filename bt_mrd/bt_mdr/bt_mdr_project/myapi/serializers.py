@@ -819,27 +819,87 @@ class WaterSupplyTypeSerializer_V2(serializers.ModelSerializer, EagerFieldsSeria
                 },
             }
 
+class ProvinceSerializer_V3(serializers.ModelSerializer, EagerFieldsSerializer):
+    class Meta:
+        fields = ('name_kh', 'name_en')
+        model = Province
+
+class DistrictSerializer_V4(serializers.ModelSerializer, EagerFieldsSerializer):
+    class Meta:
+        fields = ('name_kh', 'name_en')
+        model = District
+
+class CommuneSerializer_V4(serializers.ModelSerializer, EagerFieldsSerializer):
+    class Meta:
+        fields = ('name_kh', 'name_en')
+        model = Commune
+
+class VillageSerializer_V4(serializers.ModelSerializer, EagerFieldsSerializer):
+    class Meta:
+        fields = ('name_kh', 'name_en')
+        model = Village
+
+
 class WaterSupplyMapSerializer_V1(serializers.ModelSerializer, EagerFieldsSerializer):
     #watersupplytype = WaterSupplyTypeSerializer_V2(many=False, read_only=True)
     #water_supply_type_name =serializers.ReadOnlyField(source='water_supply_type_id.name_kh')
     class Meta:
         model = models.WaterSupply
-        fields = ('id', 'decimal_degress_lat', 'decimal_degress_lng', 'water_supply_type_id', 'water_supply_code')
+        fields = ('id', 'decimal_degress_lat', 'decimal_degress_lng', 'water_supply_code', 'water_supply_type_id')
 
-    @classproperty
-    def extra(self):
-        return{
-            "water_supply_type_id" : {
-                "field": WaterSupplyTypeSerializer_V2(),
-                "prefetch": True,
+        @classproperty
+        def extra(self):
+            return{
+                "water_supply_type_id" : {
+                    "field": WaterSupplyTypeSerializer_V2(),
+                    "prefetch": True,
+                }
             }
-        }
 
 class WaterSupplyListSerializer_V2(serializers.ModelSerializer, EagerFieldsSerializer):
+
+    # water_supply_type_name_en =serializers.ReadOnlyField(source='water_supply_type_id.name_en')
+    # water_supply_type_name_kh = serializers.ReadOnlyField(source='water_supply_type_id.name_kh')
+    # province_name_en = serializers.ReadOnlyField(source='province_id.name_en')
+    # province_name_kh = serializers.ReadOnlyField(source='province_id.name_kh')
+    # district_name_en = serializers.ReadOnlyField(source='district_id.name_en')
+    # district_name_kh = serializers.ReadOnlyField(source='district_id.name_kh')
+    # commune_name_en = serializers.ReadOnlyField(source='commune_id.name_en')
+    # commune_name_kh = serializers.ReadOnlyField(source='commune_id.name_kh')
+    # village_name_en = serializers.ReadOnlyField(source='village_id.name_en')
+    # village_name_kh = serializers.ReadOnlyField(source='village_id.name_kh')
     
     class Meta:
         model = models.WaterSupply
-        fields = ('id', 'water_supply_code', 'province_id', 'district_id', 'commune_id', 'village_id', 'water_supply_type_id')
+        fields = ('id', 'water_supply_code'
+                #   'province_id', 'district_id', 'commune_id', 'village_id', 'water_supply_type_id', 'water_supply_code', 'main_status',
+                #   'water_supply_type_name_en', 'water_supply_type_name_kh', 'province_name_en', 'province_name_kh', 'district_name_en', 'district_name_kh',  'commune_name_en', 'commune_name_kh',
+                #   'village_name_en', 'village_name_kh'
+                  )
+        @classproperty
+        def extra(self):
+            return{
+                "water_supply_type_id" : {
+                    "field": WaterSupplyTypeSerializer_V2(),
+                    "prefetch": True,
+                },
+                "province_id" : {
+                    "field" : ProvinceSerializer_V3(),
+                    "prefetch" : True,
+                },
+                "district_id": {
+                    "field" : DistrictSerializer_V4(),
+                    "prefetch" : True,
+                },
+                "commune_id": {
+                    "field" : CommuneSerializer_V4(),
+                    "prefetch" : True,
+                },
+                "village_id": {
+                    "field" : VillageSerializer_V4(),
+                    "prefetch" : True,
+                },
+            }
 
     
 class WaterSupplyHistortSerializer(serializers.ModelSerializer):

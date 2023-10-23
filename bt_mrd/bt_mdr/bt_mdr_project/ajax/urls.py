@@ -19,4 +19,5 @@ urlpatterns = [
     path('get/beneficiarypeoplebycountry', views.get_beneficiary_people_by_country, name = 'ajax_get_beneficiary_people_by_country'),
     path('get/reqeusthistory_by_phd', views.get_phd_requested_history, name="ajax_get_phd_requested_history"),
     path('get/watersupplylist_by_province', views.get_watersupply_list_by_province, name='ajax_get_watersupply_list_by_province'),
+    path('v2/get_water_supply_list_by_type_province', views.get_watersupply_list_by_type_province, name='ajax_get_watersupply_list_by_type_province_v2'),
 ]

@@ -5,7 +5,6 @@ from . import views
 from knox import views as knox_views
 # from django.conf.urls import url 
 
-
 router = routers.DefaultRouter()
 # router.register(r'heroes', views.HeroViewSet)
 router.register(r'country', views.CountryViewSet)
@@ -86,6 +85,7 @@ urlpatterns = [
     path('watersupplycheckisexist/<str:code>/', views.WaterSupplyExistByWaterSupplyCodeAPIView.as_view()),
     path('download-result/<str:res_type>',views.DownloadViewSet.as_view(),name='download_view'),
     path('provincelist', views.ProvinceListView.as_view()),
-    path('watersupplymap_v2/', views.WaterSupplyMapList_V2.as_view()),
+    path('watersupplymap_v2', views.WaterSupplyMapList_V2.as_view()),
     path('watersupplytypelist_v2/', views.WaterSupplyTypeList_V2.as_view()),
+    path('watersupplylist_v2', views.WaterSupplyListsView_V2.as_view()),
 ]

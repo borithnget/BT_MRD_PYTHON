@@ -15,11 +15,11 @@ from django.core.files.storage import FileSystemStorage
 from datetime import datetime
 
 # Create your views here.
-# MAIN_URL = 'http://3.0.166.20/api/' 
-# MAIN_URL_1 = 'http://3.0.166.20/en/'
+MAIN_URL = 'http://3.0.166.20/api/' 
+MAIN_URL_1 = 'http://3.0.166.20/en/'
 
-MAIN_URL = 'http://127.0.0.1:8000/api/' 
-MAIN_URL_1 = 'http://127.0.0.1:8000/en/'
+# MAIN_URL = 'http://127.0.0.1:8000/api/' 
+# MAIN_URL_1 = 'http://127.0.0.1:8000/en/'
 
 def index(request,id):
     

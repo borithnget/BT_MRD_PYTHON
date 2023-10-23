@@ -94,7 +94,7 @@ def get_water_supply_report_map(request):
         #url = settings.API_ENDPOINT + "watersupplyreportmap/?water_supply_type_id="+ str(water_supply_id)
         #url = settings.API_ENDPOINT + "watersupplymap/?province_id="+str(province_id)
         #url = settings.API_ENDPOINT + "watersupplymap/?province_id="
-        url = settings.API_ENDPOINT + "watersupplymap_v2/"
+        url = settings.API_ENDPOINT + "watersupplymap_v2"
         list = requests.get(url).json()
         return JsonResponse({'data': list}, status=200)
     return JsonResponse({}, status=400)
@@ -161,6 +161,19 @@ def get_watersupply_list_by_province(request):
 
         return JsonResponse({'data':response}, status=200)
     return JsonResponse({}, status=400)
+
+def get_watersupply_list_by_type_province(request):
+
+    if request.method == "GET":
+        province_id = request.GET.get('province_id', '')
+        ws_type = request.GET.get('ws_type', '')
+        if ws_type == 0:
+            ws_type = ''
+        url = settings.API_ENDPOINT + 'watersupplylist_v2?extra=water_supply_type_id,province_id,district_id,commune_id,village_id&water_supply_type_id='+ str(ws_type) + '&province_id=' + str(province_id)
+        response = requests.get(url).json()
+        return JsonResponse({ 'data':response}, status=200)
+    return JsonResponse({}, status=400)
+
 
 def get_beneficiary_people_by_country(request):
     if request.method == "GET":

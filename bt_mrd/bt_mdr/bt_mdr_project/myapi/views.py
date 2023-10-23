@@ -1005,3 +1005,9 @@ class WaterSupplyTypeList_V2(generics.ListAPIView, EagerFieldsAPIView):
     queryset = WaterSupplyType.objects.all()
     serializer_class = serializers.WaterSupplyTypeSerializer_V2
     #serializer_extra = "watersupplys"
+
+class WaterSupplyListsView_V2(generics.ListAPIView, EagerFieldsAPIView):
+    queryset = WaterSupply.objects.all().order_by('-id').filter(is_active=True).filter(main_status=9)
+    serializer_class = serializers.WaterSupplyListSerializer_V2
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields  = ['water_supply_type_id', 'province_id']
