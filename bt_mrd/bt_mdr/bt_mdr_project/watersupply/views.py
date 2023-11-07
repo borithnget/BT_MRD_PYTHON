@@ -99,303 +99,310 @@ def create_watersupply(request, id):
 
     
     if request.method == "POST":
+        try:
         
-        url1 = "http://3.0.166.20/en/api/v2/watersupply"
+            #url1 = "http://3.0.166.20/en/api/v2/watersupply"
 
-        main_status = request.POST.get('main_status')
-       
-        if main_status == '1':    
-            print(main_status)
-            if request.session['user']['is_head_department']:
-                main_status = 9
-            elif request.session['user']['is_data_verifier_2']:
-                main_status = 7
-            elif request.session['user']['is_data_verifier_1']:
-                main_status = 5
-            elif request.session['user']['is_provincial_department_head']:
-                main_status = 2
-            elif request.session['user']['is_data_entry']:
-                main_status = 1
-            
-        payload = {
-            "water_supply_type_id": id,
-            "province_id": request.POST['province'],
-            "district_id": request.POST['district'],
-            "created_by":  request.session['user']['id'],
-            "updated_by":  request.session['user']['id'],#
-            "is_active": True,
-            "is_risk_enviroment_area": request.POST['is_risk_enviroment_area'] ,
-            "commune_id": request.POST["commune"],
-            "village_id": request.POST["village"],
-            "construction_date": request.POST["construction_date"],
-            "water_supply_code" : request.POST["water_supply_code"],
-            "total_family" : request.POST["total_family"],
-            "utm_x": request.POST.get("utm_x"),
-            "utm_y":request.POST.get("utm_y"),
-            "source_budget":request.POST["source_budget"],
-            "constructed_by":request.POST["constructed_by"],
-            "management_type":request.POST["management_type"],
-            "managed_by":request.POST["managed_by"],
-            "beneficiary_total_people":request.POST["beneficiary_total_people"],
-            "beneficiary_total_women":request.POST["beneficiary_total_women"],
-            "beneficiary_total_family":request.POST["beneficiary_total_family"],
-            "beneficiary_total_family_poor_1":request.POST["beneficiary_total_family_poor_1"],
-            "beneficiary_total_family_poor_2":request.POST["beneficiary_total_family_poor_2"],
-            "beneficiary_total_family_vulnerable":request.POST["beneficiary_total_family_vulnerable"],
-            "beneficiary_total_family_indigenous":request.POST["beneficiary_total_family_indigenous"],
-            "main_status":main_status,
-            "is_water_quality_check": request.POST["is_water_quality_check"],
-            "map_unit" : request.POST.get("map_unit"),
-            "decimal_degress_lat" : request.POST.get("decimal_degress_lat"),
-            "decimal_degress_lng" : request.POST.get("decimal_degress_lng"),
-            "mds_x_degress" : request.POST.get("mds_x_degress"),
-            "mds_x_minute" : request.POST.get("mds_x_minute"),
-            "mds_x_second" : request.POST.get("mds_x_second"),
-            "mds_y_degress" : request.POST.get("mds_y_degress"),
-            "mds_y_minute" : request.POST.get("mds_y_minute"),
-            "mds_y_second" : request.POST.get("mds_y_second")
-        }
+            url1 = settings.API_ENDPOINT + 'v2/watersupply'
 
-        print(payload)
-        headers = {'Content-Type': 'application/json'}
-        #response = requests.post(url1, json=payload, headers=headers)
-
-        response = requests.post(url1, json=payload, headers=headers)
-        res_json  = response.json()
-        # print(res_json)
+            main_status = request.POST.get('main_status')
         
-        if 'status' in res_json:
-
-            #water supply workflow
-            ws_workflow = "http://3.0.166.20/en/api/v2/watersupplyworkflow"
-            payload_wsworkflow = {
-                "watersupply_id":int(res_json['data']['id']),
-                "status_id": main_status,
-                "user_id": request.session['user']['id'],
-                "remark": ""
-            }
-            response_ws_workflow = requests.post(ws_workflow, json=payload_wsworkflow, headers=headers).json()
-
-            if id == 1:#Well
-                # print(request.POST['well_type'])
-                ws_well_url = "http://3.0.166.20/en/api/watersupplywell/"
-                payload_well = {
-                    "watersupply_id" : res_json['data']['id'],
-                    "well_type" : request.POST['well_type'],
-                    "well_height": request.POST['well_height'],
-                    "well_filter_height" : request.POST["well_filter_height"],
-                    "well_water_supply" : request.POST["well_water_supply"],
-                    "well_nirostatic": request.POST["well_nirostatic"],
-                    "well_watar_quality": request.POST["well_watar_quality"],
-                    "well_water_quality_check" : request.POST["well_water_quality_check"],
-                    "well_status": request.POST["well_status"],
-                    "well_status_reason":request.POST["well_status_reason"],
-                    "well_nirodynamic": request.POST["well_nirodynamic"],
-                    "is_active": True,
-                }
-                print(payload_well)
-                response_well = requests.post(ws_well_url, json=payload_well, headers=headers)
-                well_res_json = response_well.json()                
-                # print(well_res_json)
-                if 'id' in well_res_json:
-                    ws_option_value_url = "http://3.0.166.20/en/api/watersupplywelloptionvalue/"
-                    split_well_type_values = request.POST['well_type'].split(',')
-                    # print(split_well_type_values)
-                    for well_type_value in split_well_type_values:
-                        payload_well_option_value ={
-                            "water_supply_well_id": well_res_json['id'],
-                            "option_id": 1,
-                            "value_id":int(well_type_value),
-                            "is_active": True
-                        }
-                        response_well_option_value = requests.post(ws_option_value_url,json=payload_well_option_value, headers=headers).json()
-                        print(payload_well_option_value)
-            elif id == 2:
-                ws_pipe_url = "http://3.0.166.20/en/api/watersupplypipe/"
-                payload_pipe = {
-                    "watersupply_id" : res_json['data']['id'],
-                    "is_active": True,
-                    "source_type_of_water": request.POST["source_type_of_water"],
-                    "abilty_of_produce_water":request.POST["abilty_of_produce_water"],
-                    "underground_pool_storage": request.POST["underground_pool_storage"],
-                    "pool_air": request.POST["pool_air"],
-                    "pool_filter": request.POST["pool_filter"],
-                    "number_of_link": request.POST["number_of_link"],
-                    "water_quality_check": request.POST["water_quality_check"],
-                    "status": request.POST["status"],
-                    "status_no_reason":request.POST["status_no_reason"],
-                    "pipe_length": request.POST["pipe_length"],
-                    "area_covering": request.POST["area_covering"]               
-                }
-                response_pipe_json = requests.post(ws_pipe_url, json=payload_pipe, headers=headers).json()
-                # print(response_pipe_json)
-                if 'id' in response_pipe_json:
-                    ws_pipe_option_value_url = "http://3.0.166.20/en/api/watersupplypipoptionvalue/"
-                    split_pipe_source_water_values = request.POST['source_type_of_water'].split(',')
-                    for pipe_source_water in split_pipe_source_water_values:
-                        payload_pipe_option_value = {
-                            "water_supply_pipe_id": response_pipe_json['id'],
-                            "option_id": 11,
-                            "value_id": int(pipe_source_water),
-                            "is_active": True
-                        }
-                        response_pipe_option_value = requests.post(ws_pipe_option_value_url,json=payload_pipe_option_value, headers=headers).json()
-                        # print(response_pipe_option_value)
-
-            elif id == 3:
-                ws_kiosk_url = "http://3.0.166.20/en/api/watersupplykiosk/"
-                payload_kiosk = {               
-                    "watersupply_id": res_json['data']['id'],
-                    "is_active": True,
-                    "source_type_of_water": request.POST["source_type_of_water"],
-                    "abilty_of_produce_water": request.POST["abilty_of_produce_water"],
-                    "filter_system": request.POST["filter_system"],
-                    "water_quality_checking": request.POST["water_quality_checking"],
-                    "status": request.POST["status"],
-                    "status_no_reason": request.POST["status_no_reason"]                      
-                }
-                response_kiosk_json = requests.post(ws_kiosk_url, json=payload_kiosk, headers=headers).json()
+            if main_status == '1':    
+                print(main_status)
+                if request.session['user']['is_head_department']:
+                    main_status = 9
+                elif request.session['user']['is_data_verifier_2']:
+                    main_status = 7
+                elif request.session['user']['is_data_verifier_1']:
+                    main_status = 5
+                elif request.session['user']['is_provincial_department_head']:
+                    main_status = 2
+                elif request.session['user']['is_data_entry']:
+                    main_status = 1
                 
-                if 'id' in response_kiosk_json:
-                    #print(response_kiosk_json)
-                    ws_kiosk_option_value_url = "http://3.0.166.20/en/api/watersupplykioskoptionvalue/"
-                    #print(ws_kiosk_option_value_url)
-                    split_kiosk_source_of_water_values = request.POST['source_type_of_water'].split(',')
-                    #print(split_kiosk_source_of_water_values)
-                    for kiosk_source_water in split_kiosk_source_of_water_values:
-                        payload_kiosk_option_value = {
-                            "water_supply_kiosk_id": response_kiosk_json['id'],
-                            "option_id": 11,
-                            "value_id": int(kiosk_source_water),
-                            "is_active": True
-                        }
-                        #print(payload_kiosk_option_value)
-                        response_kiosk_option_value = requests.post(ws_kiosk_option_value_url,json=payload_kiosk_option_value, headers=headers).json()
-
-            elif id == 4:
-                ws_community_pond_url = "http://3.0.166.20/en/api/watersupplycommunitypond/"
-                payload_community_pond = {
-                    "watersupply_id": res_json['data']['id'],
-                    "is_active": True,
-                    "width": request.POST["width"],
-                    "length": request.POST["length"],
-                    "height": request.POST["height"],
-                    "pool_filter": request.POST["pool_filter"],
-                    "type_of_pond": request.POST["type_of_pond"],
-                    "is_summer_has_water": request.POST["is_summer_has_water"],
-                    "status": request.POST["status"],
-                    "status_no_reason": request.POST["status_no_reason"]  
-                }
-                response_community_pond_json = requests.post(ws_community_pond_url, json=payload_community_pond, headers=headers).json()
-            elif id == 5:
-                ws_rain_water_harvesting_url = "http://3.0.166.20/en/api/watersupplyrainwaterharvesting/"
-                payload_rain_water_harvesting = {
-                    "watersupply_id": res_json['data']['id'],
-                    "is_active": True,
-                    "type_of_using": request.POST["type_of_using"],
-                    "capacity_35m3": 0,
-                    "capacity_4m3": 0,
-                    "capacity_of_rain_water_harvesting": request.POST["capacity_of_rain_water_harvesting"],
-                    "status": request.POST["status"],
-                    "status_no_reason": request.POST["status_no_reason"]  ,
-                    "water_quality_checking" : request.POST.get("water_quality_checking")
-                }
-                response_rain_water_harvesting_json = requests.post(ws_rain_water_harvesting_url, json=payload_rain_water_harvesting, headers=headers).json()           
-            elif id == 6:
-                ws_pipe_private_url = "http://3.0.166.20/en/api/watersupplypipeprivate/"
-                payload_pipe_private = {
-                    "watersupply_id" : res_json['data']['id'],
-                    "is_active": True,
-                    "source_type_of_water": request.POST["source_type_of_water"],
-                    "abilty_of_produce_water":request.POST["abilty_of_produce_water"],
-                    "underground_pool_storage": request.POST["underground_pool_storage"],
-                    "pool_air": request.POST["pool_air"],
-                    "pool_filter": request.POST["pool_filter"],
-                    "number_of_link": request.POST["number_of_link"],
-                    "water_quality_check": request.POST["well_water_quality_check"],
-                    "status": request.POST["status"],
-                    "status_no_reason":request.POST["well_status_reason"],
-                    "pipe_length": request.POST["pipe_length"],
-                    "area_covering": request.POST["area_covering"],
-                    "is_has_license": request.POST["is_has_license"],
-                    "license_registered_date": request.POST["license_registered_date"],
-                    "license_expired_date": request.POST["license_expired_date"]
-                }
-                response_pipe_private_json = requests.post(ws_pipe_private_url, json=payload_pipe_private, headers=headers).json()
-                # print(response_pipe_json)
-                if 'id' in response_pipe_private_json:
-                    ws_pipe_private_option_value_url = "http://3.0.166.20/en/api/watersupplypipeprivateoptionvalue/"
-                    split_pipe_source_water_values = request.POST['source_type_of_water'].split(',')
-                    for pipe_source_water in split_pipe_source_water_values:
-                        payload_pipe_option_value = {
-                            "water_supply_pipe_id": response_pipe_private_json['id'],
-                            "option_id": 11,
-                            "value_id": int(pipe_source_water),
-                            "is_active": True
-                        }
-                        response_pipe_option_value = requests.post(ws_pipe_private_option_value_url,json=payload_pipe_option_value, headers=headers).json()
-            elif id == 7:
-                ws_air_water_url = "http://3.0.166.20/en/api/watersupplyairwater/"
-                payload_air_water = {               
-                    "watersupply_id": res_json['data']['id'],
-                    "is_active": True,
-                    "source_type_of_water": request.POST["source_type_of_water"],
-                    "abilty_of_produce_water": request.POST["abilty_of_produce_water"],
-                    "filter_system": request.POST["filter_system"],
-                    "water_quality_checking": request.POST["well_water_quality_check"],
-                    "status": request.POST["status"],
-                    "status_no_reason": request.POST["status_no_reason"]                      
-                }
-                response_air_water_json = requests.post(ws_air_water_url, json=payload_air_water, headers=headers).json()
-                
-                if 'id' in response_air_water_json:
-                    #print(response_kiosk_json)
-                    ws_air_water_option_value_url = "http://3.0.166.20/en/api/watersupplyairwateroptionvalue/"
-                    #print(ws_kiosk_option_value_url)
-                    split_air_water_source_of_water_values = request.POST['source_type_of_water'].split(',')
-                    #print(split_kiosk_source_of_water_values)
-                    for air_water_source_water in split_air_water_source_of_water_values:
-                        payload_air_water_option_value = {
-                            "water_supply_airwater_id": response_air_water_json['id'],
-                            "option_id": 11,
-                            "value_id": int(air_water_source_water),
-                            "is_active": True
-                        }
-                        print(payload_air_water_option_value)
-                        response_air_water_option_value = requests.post(ws_air_water_option_value_url,json=payload_air_water_option_value, headers=headers).json()
-
-            
-            #Generate QR CODE
-            detail_url = MAIN_URL_1 + "watersupply/detail/" + str(res_json['data']['id'])
-            img = make(detail_url)
-            img_name = 'qr' + str(time.time()) + '.png'
-            img.save(settings.MEDIA_ROOT + '/' + img_name)         
-            ws_qr_code_url = "http://3.0.166.20/en/api/watersupplyqrcode/"
-            payload_qr_code = {
-                "watersupply_id": res_json['data']['id'],
-                "qr_code_image_name": img_name
+            payload = {
+                "water_supply_type_id": id,
+                "province_id": int(request.POST['province']),
+                "district_id": int(request.POST['district']),
+                "created_by":  request.session['user']['id'],
+                "updated_by":  request.session['user']['id'],#
+                "is_active": "True",
+                "is_risk_enviroment_area": request.POST['is_risk_enviroment_area'] ,
+                "commune_id": int(request.POST["commune"]),
+                "village_id":int(request.POST["village"]),
+                "construction_date": request.POST["construction_date"],
+                "water_supply_code" : request.POST["water_supply_code"],
+                "total_family" : int(request.POST["total_family"]),
+                "utm_x": float(request.POST.get("utm_x")),
+                "utm_y":float(request.POST.get("utm_y")),
+                "source_budget":int(request.POST["source_budget"]),
+                "constructed_by":request.POST["constructed_by"],
+                "management_type":int(request.POST["management_type"]),
+                "managed_by":request.POST["managed_by"],
+                "beneficiary_total_people":int( request.POST["beneficiary_total_people"]),
+                "beneficiary_total_women":int(request.POST["beneficiary_total_women"]),
+                "beneficiary_total_family":int(request.POST["beneficiary_total_family"]),
+                "beneficiary_total_family_poor_1":int(request.POST["beneficiary_total_family_poor_1"]),
+                "beneficiary_total_family_poor_2":int(request.POST["beneficiary_total_family_poor_2"]),
+                "beneficiary_total_family_vulnerable":int(request.POST["beneficiary_total_family_vulnerable"]),
+                "beneficiary_total_family_indigenous":int(request.POST["beneficiary_total_family_indigenous"]),
+                "main_status": int(main_status),
+                "is_water_quality_check": request.POST["is_water_quality_check"],
+                "map_unit" : int(request.POST.get("map_unit",0)),
+                "decimal_degress_lat" : float(request.POST.get("decimal_degress_lat",0)),
+                "decimal_degress_lng" : float(request.POST.get("decimal_degress_lng",0)),
+                "mds_x_degress" : float(request.POST.get("mds_x_degress",0)),
+                "mds_x_minute" : float(request.POST.get("mds_x_minute",0)),
+                "mds_x_second" : float(request.POST.get("mds_x_second",0)),
+                "mds_y_degress" : float(request.POST.get("mds_y_degress",0)),
+                "mds_y_minute" : float(request.POST.get("mds_y_minute",0)),
+                "mds_y_second" : float(request.POST.get("mds_y_second",0))
             }
-            response_ws_qrcode = requests.post(ws_qr_code_url, json=payload_qr_code, headers=headers).json()
+            print(json.dumps(payload))
+            print(payload)
+            headers = {'Content-Type': 'application/json;'}
+            #response = requests.post(url1, json=payload, headers=headers)
 
-            #if Water Quality Check
-            wqc_param_url = "http://3.0.166.20/en/api/watersupplyqualitycheckparameter/"
-            wqc_param_ids = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]
-       
-            for param_id in wqc_param_ids:
-                wqc_param_id = "wqcparam_" + str(param_id)
-                wqc_param_value = request.POST.get(wqc_param_id)
-
-                wqc_param_payload = {
-                    "value": wqc_param_value,
-                    "is_active": True,
-                    "water_supply_id": res_json['data']['id'],
-                    "water_quanlity_check_parameter_id": param_id
-                }
-                response_wqc_param = requests.post(wqc_param_url, json=wqc_param_payload, headers=headers).json()
-                # print(wqc_param_value)
+            response = requests.post(url1, json=payload, headers=headers)
+            res_json  = response.json()
+            # print(res_json)
             
-            return redirect('watersupply_detail', id=res_json['data']['id'])
+            if 'status' in res_json:
 
+                #water supply workflow
+                ws_workflow = "http://3.0.166.20/en/api/v2/watersupplyworkflow"
+                payload_wsworkflow = {
+                    "watersupply_id":int(res_json['data']['id']),
+                    "status_id": main_status,
+                    "user_id": request.session['user']['id'],
+                    "remark": ""
+                }
+                response_ws_workflow = requests.post(ws_workflow, json=payload_wsworkflow, headers=headers).json()
+
+                if id == 1:#Well
+                    # print(request.POST['well_type'])
+                    ws_well_url = "http://3.0.166.20/en/api/watersupplywell/"
+                    payload_well = {
+                        "watersupply_id" : res_json['data']['id'],
+                        "well_type" : request.POST['well_type'],
+                        "well_height": request.POST['well_height'],
+                        "well_filter_height" : request.POST["well_filter_height"],
+                        "well_water_supply" : request.POST["well_water_supply"],
+                        "well_nirostatic": request.POST["well_nirostatic"],
+                        "well_watar_quality": request.POST["well_watar_quality"],
+                        "well_water_quality_check" : request.POST["well_water_quality_check"],
+                        "well_status": request.POST["well_status"],
+                        "well_status_reason":request.POST["well_status_reason"],
+                        "well_nirodynamic": request.POST["well_nirodynamic"],
+                        "is_active": True,
+                    }
+                    print(payload_well)
+                    response_well = requests.post(ws_well_url, json=payload_well, headers=headers)
+                    well_res_json = response_well.json()                
+                    # print(well_res_json)
+                    if 'id' in well_res_json:
+                        ws_option_value_url = "http://3.0.166.20/en/api/watersupplywelloptionvalue/"
+                        split_well_type_values = request.POST['well_type'].split(',')
+                        # print(split_well_type_values)
+                        for well_type_value in split_well_type_values:
+                            payload_well_option_value ={
+                                "water_supply_well_id": well_res_json['id'],
+                                "option_id": 1,
+                                "value_id":int(well_type_value),
+                                "is_active": True
+                            }
+                            response_well_option_value = requests.post(ws_option_value_url,json=payload_well_option_value, headers=headers).json()
+                            print(payload_well_option_value)
+                elif id == 2:
+                    ws_pipe_url = "http://3.0.166.20/en/api/watersupplypipe/"
+                    payload_pipe = {
+                        "watersupply_id" : res_json['data']['id'],
+                        "is_active": True,
+                        "source_type_of_water": request.POST["source_type_of_water"],
+                        "abilty_of_produce_water":request.POST["abilty_of_produce_water"],
+                        "underground_pool_storage": request.POST["underground_pool_storage"],
+                        "pool_air": request.POST["pool_air"],
+                        "pool_filter": request.POST["pool_filter"],
+                        "number_of_link": request.POST["number_of_link"],
+                        "water_quality_check": request.POST["water_quality_check"],
+                        "status": request.POST["status"],
+                        "status_no_reason":request.POST["status_no_reason"],
+                        "pipe_length": request.POST["pipe_length"],
+                        "area_covering": request.POST["area_covering"]               
+                    }
+                    response_pipe_json = requests.post(ws_pipe_url, json=payload_pipe, headers=headers).json()
+                    # print(response_pipe_json)
+                    if 'id' in response_pipe_json:
+                        ws_pipe_option_value_url = "http://3.0.166.20/en/api/watersupplypipoptionvalue/"
+                        split_pipe_source_water_values = request.POST['source_type_of_water'].split(',')
+                        for pipe_source_water in split_pipe_source_water_values:
+                            payload_pipe_option_value = {
+                                "water_supply_pipe_id": response_pipe_json['id'],
+                                "option_id": 11,
+                                "value_id": int(pipe_source_water),
+                                "is_active": True
+                            }
+                            response_pipe_option_value = requests.post(ws_pipe_option_value_url,json=payload_pipe_option_value, headers=headers).json()
+                            # print(response_pipe_option_value)
+
+                elif id == 3:
+                    ws_kiosk_url = "http://3.0.166.20/en/api/watersupplykiosk/"
+                    payload_kiosk = {               
+                        "watersupply_id": res_json['data']['id'],
+                        "is_active": True,
+                        "source_type_of_water": request.POST["source_type_of_water"],
+                        "abilty_of_produce_water": request.POST["abilty_of_produce_water"],
+                        "filter_system": request.POST["filter_system"],
+                        "water_quality_checking": request.POST["water_quality_checking"],
+                        "status": request.POST["status"],
+                        "status_no_reason": request.POST["status_no_reason"]                      
+                    }
+                    response_kiosk_json = requests.post(ws_kiosk_url, json=payload_kiosk, headers=headers).json()
+                    
+                    if 'id' in response_kiosk_json:
+                        #print(response_kiosk_json)
+                        ws_kiosk_option_value_url = "http://3.0.166.20/en/api/watersupplykioskoptionvalue/"
+                        #print(ws_kiosk_option_value_url)
+                        split_kiosk_source_of_water_values = request.POST['source_type_of_water'].split(',')
+                        #print(split_kiosk_source_of_water_values)
+                        for kiosk_source_water in split_kiosk_source_of_water_values:
+                            payload_kiosk_option_value = {
+                                "water_supply_kiosk_id": response_kiosk_json['id'],
+                                "option_id": 11,
+                                "value_id": int(kiosk_source_water),
+                                "is_active": True
+                            }
+                            #print(payload_kiosk_option_value)
+                            response_kiosk_option_value = requests.post(ws_kiosk_option_value_url,json=payload_kiosk_option_value, headers=headers).json()
+
+                elif id == 4:
+                    ws_community_pond_url = "http://3.0.166.20/en/api/watersupplycommunitypond/"
+                    payload_community_pond = {
+                        "watersupply_id": res_json['data']['id'],
+                        "is_active": True,
+                        "width": request.POST["width"],
+                        "length": request.POST["length"],
+                        "height": request.POST["height"],
+                        "pool_filter": request.POST["pool_filter"],
+                        "type_of_pond": request.POST["type_of_pond"],
+                        "is_summer_has_water": request.POST["is_summer_has_water"],
+                        "status": request.POST["status"],
+                        "status_no_reason": request.POST["status_no_reason"]  
+                    }
+                    response_community_pond_json = requests.post(ws_community_pond_url, json=payload_community_pond, headers=headers).json()
+                elif id == 5:
+                    ws_rain_water_harvesting_url = "http://3.0.166.20/en/api/watersupplyrainwaterharvesting/"
+                    payload_rain_water_harvesting = {
+                        "watersupply_id": res_json['data']['id'],
+                        "is_active": True,
+                        "type_of_using": request.POST["type_of_using"],
+                        "capacity_35m3": 0,
+                        "capacity_4m3": 0,
+                        "capacity_of_rain_water_harvesting": request.POST["capacity_of_rain_water_harvesting"],
+                        "status": request.POST["status"],
+                        "status_no_reason": request.POST["status_no_reason"]  ,
+                        "water_quality_checking" : request.POST.get("water_quality_checking")
+                    }
+                    response_rain_water_harvesting_json = requests.post(ws_rain_water_harvesting_url, json=payload_rain_water_harvesting, headers=headers).json()           
+                elif id == 6:
+                    ws_pipe_private_url = "http://3.0.166.20/en/api/watersupplypipeprivate/"
+                    payload_pipe_private = {
+                        "watersupply_id" : res_json['data']['id'],
+                        "is_active": True,
+                        "source_type_of_water": request.POST["source_type_of_water"],
+                        "abilty_of_produce_water":request.POST["abilty_of_produce_water"],
+                        "underground_pool_storage": request.POST["underground_pool_storage"],
+                        "pool_air": request.POST["pool_air"],
+                        "pool_filter": request.POST["pool_filter"],
+                        "number_of_link": request.POST["number_of_link"],
+                        "water_quality_check": request.POST["well_water_quality_check"],
+                        "status": request.POST["status"],
+                        "status_no_reason":request.POST["well_status_reason"],
+                        "pipe_length": request.POST["pipe_length"],
+                        "area_covering": request.POST["area_covering"],
+                        "is_has_license": request.POST["is_has_license"],
+                        "license_registered_date": request.POST["license_registered_date"],
+                        "license_expired_date": request.POST["license_expired_date"]
+                    }
+                    response_pipe_private_json = requests.post(ws_pipe_private_url, json=payload_pipe_private, headers=headers).json()
+                    # print(response_pipe_json)
+                    if 'id' in response_pipe_private_json:
+                        ws_pipe_private_option_value_url = "http://3.0.166.20/en/api/watersupplypipeprivateoptionvalue/"
+                        split_pipe_source_water_values = request.POST['source_type_of_water'].split(',')
+                        for pipe_source_water in split_pipe_source_water_values:
+                            payload_pipe_option_value = {
+                                "water_supply_pipe_id": response_pipe_private_json['id'],
+                                "option_id": 11,
+                                "value_id": int(pipe_source_water),
+                                "is_active": True
+                            }
+                            response_pipe_option_value = requests.post(ws_pipe_private_option_value_url,json=payload_pipe_option_value, headers=headers).json()
+                elif id == 7:
+                    ws_air_water_url = "http://3.0.166.20/en/api/watersupplyairwater/"
+                    payload_air_water = {               
+                        "watersupply_id": res_json['data']['id'],
+                        "is_active": True,
+                        "source_type_of_water": request.POST["source_type_of_water"],
+                        "abilty_of_produce_water": request.POST["abilty_of_produce_water"],
+                        "filter_system": request.POST["filter_system"],
+                        "water_quality_checking": request.POST["well_water_quality_check"],
+                        "status": request.POST["status"],
+                        "status_no_reason": request.POST["status_no_reason"]                      
+                    }
+                    response_air_water_json = requests.post(ws_air_water_url, json=payload_air_water, headers=headers).json()
+                    
+                    if 'id' in response_air_water_json:
+                        #print(response_kiosk_json)
+                        ws_air_water_option_value_url = "http://3.0.166.20/en/api/watersupplyairwateroptionvalue/"
+                        #print(ws_kiosk_option_value_url)
+                        split_air_water_source_of_water_values = request.POST['source_type_of_water'].split(',')
+                        #print(split_kiosk_source_of_water_values)
+                        for air_water_source_water in split_air_water_source_of_water_values:
+                            payload_air_water_option_value = {
+                                "water_supply_airwater_id": response_air_water_json['id'],
+                                "option_id": 11,
+                                "value_id": int(air_water_source_water),
+                                "is_active": True
+                            }
+                            print(payload_air_water_option_value)
+                            response_air_water_option_value = requests.post(ws_air_water_option_value_url,json=payload_air_water_option_value, headers=headers).json()
+
+                
+                #Generate QR CODE
+                detail_url = MAIN_URL_1 + "watersupply/detail/" + str(res_json['data']['id'])
+                img = make(detail_url)
+                img_name = 'qr' + str(time.time()) + '.png'
+                img.save(settings.MEDIA_ROOT + '/' + img_name)         
+                ws_qr_code_url = "http://3.0.166.20/en/api/watersupplyqrcode/"
+                payload_qr_code = {
+                    "watersupply_id": res_json['data']['id'],
+                    "qr_code_image_name": img_name
+                }
+                response_ws_qrcode = requests.post(ws_qr_code_url, json=payload_qr_code, headers=headers).json()
+
+                #if Water Quality Check
+                wqc_param_url = "http://3.0.166.20/en/api/watersupplyqualitycheckparameter/"
+                wqc_param_ids = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]
+        
+                for param_id in wqc_param_ids:
+                    wqc_param_id = "wqcparam_" + str(param_id)
+                    wqc_param_value = request.POST.get(wqc_param_id)
+
+                    wqc_param_payload = {
+                        "value": wqc_param_value,
+                        "is_active": True,
+                        "water_supply_id": res_json['data']['id'],
+                        "water_quanlity_check_parameter_id": param_id
+                    }
+                    response_wqc_param = requests.post(wqc_param_url, json=wqc_param_payload, headers=headers).json()
+                    # print(wqc_param_value)
+                
+                return redirect('watersupply_detail', id=res_json['data']['id'])
+        # except BaseException as b:
+        #     raise b
+        except Exception as e:
+            raise e
+    
     key = settings.GOOGLE_API_KEY
     context = {
         'key':key

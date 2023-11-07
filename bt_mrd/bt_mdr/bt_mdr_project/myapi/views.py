@@ -1,4 +1,4 @@
-import imp
+#import imp
 import json
 import io
 from pickle import NONE
@@ -47,6 +47,9 @@ from drf_eager_fields.serializers import EagerFieldsSerializer
 from rest_framework import generics
 from drf_eager_fields.views import EagerFieldsViewMixin,EagerFieldsAPIView
 # from .watersupply_serializer import WaterSupplyMapSerializer_V1
+
+
+MAIN_URL_1 = 'http://3.0.166.20/en/';
 
 # Create your views here.
 class CustomPagination(pagination.PageNumberPagination):

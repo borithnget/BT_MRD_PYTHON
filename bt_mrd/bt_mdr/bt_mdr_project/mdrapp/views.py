@@ -73,7 +73,7 @@ def home(request):
         if 'count' in count_pipe_response:
             count_pipe = int(count_pipe_response['count'])
         
-        count_air_to_water_response = requests.get(settings.API_ENDPOINT + 'watersupplygetcountbytype/6/').json()
+        count_air_to_water_response = requests.get(settings.API_ENDPOINT + 'watersupplygetcountbytype/7/').json()
         if 'count' in count_air_to_water_response:
             count_air_to_water = int(count_air_to_water_response['count'])
 

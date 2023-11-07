@@ -110,6 +110,7 @@ DATABASES = {
     #     'ENGINE': 'django.db.backends.sqlite3',
     #     'NAME': BASE_DIR / 'db.sqlite3',
     # }
+    
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'rwsdm',
@@ -259,7 +260,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 API_ENDPOINT = "http://127.0.0.1:8000/en/api/"
 # API_ENDPOINT = "http://18.222.12.231/en/api/"
-#API_ENDPOINT = "http://13.212.250.28/en/api/"
+#API_ENDPOINT = "http://3.0.166.20//en/api/"
 
 
 
