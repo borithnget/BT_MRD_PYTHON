@@ -32,6 +32,23 @@
             <form method="post" id="myForm">
                 {% csrf_token %}
                 <div class="form-group row">
+
+                    <label class="control-label col-md-1">{% trans 'water_supply_type' %}</label>
+                    <div class="col-md-2">
+                        <select class="form-control" id="md_ws_type">
+                            <option value="0">{% trans 'select_option' %}</option>
+                            {% for watersupplytype in watersupplytypelist %}
+                                {% if CURRENT_LANGUAGE == 'en' %}
+                                    <option value="{{ watersupplytype.id }}">{{ watersupplytype.name_en }}</option>
+                                {% else %}
+                                    <option value="{{ watersupplytype.id }}">{{ watersupplytype.name_kh }}</option>
+                                {% endif %}
+                                
+                            {% endfor %}
+                        </select>
+                    
+                    </div>
+
                     <label class="control-label col-md-1">{% trans 'DateFrom' %}</label>
                     <div class="col-md-2">
                         <div class="input-group date" data-provide="datepicker">

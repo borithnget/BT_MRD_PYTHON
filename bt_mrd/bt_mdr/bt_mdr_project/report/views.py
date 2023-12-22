@@ -42,7 +42,9 @@ def report_well_sum_by_province(request):
                   { "provinces" : provinces })
 
 def report_well_sum_by_province_token(request, token):
+    url = settings.API_ENDPOINT + 'watersupplytype/'
+    watersupplytypelist = requests.get(url).json()
     province_url = settings.API_ENDPOINT + 'province'    
     provinces = requests.get(province_url).json()
     return render(request, 'report/report_well_sum_by_province.html',
-                  { "provinces" : provinces })
+                  { "provinces" : provinces,"watersupplytypelist":watersupplytypelist })
