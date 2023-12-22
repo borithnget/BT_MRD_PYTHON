@@ -839,6 +839,35 @@ class VillageSerializer_V4(serializers.ModelSerializer, EagerFieldsSerializer):
         fields = ('name_kh', 'name_en')
         model = Village
 
+class WaterSupplyWellOptionValueSerializer(serializers.ModelSerializer, EagerFieldsSerializer):
+    class Meta:
+        fields = ('value_id', 'option_id')
+        model = models.WaterSupplyWellOptionValue
+
+class WellSerializer(serializers.ModelSerializer, EagerFieldsSerializer):
+    class Meta:
+         fields = ('id', 'watersupply_id', 'well_type', 'well_height', 'well_filter_height', 'well_water_supply', 'well_nirostatic', 'well_watar_quality', 'well_water_quality_check', 
+        'well_status', 'well_status_reason', 'is_active')
+         model = models.WaterSupplyWell
+
+         @classproperty
+         def extra(self):
+             return {
+                 "watersupplywelloptionvalue_watersupplywell" : {
+                    "field" : WaterSupplyWellOptionValueSerializer(many=True),
+                    "prefetch": True
+                }
+             }
+
+        # @classproperty
+        # def extra(self):
+        #     return {
+        #         "watersupplywelloptionvalue_watersupplywell" : {
+        #             "field" : WaterSupplyWellOptionValueSerializer(many=True),
+        #             "prefetch": True
+        #         }
+        #     }
+
 
 class WaterSupplyMapSerializer_V1(serializers.ModelSerializer, EagerFieldsSerializer):
     #watersupplytype = WaterSupplyTypeSerializer_V2(many=False, read_only=True)
@@ -857,17 +886,6 @@ class WaterSupplyMapSerializer_V1(serializers.ModelSerializer, EagerFieldsSerial
             }
 
 class WaterSupplyListSerializer_V2(serializers.ModelSerializer, EagerFieldsSerializer):
-
-    # water_supply_type_name_en =serializers.ReadOnlyField(source='water_supply_type_id.name_en')
-    # water_supply_type_name_kh = serializers.ReadOnlyField(source='water_supply_type_id.name_kh')
-    # province_name_en = serializers.ReadOnlyField(source='province_id.name_en')
-    # province_name_kh = serializers.ReadOnlyField(source='province_id.name_kh')
-    # district_name_en = serializers.ReadOnlyField(source='district_id.name_en')
-    # district_name_kh = serializers.ReadOnlyField(source='district_id.name_kh')
-    # commune_name_en = serializers.ReadOnlyField(source='commune_id.name_en')
-    # commune_name_kh = serializers.ReadOnlyField(source='commune_id.name_kh')
-    # village_name_en = serializers.ReadOnlyField(source='village_id.name_en')
-    # village_name_kh = serializers.ReadOnlyField(source='village_id.name_kh')
     
     class Meta:
         model = models.WaterSupply
@@ -901,6 +919,79 @@ class WaterSupplyListSerializer_V2(serializers.ModelSerializer, EagerFieldsSeria
                 },
             }
 
+class WaterSupplyReportDetailSerializer(serializers.ModelSerializer, EagerFieldsSerializer):
+
+    watersupplywell_watersupply = serializers.SerializerMethodField()   
+    watersupplyairwater_watersupply = serializers.SerializerMethodField()
+    watersupplypipe_watersupply = serializers.SerializerMethodField()
+    watersupplyKiosk_watersupply = serializers.SerializerMethodField()
+    watersupplyCommunityPond_watersupply = serializers.SerializerMethodField()
+    watersupplyRainWaterHarvesting_watersupply = serializers.SerializerMethodField()
+    watersupplypipeprivate_watersupply = serializers.SerializerMethodField() 
+
+    class Meta:
+        model = models.WaterSupply
+        fields = ('id', 'water_supply_code', 'total_family', 'utm_x', 'utm_y', 'is_risk_enviroment_area', 'construction_date', 'source_budget', 'constructed_by', 
+        'management_type', 'managed_by', 'beneficiary_total_people', 'beneficiary_total_women', 'beneficiary_total_family', 'beneficiary_total_family_poor_1', 'beneficiary_total_family_poor_2', 'beneficiary_total_family_vulnerable', 'beneficiary_total_family_indigenous', 'main_status', 'is_water_quality_check',
+        'map_unit', 'decimal_degress_lat', 'decimal_degress_lng', 'watersupplywell_watersupply', 'watersupplypipe_watersupply', 'watersupplyKiosk_watersupply', 'watersupplyCommunityPond_watersupply', 'watersupplyRainWaterHarvesting_watersupply', 'watersupplypipeprivate_watersupply', 'watersupplyairwater_watersupply')
+   
+
+        @classproperty
+        def extra(self):
+            return{
+                "water_supply_type_id" : {
+                    "field": WaterSupplyTypeSerializer_V2(),
+                    "prefetch": True,
+                },
+                "province_id" : {
+                    "field" : ProvinceSerializer_V3(),
+                    "prefetch" : True,
+                },
+                "district_id": {
+                    "field" : DistrictSerializer_V4(),
+                    "prefetch" : True,
+                },
+                "commune_id": {
+                    "field" : CommuneSerializer_V4(),
+                    "prefetch" : True,
+                },
+                "village_id": {
+                    "field" : VillageSerializer_V4(),
+                    "prefetch" : True,
+                },
+                # "watersupplywell_watersupply":{
+                #     "field" : WellSerializer(many=True),
+                #     "prefetch": True
+                # }
+            }
+        
+    def get_watersupplywell_watersupply(self, instance):
+        watersupplywell_watersupplys = instance.watersupplywell_watersupply.all().order_by('-id')
+        return WaterSupplyWellSerializer(watersupplywell_watersupplys, many=True).data
+
+    def get_watersupplyairwater_watersupply(self, instance):
+        watersupplywell_watersupplys = instance.watersupplyairwater_watersupply.all().order_by('-id')
+        return WaterSupplyAirWaterSerializer(watersupplywell_watersupplys, many=True).data
+    
+    def get_watersupplypipe_watersupply(self, instance):
+        watersupplywell_watersupplys = instance.watersupplypipe_watersupply.all().order_by('-id')
+        return WaterSupplyPipeSerializer(watersupplywell_watersupplys, many=True).data
+    
+    def get_watersupplyKiosk_watersupply(self, instance):
+        watersupplywell_watersupplys = instance.watersupplyKiosk_watersupply.all().order_by('-id')
+        return WaterSupplyKioskSerializer(watersupplywell_watersupplys, many=True).data
+    
+    def get_watersupplyCommunityPond_watersupply(self, instance):
+        watersupplywell_watersupplys = instance.watersupplyCommunityPond_watersupply.all().order_by('-id')
+        return WaterSupplyCommuniryPondSerializer(watersupplywell_watersupplys, many=True).data
+    
+    def get_watersupplyRainWaterHarvesting_watersupply(self, instance):
+        watersupplywell_watersupplys = instance.watersupplyRainWaterHarvesting_watersupply.all().order_by('-id')
+        return WaterSupplyRainWaterHarvestingSerializer(watersupplywell_watersupplys, many=True).data
+    
+    def get_watersupplypipeprivate_watersupply(self, instance):
+        watersupplywell_watersupplys = instance.watersupplypipeprivate_watersupply.all().order_by('-id')
+        return WaterSupplyPipePrivateSerializer(watersupplywell_watersupplys, many=True).data
     
 class WaterSupplyHistortSerializer(serializers.ModelSerializer):
     created_at = serializers.DateTimeField(default=datetime.now())
@@ -954,7 +1045,6 @@ class WaterQuanlityCheckParameterSerializer(serializers.ModelSerializer):
         model = WaterQualityCheckedParamater
         fields = '__all__'
 
-
 #START REPORT
 class WaterSupplyReportMapSerializer(serializers.ModelSerializer):
     
@@ -964,5 +1054,4 @@ class WaterSupplyReportMapSerializer(serializers.ModelSerializer):
         fields = ('id', 'water_supply_type_id', 'map_unit', 'decimal_degress_lat', 'decimal_degress_lng', 'utm_x', 'utm_y', 'mds_x_degress', 
                   'mds_x_minute', 'mds_x_second', 'mds_y_degress', 'mds_y_minute', 'mds_y_second', 'lat', 'lng')
 
-    
 #END REPORT

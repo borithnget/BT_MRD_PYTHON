@@ -733,7 +733,7 @@ class WaterSupplyFilterDateRange(django_filters.FilterSet):
 
     class Meta:
         model = WaterSupply
-        fields = ['created_at', 'crated_at_1', 'province_id']
+        fields = ['created_at', 'crated_at_1', 'province_id', 'water_supply_type_id']
 
 # class WaterSupplyFilterDateRange(django_filters.FilterSet):
 #     created_at = django_filters.DateRangeFilter()
@@ -777,9 +777,11 @@ class WaterSupplyFilterDateRange1(django_filters.rest_framework.FilterSet):
             'created_at',
         ]
 
-class WaterSupplyFilterDateRangeListView(generics.ListAPIView):
-    serializer_class = serializers.WaterSupplySerializer
-    queryset = WaterSupply.objects.all().order_by('-id').filter(is_active=True).filter(main_status=9).filter(water_supply_type_id=1)
+class WaterSupplyFilterDateRangeListView(generics.ListAPIView, EagerFieldsAPIView):
+    #serializer_class = serializers.WaterSupplySerializer
+    serializer_class = serializers.WaterSupplyReportDetailSerializer
+    queryset = WaterSupply.objects.all().order_by('-id').filter(is_active=True).filter(main_status=9) 
+    #.filter(water_supply_type_id=1)
     filter_backends = [DjangoFilterBackend]
     filterset_class = WaterSupplyFilterDateRange
 

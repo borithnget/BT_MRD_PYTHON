@@ -104,7 +104,8 @@ def report_supply_well_by_province(request):
         date_start = request.GET.get('date_start', NONE)
         date_end = request.GET.get('date_end', NONE)
         province = request.GET.get('province', '')
-        url = settings.API_ENDPOINT + "watersupplyfilterdaterange?created_at="+str(date_start)+"&crated_at_1="+str(date_end)+"&province_id="+province
+        ws_type = request.GET.get('water_supply_type_id', '')
+        url = settings.API_ENDPOINT + "watersupplyfilterdaterange?extra=watersupplywell_watersupply.watersupplywelloptionvalue_watersupplywell,water_supply_type_id,province_id,district_id,commune_id,village_id&created_at="+str(date_start)+"&crated_at_1="+str(date_end)+"&province_id="+province+"&water_supply_type_id="+ws_type
         # print(url)
         list = requests.get(url).json()
         return JsonResponse({'data': list}, status=200)
@@ -116,7 +117,8 @@ def report_supply_well_coverage_by_province(request):
         date_start = request.GET.get('date_start', NONE)
         date_end = request.GET.get('date_end', NONE)
         province = request.GET.get('province', '')
-        url = settings.API_ENDPOINT + "watersupplyfilterdaterange?created_at="+str(date_start)+"&crated_at_1="+str(date_end)+"&province_id="+province
+        ws_type = request.GET.get('water_supply_type_id', '')
+        url = settings.API_ENDPOINT + "watersupplyfilterdaterange?created_at="+str(date_start)+"&crated_at_1="+str(date_end)+"&province_id="+province+"&water_supply_type_id="+ws_type
         # print(url)
         list = requests.get(url).json()
         

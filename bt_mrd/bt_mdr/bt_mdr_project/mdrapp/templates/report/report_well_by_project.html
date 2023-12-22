@@ -26,6 +26,21 @@
             <form method="post" id="myForm">
                 {% csrf_token %}
                 <div class="form-group row">
+                    <label class="control-label col-md-1">{% trans 'water_supply_type' %}</label>
+                    <div class="col-md-2">
+                        <select class="form-control" id="md_ws_type">
+                            <option value="0">{% trans 'select_option' %}</option>
+                            {% for watersupplytype in watersupplytypelist %}
+                                {% if CURRENT_LANGUAGE == 'en' %}
+                                    <option value="{{ watersupplytype.id }}">{{ watersupplytype.name_en }}</option>
+                                {% else %}
+                                    <option value="{{ watersupplytype.id }}">{{ watersupplytype.name_kh }}</option>
+                                {% endif %}
+                                
+                            {% endfor %}
+                        </select>
+                    
+                    </div>
                     <label class="control-label col-md-1">{% trans 'DateFrom' %}</label>
                     <div class="col-md-2">
                         <div class="input-group date" data-provide="datepicker">
@@ -44,6 +59,7 @@
                             </div>
                         </div>
                     </div>
+
                     <label class="control-label col-md-1">{% trans 'province' %}</label>
                     <div class="col-md-2">
                         <select class='form-control select2' id="province" name="province select2"​​ style="width: 100% !important;">
@@ -53,7 +69,17 @@
                             {% endfor %}
                         </select>
                     </div>
-                    <div class="col-md-3">
+                    
+                    <!--
+                    <div class="col-md-1">
+                        <button type="button" class="btn btn-sm btn-outline-primary" id="btnGenerate"><i class="fa fa-filter" aria-hidden="true"></i></button>
+                        <button type="button" class="btn btn-sm btn-outline-primary" id="btnExportExcel"><i class="fa fa-file-excel-o" aria-hidden="true"></i></button>
+                        <button type="button" class="btn btn-sm btn-outline-primary" id="btnExportCSV">{% trans 'CSV' %}</button>
+                    </div>-->
+                </div>
+                <div class="form-group row">
+                    
+                    <div class="col-md-12 col-lg-12 text-center">
                         <button type="button" class="btn btn-sm btn-outline-primary" id="btnGenerate"><i class="fa fa-filter" aria-hidden="true"></i></button>
                         <button type="button" class="btn btn-sm btn-outline-primary" id="btnExportExcel"><i class="fa fa-file-excel-o" aria-hidden="true"></i></button>
                         <!-- <button type="button" class="btn btn-sm btn-outline-primary" id="btnPDFExport" onclick="printDiv('report_panel','title')"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></button> -->
@@ -75,6 +101,7 @@
                                 <th>{% trans 'decimal_degree_y' %}</th>
                                 <th>{% trans 'water_supply_code' %}</th>
                                 <th>{% trans 'well_type' %}</th>
+                                <th>{% trans 'well_height' %}</th>
                                 <th>{% trans 'well_filter_height' %}</th>
                                 <th>{% trans 'well_water_supply' %}</th>
                                 <th>{% trans 'well_nirostatic' %}</th>
@@ -118,7 +145,7 @@
             }).datepicker("setDate",'now');
 
 
-            initialTable();
+            //initialTable();
 
             $('#btnGenerate').click(function(e){
                 initialTable();
@@ -153,6 +180,7 @@
         });
 
         function initialTable(){
+            var water_supply_type= $('#md_ws_type').val();
             var sd =new Date($('#datefrom').val());
             var ed = new Date($('#dateto').val());
             ed.setDate(ed.getDate()+1); 
@@ -168,14 +196,127 @@
             }
 
             $('#table1 tbody').empty();
+            //console.log(water_supply_type);
+            if(water_supply_type==0){
+                alert('សូមជ្រើសរើសប្រភេទប្រព័ន្ធផ្គត់ផ្គង់ទឹក។');
+            }
+            $('#table1 thead').empty();
 
+            //return;
+            var str_header_by_water_supply='';
+            if(water_supply_type==1){
+                //Well
+                str_header_by_water_supply=
+                                "<th>{% trans 'well_type' %}</th>"+
+                                "<th>{% trans 'well_type' %}</th>"+
+                                "<th>{% trans 'well_filter_height' %}</th>"+
+                                "<th>{% trans 'well_water_supply' %}</th>"+
+                                "<th>{% trans 'well_nirostatic' %}</th>"+
+                                "<th>{% trans 'well_nirodynamic' %}</th>"+
+                                "<th>{% trans 'well_watar_quality' %}</th>"+
+                                "<th>{% trans 'well_water_quality_check' %}</th>"+
+                                "<th>{% trans 'well_status' %}</th>";
+                   
+            }
+            //SMALL PIPE
+            else if(water_supply_type==2){
+                str_header_by_water_supply=
+                "<th>{% trans 'source_type_of_water' %}</th>"+
+                "<th>{% trans 'abilty_of_produce_water' %}</th>"+
+                "<th>{% trans 'underground_pool_storage' %}</th>"+
+                "<th>{% trans 'pool_air' %}</th>"+
+                "<th>{% trans 'pool_filter' %}</th>"+
+                "<th>{% trans 'number_of_link' %}</th>"+
+                "<th>{% trans 'pipe_length' %}</th>"+
+                "<th>{% trans 'area_covering' %}</th>"+
+                "<th>{% trans 'water_quality_check' %}</th>"+
+                "<th>{% trans 'status_pipe' %}</th>"+
+                "<th>{% trans 'status_no_reason' %}</th>"
+            }
+            else if(water_supply_type==3){
+                str_header_by_water_supply="<th>{% trans 'source_type_of_water' %}</th>"+
+                "<th>{% trans 'abilty_of_produce_water' %}</th>"+
+                "<th>{% trans 'water_quality_check' %}</th>"+
+                "<th>{% trans 'water_quality_checking' %}</th>"+
+                "<th>{% trans 'status_water_kiosk' %}</th>"+
+                "<th>{% trans 'status_no_reason' %}</th>";
+
+            }
+            //Community Pond
+
+            else if(water_supply_type==4){
+                str_header_by_water_supply="<th>{% trans 'width' %}</th>"+
+                "<th>{% trans 'length' %}</th>"+
+                "<th>{% trans 'height' %}</th>"+
+                "<th>{% trans 'pool_filter' %}</th>"+
+                "<th>{% trans 'type_of_pond' %}</th>"+
+                "<th>{% trans 'is_summer_has_water' %}</th>"+
+                "<th>{% trans 'status_community_pond' %}</th>"+
+                "<th>{% trans 'status_no_reason' %}</th>";
+            }
+            //Rain Harvesting
+            else if(water_supply_type==5){
+                str_header_by_water_supply="<th>{% trans 'type_of_using' %}</th>"+
+                "<th>{% trans 'capacity_of_rain_water_harvesting' %}</th>"+
+                "<th>{% trans 'water_quality_checking' %}</th>"+
+                "<th>{% trans 'status_rain_water_harvesting' %}</th>"+
+                "<th>{% trans 'status_no_reason' %}</th>";
+            }
+            //Pipe
+            else if(water_supply_type==6){
+               str_header_by_water_supply= "<th>{% trans 'source_type_of_water' %}</th>"+
+               "<th>{% trans 'abilty_of_produce_water' %}</th>"+
+               "<th>{% trans 'underground_pool_storage' %}</th>"+
+               "<th>{% trans 'pool_air' %}</th>"+
+               "<th>{% trans 'pool_filter' %}</th>"+
+               "<th>{% trans 'number_of_link' %}</th>"+
+               "<th>{% trans 'pipe_length' %}</th>"+
+               "<th>{% trans 'area_covering' %}</th>"+
+               "<th>{% trans 'water_quality_check' %}</th>"+
+               "<th>{% trans 'label_is_has_license' %}</th>"+
+               "<th>{% trans 'label_license_registered_date' %}</th>"+
+               "<th>{% trans 'label_license_expired_date' %}</th>"+
+               "<th>{% trans 'status_pipe' %}</th>"+
+               "<th>{% trans 'status_no_reason' %}</th>";
+            }
+            //Air to Water
+            else if(water_supply_type==7){
+                str_header_by_water_supply = "<th>{% trans 'source_type_of_water' %}</th>"+
+                "<th>{% trans 'abilty_of_produce_water' %}</th>"+
+                "<th>{% trans 'water_quality_check' %}</th>"+
+                "<th>{% trans 'water_quality_checking' %}</th>"+
+                "<th>{% trans 'status_water_kiosk' %}</th>"+
+                "<th>{% trans 'status_no_reason' %}</th>";
+            }
+
+            $('#table1 thead').append("<tr>"+
+                    "<th>{% trans 'No' %} </th>"+
+                                "<th>{% trans 'province' %}</th>"+
+                                "<th>{% trans 'district'%}</th>"+
+                                "<th>{% trans 'commune' %}</th>"+
+                                "<th>{% trans 'village' %}</th>"+
+                                "<th>{% trans 'well_type' %}</th>"+
+                                "<th>{% trans 'decimal_degree_x' %}</th>"+
+                                "<th>{% trans 'decimal_degree_y' %}</th>"+
+                                "<th>{% trans 'water_supply_code' %}</th>"+                          
+                                "<th>{% trans 'total_family' %}</th>"+
+                                "<th>{% trans 'is_risk_enviroment_area' %}</th>"+
+                                "<th>{% trans 'construction_date' %}</th>"+
+                                "<th>{% trans 'source_budget' %}</th>"+
+                                "<th>{% trans 'constructed_by' %}</th>"+
+                                "<th>{% trans 'management_type' %}</th>"+
+                                "<th>{% trans 'managed_by' %}</th>"+
+                                str_header_by_water_supply+
+                    "</tr>");
+            //return;
             $.ajax({
                 type: 'GET',
                 url: "{% url 'ajax_get_report_water_supply_well_daterange' %}",
                 data: {
                     "date_start":new_sd,
                     "date_end":new_ed,
-                    "province":province
+                    "province":province,
+                    "water_supply_type_id":water_supply_type
                  },
                 success: function (response) {
                     
@@ -223,37 +364,166 @@
                                     management_type="{% trans 'management_type_personal' %}";
                                 }
 
+
+                                var str_body=""
                                 var well_depth="<td></td>";
                                 var well_screen = "<td></td>";
                                 var well_supply="<td></td>";
                                 var well_nirostatic="<td></td>";
+
                                 var well_nirodynamic="<td></td>";
                                 var well_watar_quality="<td></td>";
                                 var well_water_quality_check_obj="<td></td>";
                                 var well_status="<td></td>";
                                 var well_type="<td></td>";
 
-                                if (item.watersupplywell_watersupply.length>0){
+                                if (water_supply_type==1){
+                                    if(item.watersupplywell_watersupply.length>0){
+                                        console.log(item.watersupplywell_watersupply);
                                     
                                     var well = item.watersupplywell_watersupply[0];
-                                    var well_type="<td>";
 
-                                    console.log(well.well_type_obj);
-                                    $.each(well.well_type_obj,function(wtind,wtitem){
-                                        well_type=well_type+wtitem.value_obj[0].name_kh+",";
+                                    str_body="<td>";
+
+                                    //console.log(well.well_type_obj);
+                                    $.each(well.watersupplywelloptionvalue_watersupplywell,function(wtind,wtitem){
+                                        //console.log(wtitem);
+                                        str_body=str_body+wtitem.value_obj[0].name_kh+",";
                                     });
-                                    well_type=well_type+"</td>";
+                                    str_body=str_body+"</td>";
 
-                                    well_depth="<td>"+well.well_height+"</td>";
-                                    well_screen = "<td>"+well.well_filter_height+ "</td>";
-                                    well_supply="<td>"+well.well_water_supply+"</td>";
-                                    well_nirostatic="<td>"+well.well_nirostatic+"</td>";
-                                    well_nirodynamic="<td>"+well.well_nirodynamic+"</td>";
-                                    well_watar_quality="<td>"+well.well_watar_quality_obj[0].name_kh+"</td>";
-                                    well_water_quality_check_obj="<td>"+well.well_water_quality_check_obj[0].name_kh+"</td>";
-                                    well_status="<td>"+well.well_status_obj[0].name_kh+"</td>";
+                                    str_body=str_body+"<td>"+well.well_height+"</td>";
+                                    str_body =str_body+ "<td>"+well.well_filter_height+ "</td>";
+                                    str_body=str_body+"<td>"+well.well_water_supply+"</td>";
+                                    str_body=str_body+"<td>"+well.well_nirostatic+"</td>";
+                                    str_body=str_body+"<td>"+well.well_nirodynamic+"</td>";
+                                    str_body=str_body+"<td>"+well.well_watar_quality_obj[0].name_kh+"</td>";
+                                    str_body=str_body+"<td>"+well.well_water_quality_check_obj[0].name_kh+"</td>";
+                                    str_body=str_body+"<td>"+well.well_status_obj[0].name_kh+"</td>";
+
+                                    // var well_type="<td>";
+
+                                    // console.log(well.well_type_obj);
+                                    // $.each(well.well_type_obj,function(wtind,wtitem){
+                                    //     well_type=well_type+wtitem.value_obj[0].name_kh+",";
+                                    // });
+                                    // well_type=well_type+"</td>";
+
+                                    // well_depth="<td>"+well.well_height+"</td>";
+                                    // well_screen = "<td>"+well.well_filter_height+ "</td>";
+                                    // well_supply="<td>"+well.well_water_supply+"</td>";
+                                    // well_nirostatic="<td>"+well.well_nirostatic+"</td>";
+                                    // well_nirodynamic="<td>"+well.well_nirodynamic+"</td>";
+                                    // well_watar_quality="<td>"+well.well_watar_quality_obj[0].name_kh+"</td>";
+                                    // well_water_quality_check_obj="<td>"+well.well_water_quality_check_obj[0].name_kh+"</td>";
+                                    // well_status="<td>"+well.well_status_obj[0].name_kh+"</td>";
+
+                                    }                   
+                                    else 
+                                        str_body="<td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>";
                                 }
+                                else if (water_supply_type==2){
+                                    if(item.watersupplypipe_watersupply.length>0){
+                                        var small_pipe=item.watersupplypipe_watersupply[0];
+                                        console.log(small_pipe);
+                                        str_body="<td>";
+                                            $.each(small_pipe.watersupplypipeoptionvalue_watersupplypipe,function(spind,spitem){
+                                                str_body=str_body+spitem.value_obj[0].name_kh+",";
+                                            });
+                                        str_body=str_body+"</td>";
+                                        str_body=str_body+"<td>"+small_pipe.abilty_of_produce_water+"</td>";
+                                        str_body=str_body+"<td>"+small_pipe.underground_pool_storage+"</td>";
+                                        str_body=str_body+"<td>"+small_pipe.pool_air+"</td>";
+                                        str_body=str_body+"<td>"+small_pipe.pool_filter_obj[0].name_kh+"</td>";
+                                        str_body=str_body+"<td>"+small_pipe.number_of_link+"</td>";
+                                        str_body=str_body+"<td>"+small_pipe.pipe_length+"</td>";
+                                        str_body=str_body+"<td>"+small_pipe.area_covering+"</td>";
+                                        str_body=str_body+"<td>"+small_pipe.water_quality_check_obj[0].name_kh+"</td>";
+                                        str_body=str_body+"<td>"+small_pipe.status_obj[0].name_kh+"</td>";
+                                        str_body=str_body+"<td>"+small_pipe.status_no_reason+"</td>";
+
+                                    }else
+                                        str_body="<td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>"; 
+                                }else if(water_supply_type==3){
+                                    if(item.watersupplyKiosk_watersupply.length>0){
+                                        var kiosk = item.watersupplyKiosk_watersupply[0];
+                                        str_body="<td>";
+                                            $.each(kiosk.watersupplykioskoptionvalue_watersupplykiosk,function(spind,spitem){
+                                                str_body=str_body+spitem.value_obj[0].name_kh+",";
+                                            });
+                                        str_body=str_body+"</td>";
+                                        str_body=str_body+"<td>"+kiosk.abilty_of_produce_water+"</td>";
+                                        str_body=str_body+"<td>"+kiosk.filter_system_obj[0].name_kh+"</td>";
+                                        str_body=str_body+"<td>"+kiosk.water_quality_checking_obj[0].name_kh+"</td>";
+                                        str_body=str_body+"<td>"+kiosk.status_obj[0].name_kh+"</td>";
+                                        str_body=str_body+"<td>"+kiosk.status_no_reason+"</td>";
+                                    }
+                                }
+                                else if (water_supply_type==4){
+                                    if(item.watersupplyCommunityPond_watersupply.length>0){
+                                        var communityPond=item.watersupplyCommunityPond_watersupply[0];
+                                        str_body="<td>"+communityPond.width+"</td>";
+                                        str_body=str_body+"<td>"+communityPond.length+"</td>";
+                                        str_body=str_body+"<td>"+communityPond.height+"</td>";
+                                        str_body=str_body+"<td>"+communityPond.pool_filter_obj[0].name_kh+"</td>"
+                                        str_body=str_body+"<td>"+communityPond.type_of_pond_obj[0].name_kh+"</td>"
+                                        str_body=str_body+"<td>"+communityPond.is_summer_has_water_obj[0].name_kh+"</td>"
+                                        str_body=str_body+"<td>"+communityPond.status_obj[0].name_kh+"</td>"
+                                        str_body=str_body+"<td>"+communityPond.status_no_reason+"</td>"
+                                    }
+                                }
+                                else if(water_supply_type==5){
+                                    if(item.watersupplyRainWaterHarvesting_watersupply.length>0){
+                                        var rainWaterHarvesting = item.watersupplyRainWaterHarvesting_watersupply[0];
+                                        str_body="<td>"+rainWaterHarvesting.type_of_using_obj[0].name_kh+"</td>";
+                                        str_body=str_body+"<td>"+rainWaterHarvesting.capacity_of_rain_water_harvesting_obj[0].name_kh+"</td>";
+                                        str_body=str_body+"<td>"+rainWaterHarvesting.water_quality_checking_obj[0].name_kh+"</td>";
+                                        str_body=str_body+"<td>"+rainWaterHarvesting.status_obj[0].name_kh+"</td>";
+                                        str_body=str_body+"<td>"+rainWaterHarvesting.status_no_reason+"</td>";
+                                    }
+                                }
+                                else if(water_supply_type==6){
+                                    if(item.watersupplypipeprivate_watersupply.length>0){
+                                        var pipe=item.watersupplypipeprivate_watersupply[0];
+                                        str_body="<td>";
+                                            $.each(pipe.watersupplypipeprivateoptionvalue_watersupplypipewater,function(spind,spitem){
+                                                str_body=str_body+spitem.value_obj[0].name_kh+",";
+                                            });
+                                        str_body=str_body+"</td>";
+                                        str_body=str_body+"<td>"+pipe.abilty_of_produce_water+"</td>";
+                                        str_body=str_body+"<td>"+pipe.underground_pool_storage+"</td>";
+                                        str_body=str_body+"<td>"+pipe.pool_air+"</td>";
+                                        str_body=str_body+"<td>"+pipe.pool_filter_obj[0].name_kh+"</td>";
+                                        str_body=str_body+"<td>"+pipe.number_of_link+"</td>";
+                                        str_body=str_body+"<td>"+pipe.pipe_length+"</td>";
+                                        str_body=str_body+"<td>"+pipe.area_covering+"</td>";
+                                        str_body=str_body+"<td>"+pipe.water_quality_check_obj[0].name_kh+"</td>";
+                                        str_body=str_body+"<td>"+pipe.is_has_license_obj[0].name_kh+"</td>";
+                                        str_body=str_body+"<td>"+pipe.license_registered_date+"</td>";
+                                        str_body=str_body+"<td>"+pipe.license_expired_date+"</td>";
+                                        str_body=str_body+"<td>"+pipe.status_obj[0].name_kh+"</td>";
+                                        str_body=str_body+"<td>"+pipe.status_no_reason+"</td>";
+                                    }
+                                }
+                                else if(water_supply_type==7){
+                                    if(item.watersupplyairwater_watersupply.length>0){
+                                        var airToWater=item.watersupplyairwater_watersupply[0];
+                                        str_body="<td>";
+                                            $.each(airToWater.watersupplyairwateroptionvalue_watersupplykioskwater,function(spind,spitem){
+                                                str_body=str_body+spitem.value_obj[0].name_kh+",";
+                                            });
+                                        str_body=str_body+"</td>";
+                                        str_body=str_body+"<td>"+airToWater.abilty_of_produce_water+"</td>";
+                                        str_body=str_body+"<td>"+airToWater.filter_system_obj[0].name_kh+"</td>";
+                                        str_body=str_body+"<td>"+airToWater.water_quality_checking_obj[0].name_kh+"</td>";
+                                        str_body=str_body+"<td>"+airToWater.status_obj[0].name_kh+"</td>";
+                                        str_body=str_body+"<td>"+airToWater.status_no_reason+"</td>";
+                                    }
+                                }
+
+
                                 var village=item.village_id == null?'':item.village_id.name_kh;
+
                                 $('#table1 tbody').append("<tr>"+
                                     "<td>"+Number(index+1)+"</td>"+
                                     "<td>"+item.province_id.name_kh + "</td>"+
@@ -263,15 +533,7 @@
                                     well_type+
                                     //coordinate
                                     coordinate+
-                                    "<td>"+item.water_supply_code+"</td>"+
-                                    well_depth+
-                                    well_screen+
-                                    well_supply+
-                                    well_nirostatic+
-                                    well_nirodynamic+
-                                    well_watar_quality+
-                                    well_water_quality_check_obj+
-                                    well_status+
+                                    "<td>"+item.water_supply_code+"</td>"+                                  
                                     "<td>"+item.total_family+"</td>"+
                                     "<td>"+is_risk_enviroment_area+"</td>"+
                                     "<td>"+item.construction_date+"</td>"+
@@ -279,7 +541,7 @@
                                     "<td>"+item.constructed_by+"</td>"+
                                     "<td>"+management_type+"</td>"+
                                     "<td>"+item.managed_by+"</td>"+
-                                    
+                                    str_body+
                                     "</tr>");
                             });
                         }
