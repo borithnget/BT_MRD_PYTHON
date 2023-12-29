@@ -32,6 +32,8 @@ def report_rural_water_supply_coverage_map_token(request, token):
                 })
 
 def report_well_sum_by_province(request):
+    url = settings.API_ENDPOINT + 'watersupplytype/'
+    watersupplytypelist = requests.get(url).json()
     if request.session['user']['is_data_entry']:
         province_url = settings.API_ENDPOINT + 'province/?id=' + str(request.session['user']['data_entry_province_id'])
         #print(request.user.data_entry_province_id.id)
@@ -39,7 +41,10 @@ def report_well_sum_by_province(request):
         province_url = settings.API_ENDPOINT + 'province'
     provinces = requests.get(province_url).json()
     return render(request, 'report/report_well_sum_by_province.html',
-                  { "provinces" : provinces })
+                  
+                  { "provinces" : provinces,
+                   "watersupplytypelist": watersupplytypelist
+                   })
 
 def report_well_sum_by_province_token(request, token):
     url = settings.API_ENDPOINT + 'watersupplytype/'

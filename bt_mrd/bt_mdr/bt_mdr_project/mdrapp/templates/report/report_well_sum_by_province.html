@@ -76,12 +76,17 @@
                             {% endfor %}
                         </select>
                     </div>
-                    <div class="col-md-3">
+                    
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-4"></div>
+                    <div class="col-md-4 text-center">
                         <button type="button" class="btn btn-sm btn-outline-primary" id="btnGenerate"><i class="fa fa-filter" aria-hidden="true"></i></button>
                         <button type="button" class="btn btn-sm btn-outline-primary" id="btnExportExcel"><i class="fa fa-file-excel-o" aria-hidden="true"></i></button>
                         <!-- <button type="button" class="btn btn-sm btn-outline-primary" id="btnPDFExport" onclick="printDiv('report_panel','title')"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></button> -->
                         <button type="button" class="btn btn-sm btn-outline-primary" id="btnExportCSV">{% trans 'CSV' %}</button>
                     </div>
+                    <div class="col-md-4"></div>
                 </div>
 
                 <div class="table-responsive" id="report_panel">
@@ -137,6 +142,7 @@
         })
 
         $('#btnGenerate').click(function(e){
+            var water_supply_type= $('#md_ws_type').val();
             $('#btnGenerate').attr("disabled", true);
             var sd =new Date($('#datefrom').val());
             var ed = new Date($('#dateto').val());
@@ -145,13 +151,46 @@
             var new_ed= (ed.getMonth()+1)+"%2F"+ed.getDate()+"%2F"+ed.getFullYear();
             console.log(new_sd + " "+new_ed);
             var province=$('#province').val();
+
             if(new Date($('#dateto').val()) <  sd)
             {//compare end <=, not >=
                 //your code here
                 alert("{% trans 'validation_date_range' %}");
+                $('#btnGenerate').attr("disabled", false);
+                return;
+            }
+            if(water_supply_type==0){
+                alert('សូមជ្រើសរើសប្រភេទប្រព័ន្ធផ្គត់ផ្គង់ទឹក។');
+                $('#btnGenerate').attr("disabled", false);
                 return;
             }
             $('#table1 tbody').empty();
+            $('#table1 thead').empty();
+
+            if(water_supply_type==1){
+                $('#table1 thead').append("<tr>"+
+                                "<th>{% trans 'province' %}</th>"+
+                                "<th>{% trans 'no_motor' %}</th>"+
+                                "<th>{% trans 'no_afridev' %}</th>"+ 
+                                "<th>{% trans 'no_markII' %}</th>"+
+                                "<th>{% trans 'no_markIII' %}</th>"+
+                                "<th>{% trans 'no_no6' %}</th>"+
+                                "<th>{% trans 'no_combinewell' %}</th>"+
+                                "<th>{% trans 'no_dugwell' %}</th>"+
+                                "<th>{% trans 'no_user' %}</th>"+
+                                "<th>{% trans 'percentage_of_user' %}</th>"+                         
+                            "</tr>");
+            }else if(water_supply_type==2 || water_supply_type==3 || water_supply_type==6 || water_supply_type==7){
+                $('#table1 thead').append("<tr>"+
+                                "<th>{% trans 'province' %}</th>"+
+                                "<th>{% trans 'ground_water' %}</th>"+
+                                "<th>{% trans 'surface_water' %}</th>"+ 
+                                "<th>{% trans 'source_type_water_3' %}</th>"+
+                                "<th>{% trans 'share' %}</th>"+
+                                "<th>{% trans 'no_user' %}</th>"+
+                                "<th>{% trans 'percentage_of_user' %}</th>"+                         
+                            "</tr>");
+            }
 
             if(province==0){
                 $.ajax({
@@ -160,7 +199,7 @@
                     success:function(response){
                         
                         if(!response["valid"]){
-                            console.log(response);
+                            //console.log(response);
                             $.each(response.provinces,function(index_province,item_province){
                                 $.ajax({
                                     type: 'GET',
@@ -169,12 +208,16 @@
                                         "date_start":new_sd,
                                         "date_end":new_ed,
                                         "province":item_province.id,
+                                        "water_supply_type_id":water_supply_type
                                      },
                                     success: function (response) {
                                         
                                         if(!response["valid"]){
                                             //console.log(response);
-                                            if(response.data.length==0){
+                                            //START WELL
+                                            if(water_supply_type==1){
+                                                if(response.data.length==0){
+                                                
                                                 $('#table1 tbody').append("<tr>"+
                                                     "<td>"+item_province.name_kh+"</td>"+
                                                     "<td class='text-center'>0</td>"+
@@ -243,6 +286,125 @@
                                                     "</tr>"
                                                 );
                                             }
+                                            }//End Well
+                                            //START Small PIPE
+                                            else if(water_supply_type==2 || water_supply_type==3 || water_supply_type==6 || water_supply_type==7){
+                                                if(response.data.length==0){
+                                                    $('#table1 tbody').append("<tr>"+
+                                                        "<td>"+item_province.name_kh+"</td>"+
+                                                        "<td class='text-center'>0</td>"+
+                                                        "<td class='text-center'>0</td>"+
+                                                        "<td class='text-center'>0</td>"+
+                                                        "<td class='text-center'>0</td>"+
+                                                        "<td class='text-center'>0</td>"+
+                                                        "<td class='text-center'>0.00</td>"+
+                                                        "</tr>"
+                                                    );
+                                                }
+                                                else{
+                                                    var beneficiary_total_people=0;
+                                                    var count_ground_water=0;
+                                                    var count_surface_water=0;
+                                                    var count_water_type3=0;
+                                                    var count_share=0;
+
+                                                    $.each(response.data,function(index,item){
+                                                        console.log(item);
+                                                        beneficiary_total_people=beneficiary_total_people+item.beneficiary_total_people;
+
+                                                        if(water_supply_type==2){
+                                                            $.each(item.watersupplypipe_watersupply,function(index_well,item_well){
+                                                            //console.log(item_well);
+                                                                $.each(item_well.watersupplypipeoptionvalue_watersupplypipe,function(index_welltype,item_welltype){
+                                                                    console.log(item_welltype);
+                                                                    if(item_welltype.value_id==14)
+                                                                        count_ground_water++;
+                                                                    else if(item_welltype.value_id==15)
+                                                                        count_surface_water++;
+                                                                    else if(item_welltype.value_id==16)
+                                                                        count_water_type3++
+                                                                    else if(item_welltype.value_id==17)
+                                                                        count_share++;
+                                                                    
+                                                                });
+                                                            });
+                                                        }
+                                                        else if(water_supply_type==3){
+                                                            $.each(item.watersupplyKiosk_watersupply,function(index_well,item_well){
+                                                            //console.log(item_well);
+                                                                $.each(item_well.watersupplykioskoptionvalue_watersupplykiosk,function(index_welltype,item_welltype){
+                                                                    console.log(item_welltype);
+                                                                    if(item_welltype.value_id==14)
+                                                                        count_ground_water++;
+                                                                    else if(item_welltype.value_id==15)
+                                                                        count_surface_water++;
+                                                                    else if(item_welltype.value_id==16)
+                                                                        count_water_type3++
+                                                                    else if(item_welltype.value_id==17)
+                                                                        count_share++;
+                                                                    
+                                                                });
+                                                            });
+                                                        }
+                                                        else if(water_supply_type==6){
+                                                            $.each(item.watersupplypipeprivate_watersupply,function(index_well,item_well){
+                                                            //console.log(item_well);
+                                                                $.each(item_well.watersupplypipeprivateoptionvalue_watersupplypipewater,function(index_welltype,item_welltype){
+                                                                    console.log(item_welltype);
+                                                                    if(item_welltype.value_id==14)
+                                                                        count_ground_water++;
+                                                                    else if(item_welltype.value_id==15)
+                                                                        count_surface_water++;
+                                                                    else if(item_welltype.value_id==16)
+                                                                        count_water_type3++
+                                                                    else if(item_welltype.value_id==17)
+                                                                        count_share++;
+                                                                    
+                                                                });
+                                                            });
+                                                        }
+                                                        else if(water_supply_type==7){
+                                                            $.each(item.watersupplyairwater_watersupply,function(index_well,item_well){
+                                                            //console.log(item_well);
+                                                                $.each(item_well.watersupplyairwateroptionvalue_watersupplykioskwater,function(index_welltype,item_welltype){
+                                                                    console.log(item_welltype);
+                                                                    if(item_welltype.value_id==14)
+                                                                        count_ground_water++;
+                                                                    else if(item_welltype.value_id==15)
+                                                                        count_surface_water++;
+                                                                    else if(item_welltype.value_id==16)
+                                                                        count_water_type3++
+                                                                    else if(item_welltype.value_id==17)
+                                                                        count_share++;
+                                                                    
+                                                                });
+                                                            });
+                                                        }
+                                                        
+
+                                                    });
+
+                                                    var province = response.province;
+                    
+                                                    var total_population=province.total_population;
+                                                    //beneficiary_total_people = data.beneficiary_total_people==null?0: parseFloat(data.beneficiary_total_people);
+                                                    var beneficiary_percentage =total_population==0?0: (beneficiary_total_people*100)/total_population;
+                                                    
+                                                    $('#table1 tbody').append("<tr>"+
+                                                        "<td>"+province.name_kh+"</td>"+
+                                                        "<td class='text-center'>"+count_ground_water+"</td>"+
+                                                        "<td class='text-center'>"+count_surface_water+"</td>"+
+                                                        "<td class='text-center'>"+count_water_type3+"</td>"+
+                                                        "<td class='text-center'>"+count_share+"</td>"+
+                                                        "<td class='text-center'>"+beneficiary_total_people+"</td>"+
+                                                        "<td class='text-center'>" + parseFloat(beneficiary_percentage).toFixed(2) +"</td>"+
+                                                        "</tr>"
+                                                    );
+
+                                                }
+                                            }
+                                            
+                                            
                     
                                             //alert("You cannot create a friend with same nick name");   
                                                                 
