@@ -31,9 +31,86 @@ def map(request):
     }
     return render(request, 'google/map.html', context)
 
+# def home(request):
+#     #authentication_classes=[SessionAuthentication]
+#     count_pending = 0
+#     count_well = 0 #1
+#     count_small_pipe = 0 #2
+#     count_water_kiosk = 0 #3
+#     count_community_pond = 0 #4
+#     count_rain_water_harvesting = 0 #5
+#     count_pipe = 0 #6
+#     count_air_to_water = 0 #7
+#     if 'token' in request.session:
+#         watersupply_type_url = settings.API_ENDPOINT + 'watersupplytype/'
+#         watersupplytypelist = requests.get(watersupply_type_url).json()
+#         count_well_response = requests.get(settings.API_ENDPOINT + 'watersupplygetcountbytype/1/').json()
+#         if 'count' in count_well_response:
+#             count_well = int(count_well_response['count'])
+#         count_small_pipe_response = requests.get(settings.API_ENDPOINT + 'watersupplygetcountbytype/2/').json()
+#         if 'count' in count_small_pipe_response:
+#             count_small_pipe = int(count_small_pipe_response['count'])    
+#         count_water_kiosk_response = requests.get(settings.API_ENDPOINT + 'watersupplygetcountbytype/3/').json()
+#         if 'count' in count_water_kiosk_response:
+#             count_water_kiosk = int(count_water_kiosk_response['count'])
+#         count_community_pond_response = requests.get(settings.API_ENDPOINT + 'watersupplygetcountbytype/4/').json()
+#         if 'count' in count_community_pond_response:
+#             count_community_pond = int(count_community_pond_response['count'])   
+#         count_rain_water_harvesting_response = requests.get(settings.API_ENDPOINT + 'watersupplygetcountbytype/5/').json()
+#         if 'count' in count_rain_water_harvesting_response:
+#             count_rain_water_harvesting = int(count_rain_water_harvesting_response['count'])   
+#         count_pipe_response = requests.get(settings.API_ENDPOINT + 'watersupplygetcountbytype/6/').json()
+#         if 'count' in count_pipe_response:
+#             count_pipe = int(count_pipe_response['count'])    
+#         count_air_to_water_response = requests.get(settings.API_ENDPOINT + 'watersupplygetcountbytype/7/').json()
+#         if 'count' in count_air_to_water_response:
+#             count_air_to_water = int(count_air_to_water_response['count'])
+#         # if request.session['user']['is_data_entry']:
+#         #     url = settings.API_ENDPOINT + "watersupplysubmittedbyuser/"+str(request.session['user']['id'])+"/"
+#         #     json_response = requests.get(url).json()
+#         #     if 'count' in json_response:
+#         #         count_pending= count_pending + int(json_response['count'])
+#         # #print(json_response)
+#         # if request.session['user']['is_provincial_department_head']:          
+#         #     province = request.session['user']['provincial_department_head_province_id']            
+#         #     url = settings.API_ENDPOINT + "watersupplypendingprovincial/" + str(province) +"/"
+#         #     json_response = requests.get(url).json()
+#         #     if 'count' in json_response:
+#         #         count_pending= count_pending + int(json_response['count'])
+#         # if request.session['user']['is_data_verifier_1']:
+#         #     url = settings.API_ENDPOINT + "watersupplycountpendingapproval/2/"
+#         #     json_response = requests.get(url).json()
+#         #     if 'count' in json_response:
+#         #         count_pending= count_pending + int(json_response['count'])
+#         # if request.session['user']['is_data_verifier_2']:
+#         #     url = settings.API_ENDPOINT + "watersupplycountpendingapproval/5/"
+#         #     json_response = requests.get(url).json()
+#         #     if 'count' in json_response:
+#         #         count_pending= count_pending + int(json_response['count'])
+#         # if request.session['user']['is_head_department']:
+#         #     url = settings.API_ENDPOINT + "watersupplycountpendingapproval/7/"
+#         #     json_response = requests.get(url).json()
+#         #     if 'count' in json_response:
+#         #         count_pending= count_pending + int(json_response['count'])
+#     else:
+#         return redirect('user_login')
+#     context = {
+#         'count_pending' : count_pending,
+#         'key' : settings.GOOGLE_API_KEY,
+#         'watersupplytypelist' : watersupplytypelist,
+#         'count_well' : count_well,
+#         'count_small_pipe' : count_small_pipe,
+#         'count_water_kiosk': count_water_kiosk,
+#         'count_community_pond':count_community_pond,
+#         'count_rain_water_harvesting': count_rain_water_harvesting,
+#         'count_pipe': count_pipe,
+#         'count_air_to_water' : count_air_to_water
+#     }
+#     return render(request, 'home.html', context)
+
 def home(request):
 
-    authentication_classes=[SessionAuthentication]
+    #authentication_classes=[SessionAuthentication]
 
     count_pending = 0
     count_well = 0 #1
@@ -44,71 +121,37 @@ def home(request):
     count_pipe = 0 #6
     count_air_to_water = 0 #7
     
-    if 'token' in request.session:
+    watersupply_type_url = settings.API_ENDPOINT + 'watersupplytype/'
+    watersupplytypelist = requests.get(watersupply_type_url).json()
 
-        watersupply_type_url = settings.API_ENDPOINT + 'watersupplytype/'
-        watersupplytypelist = requests.get(watersupply_type_url).json()
+    count_well_response = requests.get(settings.API_ENDPOINT + 'watersupplygetcountbytype/1/').json()
+    if 'count' in count_well_response:
+        count_well = int(count_well_response['count'])
 
-        count_well_response = requests.get(settings.API_ENDPOINT + 'watersupplygetcountbytype/1/').json()
-        if 'count' in count_well_response:
-            count_well = int(count_well_response['count'])
-
-        count_small_pipe_response = requests.get(settings.API_ENDPOINT + 'watersupplygetcountbytype/2/').json()
-        if 'count' in count_small_pipe_response:
-            count_small_pipe = int(count_small_pipe_response['count'])
+    count_small_pipe_response = requests.get(settings.API_ENDPOINT + 'watersupplygetcountbytype/2/').json()
+    if 'count' in count_small_pipe_response:
+        count_small_pipe = int(count_small_pipe_response['count'])
         
-        count_water_kiosk_response = requests.get(settings.API_ENDPOINT + 'watersupplygetcountbytype/3/').json()
-        if 'count' in count_water_kiosk_response:
-            count_water_kiosk = int(count_water_kiosk_response['count'])
+    count_water_kiosk_response = requests.get(settings.API_ENDPOINT + 'watersupplygetcountbytype/3/').json()
+    if 'count' in count_water_kiosk_response:
+        count_water_kiosk = int(count_water_kiosk_response['count'])
 
-        count_community_pond_response = requests.get(settings.API_ENDPOINT + 'watersupplygetcountbytype/4/').json()
-        if 'count' in count_community_pond_response:
-            count_community_pond = int(count_community_pond_response['count'])
+    count_community_pond_response = requests.get(settings.API_ENDPOINT + 'watersupplygetcountbytype/4/').json()
+    if 'count' in count_community_pond_response:
+        count_community_pond = int(count_community_pond_response['count'])
         
-        count_rain_water_harvesting_response = requests.get(settings.API_ENDPOINT + 'watersupplygetcountbytype/5/').json()
-        if 'count' in count_rain_water_harvesting_response:
-            count_rain_water_harvesting = int(count_rain_water_harvesting_response['count'])
+    count_rain_water_harvesting_response = requests.get(settings.API_ENDPOINT + 'watersupplygetcountbytype/5/').json()
+    if 'count' in count_rain_water_harvesting_response:
+        count_rain_water_harvesting = int(count_rain_water_harvesting_response['count'])
         
-        count_pipe_response = requests.get(settings.API_ENDPOINT + 'watersupplygetcountbytype/6/').json()
-        if 'count' in count_pipe_response:
-            count_pipe = int(count_pipe_response['count'])
+    count_pipe_response = requests.get(settings.API_ENDPOINT + 'watersupplygetcountbytype/6/').json()
+    if 'count' in count_pipe_response:
+        count_pipe = int(count_pipe_response['count'])
         
-        count_air_to_water_response = requests.get(settings.API_ENDPOINT + 'watersupplygetcountbytype/7/').json()
-        if 'count' in count_air_to_water_response:
-            count_air_to_water = int(count_air_to_water_response['count'])
+    count_air_to_water_response = requests.get(settings.API_ENDPOINT + 'watersupplygetcountbytype/7/').json()
+    if 'count' in count_air_to_water_response:
+        count_air_to_water = int(count_air_to_water_response['count'])
 
-        
-            
-
-        # if request.session['user']['is_data_entry']:
-        #     url = settings.API_ENDPOINT + "watersupplysubmittedbyuser/"+str(request.session['user']['id'])+"/"
-        #     json_response = requests.get(url).json()
-        #     if 'count' in json_response:
-        #         count_pending= count_pending + int(json_response['count'])
-        # #print(json_response)
-        # if request.session['user']['is_provincial_department_head']:          
-        #     province = request.session['user']['provincial_department_head_province_id']            
-        #     url = settings.API_ENDPOINT + "watersupplypendingprovincial/" + str(province) +"/"
-        #     json_response = requests.get(url).json()
-        #     if 'count' in json_response:
-        #         count_pending= count_pending + int(json_response['count'])
-        # if request.session['user']['is_data_verifier_1']:
-        #     url = settings.API_ENDPOINT + "watersupplycountpendingapproval/2/"
-        #     json_response = requests.get(url).json()
-        #     if 'count' in json_response:
-        #         count_pending= count_pending + int(json_response['count'])
-        # if request.session['user']['is_data_verifier_2']:
-        #     url = settings.API_ENDPOINT + "watersupplycountpendingapproval/5/"
-        #     json_response = requests.get(url).json()
-        #     if 'count' in json_response:
-        #         count_pending= count_pending + int(json_response['count'])
-        # if request.session['user']['is_head_department']:
-        #     url = settings.API_ENDPOINT + "watersupplycountpendingapproval/7/"
-        #     json_response = requests.get(url).json()
-        #     if 'count' in json_response:
-        #         count_pending= count_pending + int(json_response['count'])
-    else:
-        return redirect('user_login')
     context = {
         'count_pending' : count_pending,
         'key' : settings.GOOGLE_API_KEY,

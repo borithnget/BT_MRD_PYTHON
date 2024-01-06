@@ -103,6 +103,9 @@
       </li> -->
       {% if request.session.token %}
       <li class="nav-item">
+        <a class="nav-link" href="{% url 'user_main_account' %}" style=" color: white;float: right !important; padding-top: 0px !important;padding-right: 5px !important;"><i class="fa fa-user-circle" aria-hidden="true"></i> {% trans 'user_guide' %}</a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link" href="{% url 'user_main_account' %}" style=" color: white;float: right !important; padding-top: 0px !important;padding-right: 5px !important;"><i class="fa fa-user-circle" aria-hidden="true"></i> {% trans "Hi" %} {{ request.session.user.first_name }} {{ request.session.user.last_name }}!</a>
       </li>
       <li class="nav-item">
@@ -127,12 +130,14 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse pull-right float-right" id="nav_top1">
-      <ul id="" class="nav navbar-nav  float-right" style="float:right !important;">      
-        
-        {% if request.session.token %}
+      <ul id="" class="nav navbar-nav  float-right" style="float:right !important;">  
+
         <li class="nav-item" style="float: right !important;" >
           <a class="nav-link" href="{% url 'index' id=0 %}" style="float: right !important;">{% trans 'menu_water_supply' %}</a>
-        </li>
+        </li>    
+        
+        {% if request.session.token %}
+        
         <li class="nav-item dropdown" style="float: right !important;">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             {% trans 'menu_all_water_supply' %}
@@ -179,6 +184,16 @@
         <!-- <li class="nav-item">
           <a class="nav-link" href="{% url 'user_index' %}">{% trans 'menu_report' %}</a>
         </li> -->
+        
+
+        {% if request.session.user.is_staff %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'import_rural_water_supply' %}">{% trans 'menu_import_rural_water_supply' %}</a>
+          </li>
+        {% endif %}
+
+        {% endif %}
+
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             {% trans 'menu_report' %}
@@ -192,14 +207,6 @@
             
           </div>
         </li>
-
-        {% if request.session.user.is_staff %}
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'import_rural_water_supply' %}">{% trans 'menu_import_rural_water_supply' %}</a>
-          </li>
-        {% endif %}
-
-        {% endif %}
 
       </ul>
     </div>

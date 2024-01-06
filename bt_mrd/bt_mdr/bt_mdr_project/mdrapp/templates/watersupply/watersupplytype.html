@@ -13,7 +13,11 @@
 {% if watersupplytype_id == 0 %}
 <li class="breadcrumb-item active" aria-current="page">{% trans 'menu_water_supply' %}</li>
 {% else %}
+{% if CURRENT_LANGUAGE == 'en'  %}
+<li class="breadcrumb-item active" aria-current="page">{{ watersupplytype.name_en }}</li>
+{% else %}
 <li class="breadcrumb-item active" aria-current="page">{{ watersupplytype.name_kh }}</li>
+{% endif %}
 {% endif %}
 {% endblock %}
 

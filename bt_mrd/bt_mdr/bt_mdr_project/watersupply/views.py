@@ -911,10 +911,12 @@ def report_water_supply_map(request):
 def report_well_by_province(request):
     url = MAIN_URL + 'watersupplytype/'
     watersupplytypelist = requests.get(url).json()
-
-    if request.session['user']['is_data_entry']:
-        province_url = MAIN_URL + 'province/?id=' + str(request.session['user']['data_entry_province_id'])
-        #print(request.user.data_entry_province_id.id)
+    if 'token' in request.session:
+        if request.session['user']['is_data_entry']:
+            province_url = MAIN_URL + 'province/?id=' + str(request.session['user']['data_entry_province_id'])
+            #print(request.user.data_entry_province_id.id)
+        else:
+            province_url = MAIN_URL + 'province'
     else:
         province_url = MAIN_URL + 'province'
     provinces = requests.get(province_url).json()
@@ -931,10 +933,12 @@ def report_well_by_province_token(request, token):
 def report_water_supply_coverage(request):
     url = MAIN_URL + 'watersupplytype/'
     watersupplytypelist = requests.get(url).json()
-
-    if request.session['user']['is_data_entry']:
-        province_url = MAIN_URL + 'province/?id=' + str(request.session['user']['data_entry_province_id'])
-        #print(request.user.data_entry_province_id.id)
+    if 'token' in request.session:
+        if request.session['user']['is_data_entry']:
+            province_url = MAIN_URL + 'province/?id=' + str(request.session['user']['data_entry_province_id'])
+            #print(request.user.data_entry_province_id.id)
+        else:
+            province_url = MAIN_URL + 'province'
     else:
         province_url = MAIN_URL + 'province'
     provinces = requests.get(province_url).json()

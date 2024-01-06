@@ -6,9 +6,12 @@ import requests
 def report_rural_water_supply_coverage_map(request):
     url = settings.API_ENDPOINT + 'watersupplytype/'
     watersupplytypelist = requests.get(url).json()
-    if request.session['user']['is_data_entry']:
-        province_url = settings.API_ENDPOINT + 'province/?id=' + str(request.session['user']['data_entry_province_id'])
-        #print(request.user.data_entry_province_id.id)
+    if 'token' in request.session:
+        if request.session['user']['is_data_entry']:
+            province_url = settings.API_ENDPOINT + 'province/?id=' + str(request.session['user']['data_entry_province_id'])
+            #print(request.user.data_entry_province_id.id)
+        else:
+            province_url = settings.API_ENDPOINT + 'province'
     else:
         province_url = settings.API_ENDPOINT + 'province'
     provinces = requests.get(province_url).json()
@@ -34,9 +37,13 @@ def report_rural_water_supply_coverage_map_token(request, token):
 def report_well_sum_by_province(request):
     url = settings.API_ENDPOINT + 'watersupplytype/'
     watersupplytypelist = requests.get(url).json()
-    if request.session['user']['is_data_entry']:
-        province_url = settings.API_ENDPOINT + 'province/?id=' + str(request.session['user']['data_entry_province_id'])
-        #print(request.user.data_entry_province_id.id)
+
+    if 'token' in request.session:
+        if request.session['user']['is_data_entry']:
+            province_url = settings.API_ENDPOINT + 'province/?id=' + str(request.session['user']['data_entry_province_id'])
+            #print(request.user.data_entry_province_id.id)
+        else:
+            province_url = settings.API_ENDPOINT + 'province'
     else:
         province_url = settings.API_ENDPOINT + 'province'
     provinces = requests.get(province_url).json()
