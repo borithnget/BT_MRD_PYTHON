@@ -136,7 +136,7 @@
           <a class="nav-link" href="{% url 'index' id=0 %}" style="float: right !important;">{% trans 'menu_water_supply' %}</a>
         </li>    
         
-        {% if request.session.token %}
+        
         
         <li class="nav-item dropdown" style="float: right !important;">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -152,6 +152,8 @@
             <a class="dropdown-item" href="{% url 'index' id=7 %}">{% trans 'menu_air_water' %}</a>
           </div>
         </li>
+
+        {% if request.session.token %}
 
         {% if request.session.user.is_data_entry %}
           <li class="nav-item" style="float: right !important;">

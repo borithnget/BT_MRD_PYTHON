@@ -34,8 +34,8 @@ msgstr ""
 msgid "Khmer"
 msgstr "ខ្មែរ"
 
-
-
+msgid "map_unit"
+msgstr ""
 msgid "total_family"
 msgstr "គ្រួសារសរុប"
 

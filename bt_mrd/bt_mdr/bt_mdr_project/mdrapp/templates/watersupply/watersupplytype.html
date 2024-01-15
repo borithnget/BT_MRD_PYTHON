@@ -29,12 +29,15 @@
     <!-- {% for watersupplytype in watersupplytypes %}
         <a href="{% url 'watersupply_create' id=watersupplytype.id %}">{{ watersupplytype.name_en }}</a> |
     {% endfor %} -->
+    {% if request.session.token %}
     {% if watersupplytype_id > 0 %}       
             <div class="btn-group btn-group-sm" role="group" aria-label="" style="margin-bottom: 10px !important;">
                 <a href="{% url 'watersupply_create' id=watersupplytype_id %}" class="btn btn-primary"><i class="fa fa-plus-circle" aria-hidden="true"></i> {% trans 'btn_create_new_request' %}</a>
             </div>
         
     {% endif %}
+    {% endif %}
+    
     <div class="row form-group">
         <label class="col-md-2 control-label">{% trans 'province' %}</label>
         <div class="col-md-4">

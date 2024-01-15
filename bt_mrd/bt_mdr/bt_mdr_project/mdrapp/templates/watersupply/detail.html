@@ -108,7 +108,7 @@
                     </div>
 
                     <div class="form-group row">
-                        <label class="control-label col-md-4">ខ្នាតផែនទី</label>
+                        <label class="control-label col-md-4">{% trans 'map_unit' %}</label>
                         {% if watersupply.map_unit == 2 %}
                         <label class="col-md-8">: Decimal Degress</label>
                         {% elif watersupply.map_unit == 3 %}
@@ -118,6 +118,7 @@
                         {% endif %}
                         <input type="hidden" id="map_unit" value="{{ watersupply.map_unit }}" />
                     </div>
+                    
                     {% if watersupply.map_unit == 1 %}
                     <div id="map_unit_utm_panel">
                         <div class="form-group row">
@@ -133,12 +134,12 @@
                     {% elif watersupply.map_unit == 2 %}
                     <div id="map_unit_dd_panel">
                         <div class="form-group row">
-                            <label class='col-md-4 control-label'>{% trans 'decimal_degree_x' %} </label>
+                            <label class='col-md-4 control-label'>{% trans 'utm_x' %} </label>
                             <label class="col-md-8" id="label_decimal_x">: {{ watersupply.decimal_degress_lat }}</label>  
                            
                         </div>
                         <div class="form-group row">
-                            <label class='col-md-4 control-label'>{% trans 'decimal_degree_y' %} </label>
+                            <label class='col-md-4 control-label'>{% trans 'utm_y' %} </label>
                             <label class="col-md-8" id="label_decimal_y">: {{ watersupply.decimal_degress_lng }}</label>  
                         </div>
                     </div>

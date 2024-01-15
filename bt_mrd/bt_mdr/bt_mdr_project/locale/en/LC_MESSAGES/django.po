@@ -35,12 +35,14 @@ msgstr ""
 msgid "Khmer"
 msgstr "Khmer"
 
-
 msgid "total_family"
 msgstr "Total Family"
 
 msgid "water_supply_code"
 msgstr "Construction Code"
+
+msgid "map_unit"
+msgstr "ខ្នាតផែនទី"
 
 msgid "utm_x"
 msgstr "Coordinate UTMX"
@@ -73,7 +75,7 @@ msgid "source_budget_organization"
 msgstr "1.Organization"
 
 msgid "source_budget_charity"
-msgstr "2.សប្បុរស"
+msgstr "2.Charity"
 
 msgid "constructed_by"
 msgstr "Construction By"
@@ -110,7 +112,6 @@ msgstr "Beneficiary Total Indigenous Vulnerable"
 
 msgid "beneficiary_total_family_indigenous"
 msgstr "Beneficiary Total Indigenous Family "
-
 
 msgid "province"
 msgstr "Province"
