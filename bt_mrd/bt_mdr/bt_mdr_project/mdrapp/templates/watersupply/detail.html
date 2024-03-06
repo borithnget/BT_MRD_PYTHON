@@ -110,9 +110,9 @@
                     <div class="form-group row">
                         <label class="control-label col-md-4">{% trans 'map_unit' %}</label>
                         {% if watersupply.map_unit == 2 %}
-                        <label class="col-md-8">: Decimal Degress</label>
+                        <label class="col-md-8">: {% trans 'decimal_degree' %}</label>
                         {% elif watersupply.map_unit == 3 %}
-                        <label class="col-md-8">: Degree Minute Seconds</label>
+                        <label class="col-md-8">: {% trans 'degree_minute_seconds' %}</label>
                         {% else %}
                         <label class="col-md-8">: UTM</label>
                         {% endif %}
@@ -265,7 +265,13 @@
                 <label class="control-label col-md-2">{% trans 'well_type' %}</label>
                 <div class="col-md-4"> : 
                     {% for well_type in watersupply.watersupplywell_watersupply.0.well_type_obj %}
-                        <label>{{ well_type.value_obj.0.code }} - {{ well_type.value_obj.0.name_en }} </label>
+                        <label>
+                            {% if CURRENT_LANGUAGE == 'en' %}
+                                {{ well_type.value_obj.0.code }} - {{ well_type.value_obj.0.name_en }}
+                            {% else %}
+                                {{ well_type.value_obj.0.code }} - {{ well_type.value_obj.0.name_kh }}
+                            {% endif %}
+                        </label>
                         <br/>
                     {% endfor %}
                 </div>
@@ -289,13 +295,25 @@
                 <label class="control-label col-md-2">{% trans 'well_watar_quality' %}</label>
         
                 {% if watersupply.watersupplywell_watersupply.0.well_watar_quality_obj|length > 0 %}
-                    <label class="col-md-4">: {{ watersupply.watersupplywell_watersupply.0.well_watar_quality_obj.0.name_en }} </label>
+                    <label class="col-md-4">
+                        {% if CURRENT_LANGUAGE == 'en' %}
+                            : {{ watersupply.watersupplywell_watersupply.0.well_watar_quality_obj.0.name_en }}
+                        {% else %}
+                            : {{ watersupply.watersupplywell_watersupply.0.well_watar_quality_obj.0.name_kh }}
+                        {% endif %}
+                    </label>
                 {% else %}
                     <label class="col-md-4"></label>
                 {% endif %}
                 <label class="control-label col-md-2">{% trans 'well_water_quality_check' %}</label>
                 {% if watersupply.watersupplywell_watersupply.0.well_water_quality_check_obj|length > 0 %}
-                    <label class="col-md-4">: {{ watersupply.watersupplywell_watersupply.0.well_water_quality_check_obj.0.name_en }} </label>
+                    <label class="col-md-4">
+                        {% if CURRENT_LANGUAGE == 'en' %}
+                            : {{ watersupply.watersupplywell_watersupply.0.well_water_quality_check_obj.0.name_en }}
+                        {% else %}
+                            : {{ watersupply.watersupplywell_watersupply.0.well_water_quality_check_obj.0.name_kh }}
+                        {% endif %}
+                    </label>
                 {% else %}
                     <label class="col-md-4">: </label>
                 {% endif %}
@@ -303,7 +321,13 @@
             <div class="form-group row">
                 <label class="control-label col-md-2">{% trans 'well_status' %}</label>
                 {% if watersupply.watersupplywell_watersupply.0.well_status_obj|length > 0 %}
-                    <label class="col-md-4">: {{ watersupply.watersupplywell_watersupply.0.well_status_obj.0.name_en }} </label>
+                    <label class="col-md-4">
+                        {% if CURRENT_LANGUAGE == 'en' %}
+                            : {{ watersupply.watersupplywell_watersupply.0.well_status_obj.0.name_en }}
+                        {% else %}
+                            : {{ watersupply.watersupplywell_watersupply.0.well_status_obj.0.name_kh }}
+                        {% endif %}
+                    </label>
                 {% else %}
                     <label class="col-md-4">: </label>
                 {% endif %}
@@ -322,7 +346,13 @@
                 <label class="control-label col-md-2">{% trans 'source_type_of_water' %}</label>
                 <div class="col-md-4">
                     {% for pipe_source_water in watersupply.watersupplypipe_watersupply.0.watersupplypipeoptionvalue_watersupplypipe %}
-                        <label>{{ pipe_source_water.value_obj.0.code }} - {{ pipe_source_water.value_obj.0.name_en }} </label>
+                        <label>
+                            {% if CURRENT_LANGUAGE == 'en' %}
+                                {{ pipe_source_water.value_obj.0.code }} - {{ pipe_source_water.value_obj.0.name_en }}
+                            {% else %}
+                                {{ pipe_source_water.value_obj.0.code }} - {{ pipe_source_water.value_obj.0.name_kh }}
+                            {% endif %}
+                        </label>
                         <br/>
                     {% endfor %}
                 </div>
@@ -338,7 +368,13 @@
             <div class="form-group row">
                 <label class="control-label col-md-2">{% trans 'pool_filter' %}</label>
                 {% if watersupply.watersupplypipe_watersupply.0.pool_filter_obj|length > 0 %}
-                    <label class="col-md-4">: {{ watersupply.watersupplypipe_watersupply.0.pool_filter_obj.0.name_en }} </label>
+                    <label class="col-md-4">
+                        {% if CURRENT_LANGUAGE == 'en' %}
+                                : {{ watersupply.watersupplypipe_watersupply.0.pool_filter_obj.0.name_en }}
+                            {% else %}
+                                : {{ watersupply.watersupplypipe_watersupply.0.pool_filter_obj.0.name_kh }}
+                            {% endif %}
+                    </label>
                 {% else %}
                     <label class="col-md-4">: </label>
                 {% endif %}
@@ -354,13 +390,25 @@
             <div class="form-group row">
                 <label class="control-label col-md-2">{% trans 'water_quality_check' %}</label>
                 {% if watersupply.watersupplypipe_watersupply.0.water_quality_check_obj|length > 0 %}
-                    <label class="col-md-4">: {{ watersupply.watersupplypipe_watersupply.0.water_quality_check_obj.0.name_en }} </label>
+                    <label class="col-md-4">
+                        {% if CURRENT_LANGUAGE == 'en' %}
+                            : {{ watersupply.watersupplypipe_watersupply.0.water_quality_check_obj.0.name_en }}
+                        {% else %}
+                            : {{ watersupply.watersupplypipe_watersupply.0.water_quality_check_obj.0.name_kh }}
+                        {% endif %}
+                    </label>
                 {% else %}
                     <label class="col-md-4">: </label>
                 {% endif %}
                 <label class="control-label col-md-2">{% trans 'status_pipe' %}</label>
                 {% if watersupply.watersupplypipe_watersupply.0.status_obj|length > 0 %}
-                    <label class="col-md-4">: {{ watersupply.watersupplypipe_watersupply.0.status_obj.0.name_en }} </label>
+                    <label class="col-md-4">
+                        {% if CURRENT_LANGUAGE == 'en' %}
+                            : {{ watersupply.watersupplypipe_watersupply.0.status_obj.0.name_en }}
+                        {% else %}
+                            : {{ watersupply.watersupplypipe_watersupply.0.status_obj.0.name_kh }}
+                        {% endif %}
+                    </label>
                 {% else %}
                     <label class="col-md-4">: </label>
                 {% endif %}
@@ -382,7 +430,13 @@
                 <label class="control-label col-md-2">{% trans 'source_type_of_water' %}</label>
                 <div class="col-md-4">
                     {% for pipe_source_water in watersupply.watersupplypipeprivate_watersupply.0.watersupplypipeprivateoptionvalue_watersupplypipewater %}
-                        <label>{{ pipe_source_water.value_obj.0.code }} - {{ pipe_source_water.value_obj.0.name_en }} </label>
+                        <label>
+                            {% if CURRENT_LANGUAGE == 'en' %}
+                                {{ pipe_source_water.value_obj.0.code }} - {{ pipe_source_water.value_obj.0.name_en }}
+                            {% else %}
+                                {{ pipe_source_water.value_obj.0.code }} - {{ pipe_source_water.value_obj.0.name_kh }}
+                            {% endif %}
+                        </label>
                         <br/>
                     {% endfor %}
                 </div>
@@ -398,7 +452,13 @@
             <div class="form-group row">
                 <label class="control-label col-md-2">{% trans 'pool_filter' %}</label>
                 {% if watersupply.watersupplypipeprivate_watersupply.0.pool_filter_obj|length > 0 %}
-                    <label class="col-md-4">: {{ watersupply.watersupplypipeprivate_watersupply.0.pool_filter_obj.0.name_en }} </label>
+                    <label class="col-md-4">
+                        {% if CURRENT_LANGUAGE == 'en' %}
+                            : {{ watersupply.watersupplypipeprivate_watersupply.0.pool_filter_obj.0.name_en }}
+                        {% else %}
+                            : {{ watersupply.watersupplypipeprivate_watersupply.0.pool_filter_obj.0.name_kh }}
+                        {% endif %}
+                    </label>
                 {% else %}
                     <label class="col-md-4">: </label>
                 {% endif %}
@@ -414,13 +474,25 @@
             <div class="form-group row">
                 <label class="control-label col-md-2">{% trans 'water_quality_check' %}</label>
                 {% if watersupply.watersupplypipeprivate_watersupply.0.water_quality_check_obj|length > 0 %}
-                    <label class="col-md-4">: {{ watersupply.watersupplypipeprivate_watersupply.0.water_quality_check_obj.0.name_en }} </label>
+                    <label class="col-md-4">
+                        {% if CURRENT_LANGUAGE == 'en' %}
+                            : {{ watersupply.watersupplypipeprivate_watersupply.0.water_quality_check_obj.0.name_en }}
+                        {% else %}
+                            : {{ watersupply.watersupplypipeprivate_watersupply.0.water_quality_check_obj.0.name_kh }}
+                        {% endif %}
+                    </label>
                 {% else %}
                     <label class="col-md-4">: </label>
                 {% endif %}
                 <label class="control-label col-md-2">{% trans 'label_is_has_license' %}</label>
                 {% if watersupply.watersupplypipeprivate_watersupply.0.is_has_license_obj|length > 0 %}
-                    <label class="col-md-4">: {{ watersupply.watersupplypipeprivate_watersupply.0.is_has_license_obj.0.name_en }} </label>
+                    <label class="col-md-4">
+                        {% if CURRENT_LANGUAGE == 'en' %}
+                            : {{ watersupply.watersupplypipeprivate_watersupply.0.is_has_license_obj.0.name_en }}
+                        {% else %}
+                            : {{ watersupply.watersupplypipeprivate_watersupply.0.is_has_license_obj.0.name_kh }}
+                        {% endif %}
+                    </label>
                 {% else %}
                     <label class="col-md-4">: </label>
                 {% endif %}
@@ -434,7 +506,13 @@
             <div class="form-group row">
                 <label class="control-label col-md-2">{% trans 'status_pipe' %}</label>
                 {% if watersupply.watersupplypipeprivate_watersupply.0.status_obj|length > 0 %}
-                    <label class="col-md-4">: {{ watersupply.watersupplypipeprivate_watersupply.0.status_obj.0.name_en }} </label>
+                    <label class="col-md-4">
+                        {% if CURRENT_LANGUAGE == 'en' %}
+                            : {{ watersupply.watersupplypipeprivate_watersupply.0.status_obj.0.name_en }}
+                        {% else %}
+                            : {{ watersupply.watersupplypipeprivate_watersupply.0.status_obj.0.name_kh }}
+                        {% endif %}
+                    </label>
                 {% else %}
                     <label class="col-md-4">: </label>
                 {% endif %}
@@ -452,7 +530,13 @@
                 <label class="control-label col-md-2">{% trans 'source_type_of_water' %}</label>
                 <div class="col-md-4">
                     {% for kiosk_source_water in watersupply.watersupplyKiosk_watersupply.0.watersupplykioskoptionvalue_watersupplykiosk %}
-                        <label>{{ kiosk_source_water.value_obj.0.code }} - {{ kiosk_source_water.value_obj.0.name_en }} </label>
+                        <label>
+                            {% if CURRENT_LANGUAGE == 'en' %}
+                                {{ kiosk_source_water.value_obj.0.code }} - {{ kiosk_source_water.value_obj.0.name_en }}
+                            {% else %}
+                                {{ kiosk_source_water.value_obj.0.code }} - {{ kiosk_source_water.value_obj.0.name_kh }}
+                            {% endif %}
+                        </label>
                         <br/>
                     {% endfor %}
                 </div>
@@ -463,13 +547,25 @@
             <div class="form-group row">
                 <label class="control-label col-md-2">{% trans 'water_quality_check' %}</label>
                 {% if watersupply.watersupplyKiosk_watersupply.0.filter_system_obj|length > 0 %}
-                    <label class="col-md-4">: {{ watersupply.watersupplyKiosk_watersupply.0.filter_system_obj.0.name_en }} </label>
+                    <label class="col-md-4">
+                        {% if CURRENT_LANGUAGE == 'en' %}
+                                : {{ watersupply.watersupplyKiosk_watersupply.0.filter_system_obj.0.name_en }}
+                        {% else %}
+                                : {{ watersupply.watersupplyKiosk_watersupply.0.filter_system_obj.0.name_kh }}
+                        {% endif %}
+                    </label>
                 {% else %}
                     <label class="col-md-4">: </label>
                 {% endif %}
                 <label class="control-label col-md-2">{% trans 'water_quality_checking' %}</label>
                 {% if watersupply.watersupplyKiosk_watersupply.0.water_quality_checking_obj|length > 0 %}
-                    <label class="col-md-4">: {{ watersupply.watersupplyKiosk_watersupply.0.water_quality_checking_obj.0.name_en }} </label>
+                    <label class="col-md-4">
+                        {% if CURRENT_LANGUAGE == 'en' %}
+                                : {{ watersupply.watersupplyKiosk_watersupply.0.water_quality_checking_obj.0.name_en }}
+                        {% else %}
+                                : {{ watersupply.watersupplyKiosk_watersupply.0.water_quality_checking_obj.0.name_kh }}
+                        {% endif %}
+                    </label>
                 {% else %}
                     <label class="col-md-4">: </label>
                 {% endif %}
@@ -477,7 +573,13 @@
             <div class="form-group row">
                 <label class="control-label col-md-2">{% trans 'status_water_kiosk' %}</label>
                 {% if watersupply.watersupplyKiosk_watersupply.0.status_obj|length > 0 %}
-                    <label class="col-md-4">: {{ watersupply.watersupplyKiosk_watersupply.0.status_obj.0.name_en }} </label>
+                    <label class="col-md-4">
+                        {% if CURRENT_LANGUAGE == 'en' %}
+                                : {{ watersupply.watersupplyKiosk_watersupply.0.status_obj.0.name_en }}
+                        {% else %}
+                                : {{ watersupply.watersupplyKiosk_watersupply.0.status_obj.0.name_kh }}
+                        {% endif %}
+                    </label>
                 {% else %}
                     <label class="col-md-4">: </label>
                 {% endif %}
@@ -493,7 +595,13 @@
                 <label class="control-label col-md-2">{% trans 'source_type_of_water' %}</label>
                 <div class="col-md-4">
                     {% for kiosk_source_water in watersupply.watersupplyairwater_watersupply.0.watersupplyairwateroptionvalue_watersupplykioskwater %}
-                        <label>{{ kiosk_source_water.value_obj.0.code }} - {{ kiosk_source_water.value_obj.0.name_en }} </label>
+                        <label>
+                            {% if CURRENT_LANGUAGE == 'en' %}
+                                {{ kiosk_source_water.value_obj.0.code }} - {{ kiosk_source_water.value_obj.0.name_en }}
+                            {% else %}
+                                {{ kiosk_source_water.value_obj.0.code }} - {{ kiosk_source_water.value_obj.0.name_kh }}
+                            {% endif %}
+                        </label>
                         <br/>
                     {% endfor %}
                 </div>
@@ -504,13 +612,25 @@
             <div class="form-group row">
                 <label class="control-label col-md-2">{% trans 'water_quality_check' %}</label>
                 {% if watersupply.watersupplyairwater_watersupply.0.filter_system_obj|length > 0 %}
-                    <label class="col-md-4">: {{ watersupply.watersupplyairwater_watersupply.0.filter_system_obj.0.name_en }} </label>
+                    <label class="col-md-4">
+                        {% if CURRENT_LANGUAGE == 'en' %}
+                            : {{ watersupply.watersupplyairwater_watersupply.0.filter_system_obj.0.name_en }}
+                        {% else %}
+                            : {{ watersupply.watersupplyairwater_watersupply.0.filter_system_obj.0.name_kh }}
+                        {% endif %}
+                    </label>
                 {% else %}
                     <label class="col-md-4">: </label>
                 {% endif %}
                 <label class="control-label col-md-2">{% trans 'water_quality_checking' %}</label>
                 {% if watersupply.watersupplyairwater_watersupply.0.water_quality_checking_obj|length > 0 %}
-                    <label class="col-md-4">: {{ watersupply.watersupplyairwater_watersupply.0.water_quality_checking_obj.0.name_en }} </label>
+                    <label class="col-md-4">
+                        {% if CURRENT_LANGUAGE == 'en' %}
+                            : {{ watersupply.watersupplyairwater_watersupply.0.water_quality_checking_obj.0.name_en }}
+                        {% else %}
+                            : {{ watersupply.watersupplyairwater_watersupply.0.water_quality_checking_obj.0.name_kh }}
+                        {% endif %}
+                    </label>
                 {% else %}
                     <label class="col-md-4">: </label>
                 {% endif %}
@@ -518,7 +638,13 @@
             <div class="form-group row">
                 <label class="control-label col-md-2">{% trans 'status_water_kiosk' %}</label>
                 {% if watersupply.watersupplyairwater_watersupply.0.status_obj|length > 0 %}
-                    <label class="col-md-4">: {{ watersupply.watersupplyairwater_watersupply.0.status_obj.0.name_en }} </label>
+                    <label class="col-md-4">
+                        {% if CURRENT_LANGUAGE == 'en' %}
+                            : {{ watersupply.watersupplyairwater_watersupply.0.status_obj.0.name_en }}
+                        {% else %}
+                            : {{ watersupply.watersupplyairwater_watersupply.0.status_obj.0.name_kh }}
+                        {% endif %}
+                    </label>
                 {% else %}
                     <label class="col-md-4">: </label>
                 {% endif %}
@@ -543,7 +669,13 @@
                 <label class="col-md-4">: {{ watersupply.watersupplyCommunityPond_watersupply.0.height }} </label>
                 <label class="control-label col-md-2">{% trans 'pool_filter' %}</label>
                 {% if watersupply.watersupplyCommunityPond_watersupply.0.pool_filter_obj|length > 0 %}
-                    <label class="col-md-4">: {{ watersupply.watersupplyCommunityPond_watersupply.0.pool_filter_obj.0.name_en }} </label>
+                    <label class="col-md-4">
+                        {% if CURRENT_LANGUAGE == 'en' %}
+                            : {{ watersupply.watersupplyCommunityPond_watersupply.0.pool_filter_obj.0.name_en }}
+                        {% else %}
+                            : {{ watersupply.watersupplyCommunityPond_watersupply.0.pool_filter_obj.0.name_kh }}
+                        {% endif %}
+                    </label>
                 {% else %}
                     <label class="col-md-4">: </label>
                 {% endif %}
@@ -551,13 +683,25 @@
             <div class="form-group row">
                 <label class="control-label col-md-2">{% trans 'type_of_pond' %}</label>
                 {% if watersupply.watersupplyCommunityPond_watersupply.0.type_of_pond_obj|length > 0 %}
-                    <label class="col-md-4">: {{ watersupply.watersupplyCommunityPond_watersupply.0.type_of_pond_obj.0.name_en }} </label>
+                    <label class="col-md-4">
+                        {% if CURRENT_LANGUAGE == 'en' %}
+                            : {{ watersupply.watersupplyCommunityPond_watersupply.0.type_of_pond_obj.0.name_en }}
+                        {% else %}
+                            : {{ watersupply.watersupplyCommunityPond_watersupply.0.type_of_pond_obj.0.name_kh }}
+                        {% endif %}
+                    </label>
                 {% else %}
                     <label class="col-md-4">: </label>
                 {% endif %}
                 <label class="control-label col-md-2">{% trans 'is_summer_has_water' %}</label>
                 {% if watersupply.watersupplyCommunityPond_watersupply.0.is_summer_has_water_obj|length > 0 %}
-                    <label class="col-md-4">: {{ watersupply.watersupplyCommunityPond_watersupply.0.is_summer_has_water_obj.0.name_en }} </label>
+                    <label class="col-md-4">
+                        {% if CURRENT_LANGUAGE == 'en' %}
+                            : {{ watersupply.watersupplyCommunityPond_watersupply.0.is_summer_has_water_obj.0.name_en }}
+                        {% else %}
+                            : {{ watersupply.watersupplyCommunityPond_watersupply.0.is_summer_has_water_obj.0.name_kh }}
+                        {% endif %}
+                    </label>
                 {% else %}
                     <label class="col-md-4">: </label>
                 {% endif %}
@@ -565,7 +709,13 @@
             <div class="form-group row">
                 <label class="control-label col-md-2">{% trans 'status_community_pond' %}</label>
                 {% if watersupply.watersupplyCommunityPond_watersupply.0.status_obj|length > 0 %}
-                    <label class="col-md-4">: {{ watersupply.watersupplyCommunityPond_watersupply.0.status_obj.0.name_en }} </label>
+                    <label class="col-md-4">
+                        {% if CURRENT_LANGUAGE == 'en' %}
+                            : {{ watersupply.watersupplyCommunityPond_watersupply.0.status_obj.0.name_en }}
+                        {% else %}
+                            : {{ watersupply.watersupplyCommunityPond_watersupply.0.status_obj.0.name_kh }}
+                        {% endif %}
+                    </label>
                 {% else %}
                     <label class="col-md-4">: </label>
                 {% endif %}
@@ -580,13 +730,25 @@
             <div class="form-group row">
                 <label class="control-label col-md-2">{% trans 'type_of_using' %}</label>
                 {% if watersupply.watersupplyRainWaterHarvesting_watersupply.0.type_of_using_obj|length > 0 %}
-                    <label class="col-md-4">: {{ watersupply.watersupplyRainWaterHarvesting_watersupply.0.type_of_using_obj.0.name_en }} </label>
+                    <label class="col-md-4">
+                        {% if CURRENT_LANGUAGE == 'en' %}
+                            : {{ watersupply.watersupplyRainWaterHarvesting_watersupply.0.type_of_using_obj.0.name_en }}
+                        {% else %}
+                            : {{ watersupply.watersupplyRainWaterHarvesting_watersupply.0.type_of_using_obj.0.name_kh }}
+                        {% endif %}
+                    </label>
                 {% else %}
                     <label class="col-md-4">: </label>
                 {% endif %}
                 <label class="control-label col-md-2">{% trans 'capacity_of_rain_water_harvesting' %}</label>
                 {% if watersupply.watersupplyRainWaterHarvesting_watersupply.0.capacity_of_rain_water_harvesting_obj|length > 0 %}
-                    <label class="col-md-4">: {{ watersupply.watersupplyRainWaterHarvesting_watersupply.0.capacity_of_rain_water_harvesting_obj.0.name_en }} </label>
+                    <label class="col-md-4">
+                        {% if CURRENT_LANGUAGE == 'en' %}
+                            : {{ watersupply.watersupplyRainWaterHarvesting_watersupply.0.capacity_of_rain_water_harvesting_obj.0.name_en }}
+                        {% else %}
+                            : {{ watersupply.watersupplyRainWaterHarvesting_watersupply.0.capacity_of_rain_water_harvesting_obj.0.name_kh }}
+                        {% endif %}
+                    </label>
                 {% else %}
                     <label class="col-md-4">: </label>
                 {% endif %}
@@ -595,14 +757,26 @@
                 <label class="control-label col-md-2">{% trans 'water_quality_checking' %}</label>
                 
                 {% if watersupply.watersupplyRainWaterHarvesting_watersupply.0.water_quality_checking_obj|length > 0 %}
-                    <label class="col-md-4">: {{ watersupply.watersupplyRainWaterHarvesting_watersupply.0.water_quality_checking_obj.0.name_en }} </label>
+                    <label class="col-md-4">
+                        {% if CURRENT_LANGUAGE == 'en' %}
+                            : {{ watersupply.watersupplyRainWaterHarvesting_watersupply.0.water_quality_checking_obj.0.name_en }}
+                        {% else %}
+                            : {{ watersupply.watersupplyRainWaterHarvesting_watersupply.0.water_quality_checking_obj.0.name_kh }}
+                        {% endif %}
+                    </label>
                 {% else %}
                     <label class="col-md-4">: </label>
                 {% endif %}
                 
                 <label class="control-label col-md-2">{% trans 'status_rain_water_harvesting' %}</label>
                 {% if watersupply.watersupplyRainWaterHarvesting_watersupply.0.status_obj|length > 0 %}
-                    <label class="col-md-4">: {{ watersupply.watersupplyRainWaterHarvesting_watersupply.0.status_obj.0.name_en }} </label>
+                    <label class="col-md-4">
+                        {% if CURRENT_LANGUAGE == 'en' %}
+                            : {{ watersupply.watersupplyRainWaterHarvesting_watersupply.0.status_obj.0.name_en }}
+                        {% else %}
+                            : {{ watersupply.watersupplyRainWaterHarvesting_watersupply.0.status_obj.0.name_kh }}
+                        {% endif %}
+                    </label>
                 {% else %}
                     <label class="col-md-4">: </label>
                 {% endif %}

@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n %}
+{% get_current_language as CURRENT_LANGUAGE %}
 
 {% block title %}{% trans 'menu_my_pending_approval_task' %}{% endblock %}
 
@@ -34,15 +35,54 @@
                 <tr>
                     <td>{{ ws.watersupply_id.water_supply_code }}</td>
                     
-                    <td>{{ ws.watersupply_id.province_id.name_en}}</td>
-                    <td>{{ ws.watersupply_id.district_id.name_en}}</td>
-                    <td>{{ ws.watersupply_id.commune_id.name_en}}</td>
-                    <td>{{ ws.watersupply_id.village_id.name_en}}</td>
+                    <td>
+                        {% if CURRENT_LANGUAGE == 'en' %}
+                            {{ ws.watersupply_id.province_id.name_en}}
+                        {% else %}
+                            {{ ws.watersupply_id.province_id.name_kh}}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if CURRENT_LANGUAGE == 'en' %}
+                            {{ ws.watersupply_id.district_id.name_en}}
+                        {% else %}
+                            {{ ws.watersupply_id.district_id.name_kh}}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if CURRENT_LANGUAGE == 'en' %}
+                            {{ ws.watersupply_id.commune_id.name_en}}
+                        {% else %}
+                            {{ ws.watersupply_id.commune_id.name_kh}}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if CURRENT_LANGUAGE == 'en' %}
+                            {{ ws.watersupply_id.village_id.name_en}}
+                        {% else %}
+                            {{ ws.watersupply_id.village_id.name_kh}}
+                        {% endif %}
+                    </td>
                     <td>{{ ws.watersupply_id.created_at }}</td>
                     <td>{{ ws.created_at }}</td>
-                    <td>{{ ws.watersupply_id.water_supply_type_id.name_kh }}</td>
-                   
-                    <td class="text-center"><span class="badge badge-warning">{{ ws.watersupply_id.main_status.status_name_kh }}</span></td>
+                    <td>
+                        {% if CURRENT_LANGUAGE == 'en' %}
+                            {{ ws.watersupply_id.water_supply_type_id.name_en }}
+                        {% else %}
+                            {{ ws.watersupply_id.water_supply_type_id.name_kh }}
+                        {% endif %}
+                    </td>
+
+                    {% comment %}Have not translate yet because name en is null{% endcomment %}
+                    <td class="text-center">
+                        <span class="badge badge-warning">
+                            {% if CURRENT_LANGUAGE == 'en' %}
+                                {{ ws.watersupply_id.main_status.status_name_en }}
+                            {% else %}
+                                {{ ws.watersupply_id.main_status.status_name_kh }}
+                            {% endif %}
+                        </span>
+                    </td>
                     <td><a href="{% url 'watersupply_detail' id=ws.watersupply_id.id %}" class="btn btn-outline-primary btn-sm"><i class="fa fa-eye"></i> {% trans 'btn_view_detail' %}</a></td>
                 </tr>
             {% endfor %}

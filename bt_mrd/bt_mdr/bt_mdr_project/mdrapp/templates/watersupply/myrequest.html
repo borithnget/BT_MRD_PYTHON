@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n %}
+{% get_current_language as CURRENT_LANGUAGE %}
 
 {% block title %}{% trans 'menu_my_task' %}{% endblock %}
 
@@ -98,24 +99,44 @@
                 },
                 columns: [
                     { render : function (data, type, row) {
-                            return row.province_id.name_kh;
+                            {% if CURRENT_LANGUAGE == 'en' %}
+                                return row.province_id.name_en;
+                            {% else %}
+                                return row.province_id.name_kh;
+                            {% endif %}
                         },
                     },
                     { render : function (data, type, row) {
-                            return row.district_id.name_kh;
+                            {% if CURRENT_LANGUAGE == 'en' %}
+                                return row.district_id.name_en;
+                            {% else %}
+                                return row.district_id.name_kh;
+                            {% endif %}
                         },
                     },
                     { render : function (data, type, row) {
-                            return row.commune_id.name_kh;
+                            {% if CURRENT_LANGUAGE == 'en' %}
+                                return row.commune_id.name_en;
+                            {% else %}
+                                return row.commune_id.name_kh;
+                            {% endif %}
                         },
                     },
                     { render : function (data, type, row) {
-                            return row.village_id.name_kh;
+                            {% if CURRENT_LANGUAGE == 'en' %}
+                                return row.village_id.name_en;
+                            {% else %}
+                                return row.village_id.name_kh;
+                            {% endif %}
                         },
                     },
                     { data : "created_at"},
                     { render : function (data, type, row) {
-                            return row.water_supply_type_id.name_kh;
+                            {% if CURRENT_LANGUAGE == 'en' %}
+                                return row.water_supply_type_id.name_en;
+                            {% else %}
+                                return row.water_supply_type_id.name_kh;
+                            {% endif %}
                         },
                     },
                     { render : function (data, type, row) {
@@ -152,24 +173,47 @@
                             },
                         },
                         { render : function (data, type, row) {
-                                return row.province_id.name_kh;
+                                {% if CURRENT_LANGUAGE == 'en' %}
+                                    return row.province_id.name_en;
+                                {% else %}
+                                    return row.province_id.name_kh;
+                                {% endif %}
                             },
                         },
                         { render : function (data, type, row) {
-                                return row.district_id.name_kh;
+                                {% if CURRENT_LANGUAGE == 'en' %}
+                                    return row.district_id.name_en;
+                                {% else %}
+                                    return row.district_id.name_kh;
+                                {% endif %}
+
                             },
                         },
                         { render : function (data, type, row) {
-                                return row.commune_id.name_kh;
+                                {% if CURRENT_LANGUAGE == 'en' %}
+                                    return row.commune_id.name_en;
+                                {% else %}
+                                    return row.commune_id.name_kh;
+                                {% endif %}
                             },
                         },
                         { render : function (data, type, row) {
-                                return row.village_id.name_kh;
+                                {% if CURRENT_LANGUAGE == 'en' %}
+                                    return row.village_id.name_en;
+                                {% else %}
+                                    return row.village_id.name_kh;
+                                {% endif %}
+
                             },
                         },
                         { data : "created_at"},
                         { render : function (data, type, row) {
-                                return row.water_supply_type_id.name_kh;
+                                {% if CURRENT_LANGUAGE == 'en' %}
+                                    return row.water_supply_type_id.name_en;
+                                {% else %}
+                                    return row.water_supply_type_id.name_kh;
+                                {% endif %}
+
                             },
                         },
                         { render : function (data, type, row) {
@@ -193,32 +237,56 @@
                     },
                     columns: [
                     { render : function (data, type, row) {
+
                                 return row.watersupply_id.water_supply_code;
                             },
                         },
                         { render : function (data, type, row) {
-                                return row.watersupply_id.province_id.name_kh;
-                                
+                                {% if CURRENT_LANGUAGE == 'en' %}
+                                    return row.watersupply_id.province_id.name_en;
+                                {% else %}
+                                    return row.watersupply_id.province_id.name_kh;
+                                {% endif %}
+
                             },
                         },
                         { render : function (data, type, row) {
-                                return row.watersupply_id.district_id.name_kh;
-                                
+                                {% if CURRENT_LANGUAGE == 'en' %}
+                                    return row.watersupply_id.district_id.name_en;
+                                {% else %}
+                                    return row.watersupply_id.district_id.name_kh;
+                                {% endif %}
+
                             },
                         },
                         { render : function (data, type, row) {
-                                return row.watersupply_id.commune_id.name_kh;
+                                {% if CURRENT_LANGUAGE == 'en' %}
+                                    return row.watersupply_id.commune_id.name_en;
+                                {% else %}
+                                    return row.watersupply_id.commune_id.name_kh;
+                                {% endif %}
+
                                 //return '';
                             },
                         },
                         { render : function (data, type, row) {
-                                return row.watersupply_id.village_id.name_kh;
+                                {% if CURRENT_LANGUAGE == 'en' %}
+                                    return row.watersupply_id.village_id.name_en;
+                                {% else %}
+                                    return row.watersupply_id.village_id.name_kh;
+                                {% endif %}
+
                                 //return '';
                             },
                         },
                         { data : "created_at"},
                         { render : function (data, type, row) {
-                                return row.watersupply_id.water_supply_type_id.name_kh;
+                                {% if CURRENT_LANGUAGE == 'en' %}
+                                    return row.watersupply_id.water_supply_type_id.name_en;
+                                {% else %}
+                                    return row.watersupply_id.water_supply_type_id.name_kh;
+                                {% endif %}
+
                                 //return '';
                             },
                         },

@@ -72,7 +72,13 @@
                         <select class='form-control select2' id="province" name="province select2"​​ style="width: 100% !important;">
                             <option value="0">{% trans 'all' %}</option>
                             {% for province in provinces %}
-                                <option value="{{ province.id }}">{{ province.name_kh }}
+                                <option value="{{ province.id }}">
+                                    {% if CURRENT_LANGUAGE == 'en' %}
+                                    {{ province.name_en }}
+                                    {% else %}
+                                    {{ province.name_kh }}
+                                    {% endif %}
+
                             {% endfor %}
                         </select>
                     </div>
@@ -160,7 +166,12 @@
                 return;
             }
             if(water_supply_type==0){
-                alert('សូមជ្រើសរើសប្រភេទប្រព័ន្ធផ្គត់ផ្គង់ទឹក។');
+                {% if CURRENT_LANGUAGE == 'en' %}
+                    alert('Please select the type of water supply.។');
+                {% else %}
+                    alert('សូមជ្រើសរើសប្រភេទប្រព័ន្ធផ្គត់ផ្គង់ទឹក។');
+                {% endif %}
+
                 $('#btnGenerate').attr("disabled", false);
                 return;
             }
@@ -219,7 +230,12 @@
                                                 if(response.data.length==0){
                                                 
                                                 $('#table1 tbody').append("<tr>"+
-                                                    "<td>"+item_province.name_kh+"</td>"+
+                                                    {% if CURRENT_LANGUAGE == 'en' %}
+                                                        "<td>"+item_province.name_en+"</td>"+
+                                                    {% else %}
+                                                        "<td>"+item_province.name_kh+"</td>"+
+                                                    {% endif %}
+
                                                     "<td class='text-center'>0</td>"+
                                                     "<td class='text-center'>0</td>"+
                                                     "<td class='text-center'>0</td>"+
@@ -273,7 +289,12 @@
                                                 var beneficiary_percentage =total_population==0?0: (beneficiary_total_people*100)/total_population;
                     
                                                 $('#table1 tbody').append("<tr>"+
-                                                    "<td>"+province.name_kh+"</td>"+
+                                                    {% if CURRENT_LANGUAGE == 'en' %}
+                                                        "<td>"+province.name_en+"</td>"+
+                                                    {% else %}
+                                                        "<td>"+province.name_kh+"</td>"+
+                                                    {% endif %}
+
                                                     "<td class='text-center'>"+no_motor+"</td>"+
                                                     "<td class='text-center'>"+no_afridev+"</td>"+
                                                     "<td class='text-center'>"+no_markII+"</td>"+
@@ -291,7 +312,12 @@
                                             else if(water_supply_type==2 || water_supply_type==3 || water_supply_type==6 || water_supply_type==7){
                                                 if(response.data.length==0){
                                                     $('#table1 tbody').append("<tr>"+
-                                                        "<td>"+item_province.name_kh+"</td>"+
+                                                        {% if CURRENT_LANGUAGE == 'en' %}
+                                                            "<td>"+item_province.name_en+"</td>"+
+                                                        {% else %}
+                                                            "<td>"+item_province.name_kh+"</td>"+
+                                                        {% endif %}
+
                                                         "<td class='text-center'>0</td>"+
                                                         "<td class='text-center'>0</td>"+
                                                         "<td class='text-center'>0</td>"+
@@ -391,7 +417,12 @@
                                                     var beneficiary_percentage =total_population==0?0: (beneficiary_total_people*100)/total_population;
                                                     
                                                     $('#table1 tbody').append("<tr>"+
-                                                        "<td>"+province.name_kh+"</td>"+
+                                                        {% if CURRENT_LANGUAGE == 'en' %}
+                                                            "<td>"+province.name_en+"</td>"+
+                                                        {% else %}
+                                                            "<td>"+province.name_kh+"</td>"+
+                                                        {% endif %}
+
                                                         "<td class='text-center'>"+count_ground_water+"</td>"+
                                                         "<td class='text-center'>"+count_surface_water+"</td>"+
                                                         "<td class='text-center'>"+count_water_type3+"</td>"+
@@ -479,7 +510,12 @@
                                 var beneficiary_percentage =total_population==0?0: (beneficiary_total_people*100)/total_population;
     
                                 $('#table1 tbody').append("<tr>"+
-                                    "<td>"+province.name_kh+"</td>"+
+                                    {% if CURRENT_LANGUAGE == 'en' %}
+                                        "<td>"+province.name_en+"</td>"+
+                                    {% else %}
+                                        "<td>"+province.name_kh+"</td>"+
+                                    {% endif %}
+
                                     "<td class='text-center'>"+no_motor+"</td>"+
                                     "<td class='text-center'>"+no_afridev+"</td>"+
                                     "<td class='text-center'>"+no_markII+"</td>"+

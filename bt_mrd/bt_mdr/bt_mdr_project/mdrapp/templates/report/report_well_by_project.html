@@ -65,7 +65,11 @@
                         <select class='form-control select2' id="province" name="province select2"​​ style="width: 100% !important;">
                             <option value="">{% trans 'all' %}</option>
                             {% for province in provinces %}
-                                <option value="{{ province.id }}">{{ province.name_kh }}
+                                {% if CURRENT_LANGUAGE == 'en' %}
+                                            <option value="{{ province.id }}">{{ province.name_en }}
+                                        {% else %}
+                                            <option value="{{ province.id }}">{{ province.name_kh }}
+                                        {% endif %}
                             {% endfor %}
                         </select>
                     </div>
@@ -198,7 +202,11 @@
             $('#table1 tbody').empty();
             //console.log(water_supply_type);
             if(water_supply_type==0){
-                alert('សូមជ្រើសរើសប្រភេទប្រព័ន្ធផ្គត់ផ្គង់ទឹក។');
+                {% if CURRENT_LANGUAGE == 'en' %}
+                    alert('Please select the type of water supply.');
+                {% else %}
+                    alert('សូមជ្រើសរើសប្រភេទប្រព័ន្ធផ្គត់ផ្គង់ទឹក។');
+                {% endif %}
                 return;
             }
             
@@ -390,7 +398,11 @@
                                     //console.log(well.well_type_obj);
                                     $.each(well.watersupplywelloptionvalue_watersupplywell,function(wtind,wtitem){
                                         //console.log(wtitem);
-                                        str_body=str_body+wtitem.value_obj[0].name_kh+",";
+                                        {% if CURRENT_LANGUAGE == 'en' %}
+                                            str_body=str_body+wtitem.value_obj[0].name_en+",";
+                                        {% else %}
+                                            str_body=str_body+wtitem.value_obj[0].name_kh+",";
+                                        {% endif %}
                                     });
                                     str_body=str_body+"</td>";
 
@@ -399,9 +411,16 @@
                                     str_body=str_body+"<td>"+well.well_water_supply+"</td>";
                                     str_body=str_body+"<td>"+well.well_nirostatic+"</td>";
                                     str_body=str_body+"<td>"+well.well_nirodynamic+"</td>";
-                                    str_body=str_body+"<td>"+well.well_watar_quality_obj[0].name_kh+"</td>";
-                                    str_body=str_body+"<td>"+well.well_water_quality_check_obj[0].name_kh+"</td>";
-                                    str_body=str_body+"<td>"+well.well_status_obj[0].name_kh+"</td>";
+                                    {% if CURRENT_LANGUAGE == 'en' %}
+                                            str_body=str_body+"<td>"+well.well_watar_quality_obj[0].name_en+"</td>";
+                                            str_body=str_body+"<td>"+well.well_water_quality_check_obj[0].name_en+"</td>";
+                                            str_body=str_body+"<td>"+well.well_status_obj[0].name_en+"</td>";
+                                    {% else %}
+                                            str_body=str_body+"<td>"+well.well_watar_quality_obj[0].name_kh+"</td>";
+                                            str_body=str_body+"<td>"+well.well_water_quality_check_obj[0].name_kh+"</td>";
+                                            str_body=str_body+"<td>"+well.well_status_obj[0].name_kh+"</td>";
+                                    {% endif %}
+
 
                                     // var well_type="<td>";
 
@@ -430,19 +449,38 @@
                                         console.log(small_pipe);
                                         str_body="<td>";
                                             $.each(small_pipe.watersupplypipeoptionvalue_watersupplypipe,function(spind,spitem){
-                                                str_body=str_body+spitem.value_obj[0].name_kh+",";
+                                                {% if CURRENT_LANGUAGE == 'en' %}
+                                                    str_body=str_body+spitem.value_obj[0].name_en+",";
+                                                {% else %}
+                                                    str_body=str_body+spitem.value_obj[0].name_kh+",";
+                                                {% endif %}
                                             });
-                                        str_body=str_body+"</td>";
-                                        str_body=str_body+"<td>"+small_pipe.abilty_of_produce_water+"</td>";
-                                        str_body=str_body+"<td>"+small_pipe.underground_pool_storage+"</td>";
-                                        str_body=str_body+"<td>"+small_pipe.pool_air+"</td>";
-                                        str_body=str_body+"<td>"+small_pipe.pool_filter_obj[0].name_kh+"</td>";
-                                        str_body=str_body+"<td>"+small_pipe.number_of_link+"</td>";
-                                        str_body=str_body+"<td>"+small_pipe.pipe_length+"</td>";
-                                        str_body=str_body+"<td>"+small_pipe.area_covering+"</td>";
-                                        str_body=str_body+"<td>"+small_pipe.water_quality_check_obj[0].name_kh+"</td>";
-                                        str_body=str_body+"<td>"+small_pipe.status_obj[0].name_kh+"</td>";
-                                        str_body=str_body+"<td>"+small_pipe.status_no_reason+"</td>";
+                                        {% if CURRENT_LANGUAGE == 'en' %}
+                                            str_body=str_body+"</td>";
+                                            str_body=str_body+"<td>"+small_pipe.abilty_of_produce_water+"</td>";
+                                            str_body=str_body+"<td>"+small_pipe.underground_pool_storage+"</td>";
+                                            str_body=str_body+"<td>"+small_pipe.pool_air+"</td>";
+                                            str_body=str_body+"<td>"+small_pipe.pool_filter_obj[0].name_en+"</td>";
+                                            str_body=str_body+"<td>"+small_pipe.number_of_link+"</td>";
+                                            str_body=str_body+"<td>"+small_pipe.pipe_length+"</td>";
+                                            str_body=str_body+"<td>"+small_pipe.area_covering+"</td>";
+                                            str_body=str_body+"<td>"+small_pipe.water_quality_check_obj[0].name_en+"</td>";
+                                            str_body=str_body+"<td>"+small_pipe.status_obj[0].name_en+"</td>";
+                                            str_body=str_body+"<td>"+small_pipe.status_no_reason+"</td>";
+                                        {% else %}
+                                            str_body=str_body+"</td>";
+                                            str_body=str_body+"<td>"+small_pipe.abilty_of_produce_water+"</td>";
+                                            str_body=str_body+"<td>"+small_pipe.underground_pool_storage+"</td>";
+                                            str_body=str_body+"<td>"+small_pipe.pool_air+"</td>";
+                                            str_body=str_body+"<td>"+small_pipe.pool_filter_obj[0].name_kh+"</td>";
+                                            str_body=str_body+"<td>"+small_pipe.number_of_link+"</td>";
+                                            str_body=str_body+"<td>"+small_pipe.pipe_length+"</td>";
+                                            str_body=str_body+"<td>"+small_pipe.area_covering+"</td>";
+                                            str_body=str_body+"<td>"+small_pipe.water_quality_check_obj[0].name_kh+"</td>";
+                                            str_body=str_body+"<td>"+small_pipe.status_obj[0].name_kh+"</td>";
+                                            str_body=str_body+"<td>"+small_pipe.status_no_reason+"</td>";
+                                        {% endif %}
+
 
                                     }else
                                         str_body="<td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>"; 
@@ -451,13 +489,24 @@
                                         var kiosk = item.watersupplyKiosk_watersupply[0];
                                         str_body="<td>";
                                             $.each(kiosk.watersupplykioskoptionvalue_watersupplykiosk,function(spind,spitem){
-                                                str_body=str_body+spitem.value_obj[0].name_kh+",";
+                                                {% if CURRENT_LANGUAGE == 'en' %}
+                                                    str_body=str_body+spitem.value_obj[0].name_en+",";
+                                                {% else %}
+                                                    str_body=str_body+spitem.value_obj[0].name_kh+",";
+                                                {% endif %}
                                             });
                                         str_body=str_body+"</td>";
                                         str_body=str_body+"<td>"+kiosk.abilty_of_produce_water+"</td>";
-                                        str_body=str_body+"<td>"+kiosk.filter_system_obj[0].name_kh+"</td>";
-                                        str_body=str_body+"<td>"+kiosk.water_quality_checking_obj[0].name_kh+"</td>";
-                                        str_body=str_body+"<td>"+kiosk.status_obj[0].name_kh+"</td>";
+                                        {% if CURRENT_LANGUAGE == 'en' %}
+                                            str_body=str_body+"<td>"+kiosk.filter_system_obj[0].name_en+"</td>";
+                                            str_body=str_body+"<td>"+kiosk.water_quality_checking_obj[0].name_en+"</td>";
+                                            str_body=str_body+"<td>"+kiosk.status_obj[0].name_en+"</td>";
+                                        {% else %}
+                                            str_body=str_body+"<td>"+kiosk.filter_system_obj[0].name_kh+"</td>";
+                                            str_body=str_body+"<td>"+kiosk.water_quality_checking_obj[0].name_kh+"</td>";
+                                            str_body=str_body+"<td>"+kiosk.status_obj[0].name_kh+"</td>";
+                                        {% endif %}
+
                                         str_body=str_body+"<td>"+kiosk.status_no_reason+"</td>";
                                     }
                                 }
@@ -467,20 +516,36 @@
                                         str_body="<td>"+communityPond.width+"</td>";
                                         str_body=str_body+"<td>"+communityPond.length+"</td>";
                                         str_body=str_body+"<td>"+communityPond.height+"</td>";
-                                        str_body=str_body+"<td>"+communityPond.pool_filter_obj[0].name_kh+"</td>"
-                                        str_body=str_body+"<td>"+communityPond.type_of_pond_obj[0].name_kh+"</td>"
-                                        str_body=str_body+"<td>"+communityPond.is_summer_has_water_obj[0].name_kh+"</td>"
-                                        str_body=str_body+"<td>"+communityPond.status_obj[0].name_kh+"</td>"
+                                        {% if CURRENT_LANGUAGE == 'en' %}
+                                            str_body=str_body+"<td>"+communityPond.pool_filter_obj[0].name_en+"</td>"
+                                            str_body=str_body+"<td>"+communityPond.type_of_pond_obj[0].name_en+"</td>"
+                                            str_body=str_body+"<td>"+communityPond.is_summer_has_water_obj[0].name_en+"</td>"
+                                            str_body=str_body+"<td>"+communityPond.status_obj[0].name_en+"</td>"
+                                        {% else %}
+                                            str_body=str_body+"<td>"+communityPond.pool_filter_obj[0].name_kh+"</td>"
+                                            str_body=str_body+"<td>"+communityPond.type_of_pond_obj[0].name_kh+"</td>"
+                                            str_body=str_body+"<td>"+communityPond.is_summer_has_water_obj[0].name_kh+"</td>"
+                                            str_body=str_body+"<td>"+communityPond.status_obj[0].name_kh+"</td>"
+                                        {% endif %}
+
                                         str_body=str_body+"<td>"+communityPond.status_no_reason+"</td>"
                                     }
                                 }
                                 else if(water_supply_type==5){
                                     if(item.watersupplyRainWaterHarvesting_watersupply.length>0){
                                         var rainWaterHarvesting = item.watersupplyRainWaterHarvesting_watersupply[0];
-                                        str_body="<td>"+rainWaterHarvesting.type_of_using_obj[0].name_kh+"</td>";
-                                        str_body=str_body+"<td>"+rainWaterHarvesting.capacity_of_rain_water_harvesting_obj[0].name_kh+"</td>";
-                                        str_body=str_body+"<td>"+rainWaterHarvesting.water_quality_checking_obj[0].name_kh+"</td>";
-                                        str_body=str_body+"<td>"+rainWaterHarvesting.status_obj[0].name_kh+"</td>";
+                                        {% if CURRENT_LANGUAGE == 'en' %}
+                                            str_body="<td>"+rainWaterHarvesting.type_of_using_obj[0].name_en+"</td>";
+                                            str_body=str_body+"<td>"+rainWaterHarvesting.capacity_of_rain_water_harvesting_obj[0].name_en+"</td>";
+                                            str_body=str_body+"<td>"+rainWaterHarvesting.water_quality_checking_obj[0].name_en+"</td>";
+                                            str_body=str_body+"<td>"+rainWaterHarvesting.status_obj[0].name_en+"</td>";
+                                        {% else %}
+                                            str_body="<td>"+rainWaterHarvesting.type_of_using_obj[0].name_kh+"</td>";
+                                            str_body=str_body+"<td>"+rainWaterHarvesting.capacity_of_rain_water_harvesting_obj[0].name_kh+"</td>";
+                                            str_body=str_body+"<td>"+rainWaterHarvesting.water_quality_checking_obj[0].name_kh+"</td>";
+                                            str_body=str_body+"<td>"+rainWaterHarvesting.status_obj[0].name_kh+"</td>";
+                                        {% endif %}
+
                                         str_body=str_body+"<td>"+rainWaterHarvesting.status_no_reason+"</td>";
                                     }
                                 }
@@ -489,22 +554,45 @@
                                         var pipe=item.watersupplypipeprivate_watersupply[0];
                                         str_body="<td>";
                                             $.each(pipe.watersupplypipeprivateoptionvalue_watersupplypipewater,function(spind,spitem){
+                                            {% if CURRENT_LANGUAGE == 'en' %}
+                                                str_body=str_body+spitem.value_obj[0].name_en+",";
+                                            {% else %}
                                                 str_body=str_body+spitem.value_obj[0].name_kh+",";
+                                            {% endif %}
+
                                             });
-                                        str_body=str_body+"</td>";
-                                        str_body=str_body+"<td>"+pipe.abilty_of_produce_water+"</td>";
-                                        str_body=str_body+"<td>"+pipe.underground_pool_storage+"</td>";
-                                        str_body=str_body+"<td>"+pipe.pool_air+"</td>";
-                                        str_body=str_body+"<td>"+pipe.pool_filter_obj[0].name_kh+"</td>";
-                                        str_body=str_body+"<td>"+pipe.number_of_link+"</td>";
-                                        str_body=str_body+"<td>"+pipe.pipe_length+"</td>";
-                                        str_body=str_body+"<td>"+pipe.area_covering+"</td>";
-                                        str_body=str_body+"<td>"+pipe.water_quality_check_obj[0].name_kh+"</td>";
-                                        str_body=str_body+"<td>"+pipe.is_has_license_obj[0].name_kh+"</td>";
-                                        str_body=str_body+"<td>"+pipe.license_registered_date+"</td>";
-                                        str_body=str_body+"<td>"+pipe.license_expired_date+"</td>";
-                                        str_body=str_body+"<td>"+pipe.status_obj[0].name_kh+"</td>";
-                                        str_body=str_body+"<td>"+pipe.status_no_reason+"</td>";
+                                        {% if CURRENT_LANGUAGE == 'en' %}
+                                            str_body=str_body+"</td>";
+                                            str_body=str_body+"<td>"+pipe.abilty_of_produce_water+"</td>";
+                                            str_body=str_body+"<td>"+pipe.underground_pool_storage+"</td>";
+                                            str_body=str_body+"<td>"+pipe.pool_air+"</td>";
+                                            str_body=str_body+"<td>"+pipe.pool_filter_obj[0].name_en+"</td>";
+                                            str_body=str_body+"<td>"+pipe.number_of_link+"</td>";
+                                            str_body=str_body+"<td>"+pipe.pipe_length+"</td>";
+                                            str_body=str_body+"<td>"+pipe.area_covering+"</td>";
+                                            str_body=str_body+"<td>"+pipe.water_quality_check_obj[0].name_en+"</td>";
+                                            str_body=str_body+"<td>"+pipe.is_has_license_obj[0].name_en+"</td>";
+                                            str_body=str_body+"<td>"+pipe.license_registered_date+"</td>";
+                                            str_body=str_body+"<td>"+pipe.license_expired_date+"</td>";
+                                            str_body=str_body+"<td>"+pipe.status_obj[0].name_en+"</td>";
+                                            str_body=str_body+"<td>"+pipe.status_no_reason+"</td>";
+                                        {% else %}
+                                            str_body=str_body+"</td>";
+                                            str_body=str_body+"<td>"+pipe.abilty_of_produce_water+"</td>";
+                                            str_body=str_body+"<td>"+pipe.underground_pool_storage+"</td>";
+                                            str_body=str_body+"<td>"+pipe.pool_air+"</td>";
+                                            str_body=str_body+"<td>"+pipe.pool_filter_obj[0].name_kh+"</td>";
+                                            str_body=str_body+"<td>"+pipe.number_of_link+"</td>";
+                                            str_body=str_body+"<td>"+pipe.pipe_length+"</td>";
+                                            str_body=str_body+"<td>"+pipe.area_covering+"</td>";
+                                            str_body=str_body+"<td>"+pipe.water_quality_check_obj[0].name_kh+"</td>";
+                                            str_body=str_body+"<td>"+pipe.is_has_license_obj[0].name_kh+"</td>";
+                                            str_body=str_body+"<td>"+pipe.license_registered_date+"</td>";
+                                            str_body=str_body+"<td>"+pipe.license_expired_date+"</td>";
+                                            str_body=str_body+"<td>"+pipe.status_obj[0].name_kh+"</td>";
+                                            str_body=str_body+"<td>"+pipe.status_no_reason+"</td>";
+                                        {% endif %}
+
                                     }
                                 }
                                 else if(water_supply_type==7){
@@ -512,25 +600,50 @@
                                         var airToWater=item.watersupplyairwater_watersupply[0];
                                         str_body="<td>";
                                             $.each(airToWater.watersupplyairwateroptionvalue_watersupplykioskwater,function(spind,spitem){
-                                                str_body=str_body+spitem.value_obj[0].name_kh+",";
+                                                {% if CURRENT_LANGUAGE == 'en' %}
+                                                    str_body=str_body+spitem.value_obj[0].name_en+",";
+                                                {% else %}
+                                                    str_body=str_body+spitem.value_obj[0].name_kh+",";
+                                                {% endif %}
                                             });
                                         str_body=str_body+"</td>";
                                         str_body=str_body+"<td>"+airToWater.abilty_of_produce_water+"</td>";
-                                        str_body=str_body+"<td>"+airToWater.filter_system_obj[0].name_kh+"</td>";
-                                        str_body=str_body+"<td>"+airToWater.water_quality_checking_obj[0].name_kh+"</td>";
-                                        str_body=str_body+"<td>"+airToWater.status_obj[0].name_kh+"</td>";
+
+                                        {% if CURRENT_LANGUAGE == 'en' %}
+                                            str_body=str_body+"<td>"+airToWater.filter_system_obj[0].name_en+"</td>";
+                                            str_body=str_body+"<td>"+airToWater.water_quality_checking_obj[0].name_en+"</td>";
+                                            str_body=str_body+"<td>"+airToWater.status_obj[0].name_en+"</td>";
+                                        {% else %}
+                                            str_body=str_body+"<td>"+airToWater.filter_system_obj[0].name_kh+"</td>";
+                                            str_body=str_body+"<td>"+airToWater.water_quality_checking_obj[0].name_kh+"</td>";
+                                            str_body=str_body+"<td>"+airToWater.status_obj[0].name_kh+"</td>";
+                                        {% endif %}
+
                                         str_body=str_body+"<td>"+airToWater.status_no_reason+"</td>";
                                     }
                                 }
 
 
-                                var village=item.village_id == null?'':item.village_id.name_kh;
+                                var village=item.village_id == null?'':
+                                    {% if CURRENT_LANGUAGE == 'en' %}
+                                        item.village_id.name_en;
+                                    {% else %}
+                                        item.village_id.name_kh;
+                                    {% endif %}
+
 
                                 $('#table1 tbody').append("<tr>"+
                                     "<td>"+Number(index+1)+"</td>"+
-                                    "<td>"+item.province_id.name_kh + "</td>"+
-                                    "<td>"+item.district_id.name_kh + "</td>"+
-                                    "<td>"+item.commune_id.name_kh + "</td>"+
+                                    {% if CURRENT_LANGUAGE == 'en' %}
+                                        "<td>"+item.province_id.name_en + "</td>"+
+                                        "<td>"+item.district_id.name_en + "</td>"+
+                                        "<td>"+item.commune_id.name_en + "</td>"+
+                                    {% else %}
+                                        "<td>"+item.province_id.name_kh + "</td>"+
+                                        "<td>"+item.district_id.name_kh + "</td>"+
+                                        "<td>"+item.commune_id.name_kh + "</td>"+
+                                    {% endif %}
+
                                     "<td>"+village + "</td>"+
                                     well_type+
                                     //coordinate

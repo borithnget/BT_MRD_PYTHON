@@ -56,7 +56,12 @@
                             <div class="col-md-8">
                                 <select class='form-control select2' id="province" name="province"​​ style="width: 100% !important;">
                                     {% for province in provinces %}
-                                        <option value="{{ province.id }}" data-population="{{ province.total_population }}">{{ province.name_kh }}
+                                        <option value="{{ province.id }}" data-population="{{ province.total_population }}">
+                                        {% if CURRENT_LANGUAGE == 'en' %}
+                                            {{ province.name_en }}
+                                        {% else %}
+                                            {{ province.name_kh }}
+                                        {% endif %}
                                     {% endfor %}
                                 </select>
                             </div>             

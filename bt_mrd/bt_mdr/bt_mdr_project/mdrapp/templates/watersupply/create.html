@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n %}
+{% get_current_language as CURRENT_LANGUAGE %}
 {% load static %}
 
 {% block first_breadcrums %}
@@ -32,7 +33,7 @@
             {% csrf_token %}
             <input type="hidden" name="main_status" id="main_status"/>
             <input type="hidden" id="water_supply_type" value="{{ watersupplytype.id }}"/>
-            
+
             <!-- <div class="well well-sm"​​ style="background-color: #E4E4E4 !important;padding: 10px !important;"> -->
                 <!-- <h4>I. ទីតាំង និងការគ្រប់គ្រង</h4> -->
                 <div class="row">
@@ -42,92 +43,97 @@
                             <div class="col-md-8">
                                 <select class='form-control select2' id="province" name="province"​​ style="width: 100% !important;">
                                     {% for province in provinces %}
-                                        <option value="{{ province.id }}">{{ province.name_kh }}
+                                        <option value="{{ province.id }}">
+                                            {% if CURRENT_LANGUAGE == 'en' %}
+                                                {{ province.name_en }}
+                                            {% else %}
+                                                {{ province.name_kh }}
+                                            {% endif %}
                                     {% endfor %}
                                 </select>
-                            </div>             
+                            </div>
                         </div>
                         <div class="form-group row">
                             <label class='col-md-4 control-label'>{% trans 'district' %} <strong class="text-danger">*</strong></label>
                             <div class="col-md-8">
                                 <select class='form-control select2' id="district" name="district" style="width: 100% !important;">
-                                    
+
                                 </select>
                             </div>
-                        </div>     
+                        </div>
                         <div class="form-group row">
                             <label class='col-md-4 control-label'>{% trans 'commune' %} <strong class="text-danger">*</strong></label>
                             <div class="col-md-8">
                                 <select class='form-control select2' id="commune" name="commune" style="width: 100% !important;">
-                                    
+
                                 </select>
-                            </div>                            
+                            </div>
                         </div>
                         <div class="form-group row">
                             <label class='col-md-4 control-label'>{% trans 'village' %} <strong class="text-danger">*</strong></label>
                             <div class="col-md-8">
                                 <select class='form-control select2' id="village" name="village" style="width: 100% !important;">
-                                    
+
                                 </select>
                             </div>
                         </div>
-    
+
                         <div class="form-group row">
-                            <label class="control-label col-md-4">ខ្នាតផែនទី</label>
+                            <label class="control-label col-md-4">{% trans 'map_unit' %}</label>
                             <div class="col-md-8">
                                 <select class="form-control" id="map_unit" name="map_unit">
                                     <option value="1">UTM</option>
-                                    <option value="2" selected>Decimal Degree</option>
-                                    <option value="3">Degree Minute Seconds</option>
+                                    <option value="2" selected>{% trans 'decimal_degree' %}</option>
+                                    <option value="3">{% trans 'degree_minute_seconds' %}</option>
                                 </select>
                             </div>
                         </div>
-    
+
                         <div id="map_unit_dd_panel">
                             <div class="form-group row">
                                 <label class='col-md-4 control-label'>{% trans 'decimal_degree_x' %} </label>
                                 <div class="col-md-8">
-                                    <input type="number" class="form-control" name="decimal_degress_lat" id="utm_x" value="0" min="0" step="any" onblur="re_initial_map()"/> 
+                                    <input type="number" class="form-control" name="decimal_degress_lat" id="utm_x" value="0" min="0" step="any" onblur="re_initial_map()"/>
                                 </div>
-                               
+
                             </div>
                             <div class="form-group row">
                                 <label class='col-md-4 control-label'>{% trans 'decimal_degree_y' %} </label>
                                 <div class="col-md-8">
-                                    <input type="number" class="form-control" name="decimal_degress_lng" id="utm_y" value="0" min="0" step="any" onblur="re_initial_map()"/>  
+                                    <input type="number" class="form-control" name="decimal_degress_lng" id="utm_y" value="0" min="0" step="any" onblur="re_initial_map()"/>
                                 </div>
                             </div>
                         </div>
-    
+
                         <div id="map_unit_mds_panel">
                             <div class="form-group row">
                                 <label class="col-md-4 control-label">{% trans 'decimal_degree_x' %}</label>
                                 <div class="col-md-2">
                                     <input type="number" class="form-control" name="mds_x_degress" id="map_mds_x_degree" min="0" step="any" value="0"/>
-                                    <small>Degree</small>
+                                    <small>{% trans 'degree' %}</small>
                                 </div>
                                 <div class="col-md-2">
                                     <input type="number" class="form-control" name="mds_x_minute" id="map_mds_x_minute" min="0" step="any" value="0"/>
-                                    <small>Minute (')</small>
+                                    <small>{% trans 'degree_minute' %}</small>
                                 </div>
                                 <div class="col-md-2">
                                     <input type="number" class="form-control" name="mds_x_second" id="map_mds_x_second" min="0" step="any" value="0"/>
-                                    <small>Second ('')</small>
+                                    <small>{% trans 'degree_seconds' %}</small>
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label class="col-md-4 control-label">{% trans 'decimal_degree_y' %}</label>
                                 <div class="col-md-2">
                                     <input type="number" class="form-control" name="mds_y_degress" id="map_mds_y_degress" min="0" step="any" value="0"/>
-                                    <small>Degree</small>
+                                    <small>{% trans 'degree' %}</small>
                                 </div>
                                 <div class="col-md-2">
                                     <input type="number" class="form-control" name="mds_y_minute" id="map_mds_y_minute" min="0" step="any" value="0"/>
-                                    <small>Minute (')</small>
+                                    <small>{% trans 'degree_minute' %}</small>
                                 </div>
                                 <div class="col-md-2">
                                     <input type="number" class="form-control" name="mds_y_second" id="map_mds_y_second" min="0" step="any" value="0"/>
-                                    <small>Second ('')</small>
+                                    <small>{% trans 'degree_seconds' %}</small>
                                 </div>
                             </div>
                         </div>
@@ -136,24 +142,24 @@
                             <div class="form-group row">
                                 <label class='col-md-4 control-label'>{% trans 'utm_x' %} </label>
                                 <div class="col-md-8">
-                                    <input type="number" class="form-control" name="utm_x" id="map_utm_x" value="0" min="0" step="any" onblur="convert_utm_to_latlng()"/> 
+                                    <input type="number" class="form-control" name="utm_x" id="map_utm_x" value="0" min="0" step="any" onblur="convert_utm_to_latlng()"/>
                                 </div>
-                               
+
                             </div>
                             <div class="form-group row">
                                 <label class='col-md-4 control-label'>{% trans 'utm_y' %} </label>
                                 <div class="col-md-8">
-                                    <input type="number" class="form-control" name="utm_y" id="map_utm_y" value="0" min="0" step="any" onblur="convert_utm_to_latlng()"/>  
+                                    <input type="number" class="form-control" name="utm_y" id="map_utm_y" value="0" min="0" step="any" onblur="convert_utm_to_latlng()"/>
                                 </div>
                             </div>
                         </div>
-                        
-    
+
+
                     </div>
                     <div class="col-md-6">
                         <div class="form-group row">
-                            <div class="pageholder">                     
-                            
+                            <div class="pageholder">
+
                                 <div class="linkholder">
                                     <div id="map"></div>
                                 </div>
@@ -164,14 +170,14 @@
                 <div class="form-group row">
                     <label class='col-md-2 control-label'>{% trans 'total_family' %} </label>
                     <div class="col-md-4">
-                        <input type="number" class="form-control" name="total_family" id="total_family" value="0" min="0"/> 
+                        <input type="number" class="form-control" name="total_family" id="total_family" value="0" min="0"/>
                     </div>
                     <label class='col-md-2 control-label'>{% trans 'water_supply_code' %} </label>
                     <div class="col-md-4">
-                        <input type="text" class="form-control" name="water_supply_code" id="water_supply_code" /> 
+                        <input type="text" class="form-control" name="water_supply_code" id="water_supply_code" />
                     </div>
-                </div>          
-            
+                </div>
+
                 <div class="form-group row">
                     <label class='col-md-2 control-label'>{% trans 'is_risk_enviroment_area' %} <strong class="text-danger">*</strong></label>
                     <div class="col-md-4">
@@ -192,12 +198,12 @@
                         </div>
                     </div>
                 </div>
-            
+
                 <div class="form-group row">
-                    
+
                     <label class="col-md-2 control-label">{% trans 'source_budget' %} <strong class="text-danger">*</strong></label>
                     <div class="col-md-4">
-                        <!-- <div class="form-check form-check-inline">       
+                        <!-- <div class="form-check form-check-inline">
                             <input class="form-check-input" name="source_budget_option" type="checkbox" id="source_budget_state" value="0">
                             <label class="form-check-label" for="source_budget_state">{% trans 'source_budget_state' %}</label>
                           </div> -->
@@ -213,7 +219,7 @@
                         <input type="text" class="form-control" id="constructed_by" name="constructed_by"/>
                     </div>
                 </div>
-            
+
                 <div class="form-group row">
                     <label class='col-md-2 control-label'>{% trans 'management_type' %} <strong class="text-danger">*</strong></label>
                     <div class="col-md-4">
@@ -231,7 +237,7 @@
                 </div>
 
             <!-- </div> -->
-            
+
             <!-- <div class="well well-sm" style="background-color: #E4E4E4 !important;padding: 10px !important; margin-top: 15px !important;"> -->
                 <!-- <h4>II. អ្នកទទួលផល</h4> -->
                 <div class="form-group row">
@@ -243,7 +249,7 @@
                     <div class="col-md-4">
                         <input type="number" class="form-control" id="beneficiary_total_women" name="beneficiary_total_women" min="0" value="0"/>
                     </div>
-                    
+
                 </div>
                 <div class="form-group row">
                     <label class="control-label col-md-2">{% trans 'beneficiary_total_family' %} <span class="text-danger">*</span></label>
@@ -253,7 +259,7 @@
                     <label class="control-label col-md-2">{% trans 'beneficiary_total_family_poor_1' %} <span class="text-danger">*</span></label>
                     <div class="col-md-4">
                         <input type="number" class="form-control" id="beneficiary_total_family_poor_1" name="beneficiary_total_family_poor_1" min="0" value="0"/>
-                    </div>      
+                    </div>
                 </div>
                 <div class="form-group row">
                     <label class="control-label col-md-2">{% trans 'beneficiary_total_family_poor_2' %} <span class="text-danger">*</span></label>
@@ -263,7 +269,7 @@
                     <label class="control-label col-md-2">{% trans 'beneficiary_total_family_vulnerable' %} <span class="text-danger">*</span></label>
                     <div class="col-md-4">
                         <input type="number" class="form-control" id="beneficiary_total_family_vulnerable" name="beneficiary_total_family_vulnerable" min="0" value="0"/>
-                    </div>      
+                    </div>
                 </div>
                 <div class="form-group row">
                     <label class="control-label col-md-2">{% trans 'beneficiary_total_family_indigenous' %} <span class="text-danger">*</span></label>
@@ -272,33 +278,50 @@
                     </div>
                 </div>
             <!-- </div> -->
-        
+
             <!-- <div class="well well-sm" style="background-color: #E4E4E4 !important;padding: 10px !important; margin-top: 15px !important; margin-bottom: 10px !important;"> -->
                 <!-- <h4>III. លក្ខណៈពិសេស</h4> -->
                 <div class="form-group row">
-                    {% for item in watersupplytypeoptions %}              
-                       <label class='col-md-2 control-label' id="label_{{ item.water_supply_option_id.field_name }}">{{ item.water_supply_option_id.name_kh }} 
+                    {% for item in watersupplytypeoptions %}
+                       <label class='col-md-2 control-label' id="label_{{ item.water_supply_option_id.field_name }}">
+                           {% if CURRENT_LANGUAGE == 'en' %}
+                             {{ item.water_supply_option_id.name_en }}
+                             {% else %}
+                             {{ item.water_supply_option_id.name_kh }}
+                           {% endif %}
                         {% if item.water_supply_option_id.is_required %}
                         <strong class="text-danger">*</strong>
                         {% endif %}
-    
+
                        </label>
                        <div class="col-md-4 " style="margin-bottom: 1rem !important;">
                            {% if item.water_supply_option_id.watersupplyoption_value|length > 1 %}
-    
+
                             {% if item.water_supply_option_id.data_type == 'choice' %}
                                 <input type="hidden" name="{{ item.water_supply_option_id.field_name }}" id="{{ item.water_supply_option_id.field_name }}"/>
                                 {% for ov in item.water_supply_option_id.watersupplyoption_value %}
-                                <div class="form-check form-check-inline">       
+                                <div class="form-check form-check-inline">
                                     <input class="form-check-input" name="{{ item.water_supply_option_id.field_name }}_option" type="checkbox" id="{{ ov.water_supply_option_id }}{{ov.code}}{{ov.id}}" value="{{ ov.id }}">
-                                    <label class="form-check-label" for="{{ ov.water_supply_option_id }}{{ov.code}}{{ov.id}}">{{ ov.code }} - {{ ov.name_en }}</label>
+                                    <label class="form-check-label" for="{{ ov.water_supply_option_id }}{{ov.code}}{{ov.id}}">
+                                        {% if CURRENT_LANGUAGE == 'en' %}
+                                            {{ ov.code }} - {{ ov.name_en }}
+                                        {% else %}
+                                            {{ ov.code }} - {{ ov.name_kh }}
+                                        {% endif %}
+                                    </label>
                                   </div>
                                 {% endfor %}
                             {% else %}
                                <select class="form-control" id="{{ item.water_supply_option_id.field_name }}" name="{{ item.water_supply_option_id.field_name }}">
                                 <option value="-1">{% trans 'select_option' %}</option>
                                     {% for ov in item.water_supply_option_id.watersupplyoption_value %}
-                                        <option value="{{ ov.id }}">{{ ov.code }} - {{ ov.name_en }}</option>
+                                        <option value="{{ ov.id }}">
+                                            {% if CURRENT_LANGUAGE == 'en' %}
+                                                {{ ov.code }} - {{ ov.name_en }}
+                                            {% else %}
+                                                {{ ov.code }} - {{ ov.name_kh }}
+                                            {% endif %}
+                                        </option>
                                     {% endfor %}
                                </select>
                             {% endif %}
@@ -317,14 +340,14 @@
                                {% endif %}
                            {% endif %}
                        </div>
-                   
+
                    {% endfor %}
                 </div>
-    
+
                 <div class="table-responsive" id="panel_water_quanlity_check">
                     <table id="table_water_quanlity_check" class="table table-bordered">
                         <thead>
-                            <tr>                        
+                            <tr>
                                 <th>{% trans 'thead_parameter_code' %}</th>
                                 <th>{% trans 'thead_parameter' %}</th>
                                 <th>{% trans 'thead_unit' %}</th>
@@ -341,7 +364,7 @@
                                 <td>{{ water_quality_check_parameter.standard_of_drinking_water }}</td>
                                 <td>
                                     <input type="hidden" name="water_quality_check_param_id[]" value="{{ water_quality_check_parameter.id }}" />
-                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="0" step="any" data-id="{{ water_quality_check_parameter.id }}"/> 
+                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="0" step="any" data-id="{{ water_quality_check_parameter.id }}"/>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -349,13 +372,13 @@
                     </table>
                 </div>
             <!-- </div> -->
-        
-            <div id="error_message_panel" style="color:red !important;"> 
+
+            <div id="error_message_panel" style="color:red !important;">
 
             </div>
 
             <input type="hidden" name="is_water_quality_check" id="is_water_quality_check" value="False"/>
-        
+
             <div class="form-group row">
                 <div class="col-md-2"></div>
                 <div class="col-md-10">
@@ -363,8 +386,8 @@
                     <button class="btn btn-outline-primary" type="button" onclick="submitForm(1, 'btn_submit')" id="btn_submit"><i class="fa fa-save"></i> {% trans 'btn_submit' %}</button>
                     <a href="javascript:history.back()" class="btn btn-outline-primary">{% trans 'btn_back' %}</a>
                 </div>
-                
-            </div>    
+
+            </div>
         </form>
     </div>
 </div>
@@ -390,7 +413,7 @@
                 "setDate": new Date(),
                 "autoclose": true
             }).datepicker("setDate",'now');
-            
+
             inititalDistrictDropdownList($('#province').val());
 
             $('.select2').select2();
@@ -399,10 +422,10 @@
                 var province_id = $(this).val();
                 inititalDistrictDropdownList(province_id);
 
-            });   
-            
+            });
+
             $('#district').change(function(e){
-                initialCommuneDropdownList(); 
+                initialCommuneDropdownList();
             });
 
             $('#commune').change(function(e){
@@ -439,7 +462,7 @@
                 $('#utm_x').val(event.latLng.lat());
                 $('#utm_y').val(event.latLng.lng());
             });
-         
+
             visible_map_control_v1(2);
             $('#map_unit').change(function(){
                 var val=$(this).val();
@@ -458,7 +481,7 @@
                     }
                 });
             }
-            
+
             /* END WELL SECTION */
 
             /* START SMALL PIPE */
@@ -488,7 +511,7 @@
                     }
                 });
             }
-            
+
             /* End Community Pond */
 
             // var utm = "+proj=utm +zone=32";
@@ -504,7 +527,7 @@
                 }else{
 
                 }
-                //$('#textbox1').val(this.checked);        
+                //$('#textbox1').val(this.checked);
             });
             /* END KIOSK */
 
@@ -555,7 +578,7 @@
             });
             markers.push(marker);
             $("#map").css("relative", "");
-            
+
         }
 
         function re_initial_map(){
@@ -572,7 +595,7 @@
             });
 
             markers.push(marker);
-            
+
         }
 
         function re_initial_map_v2(lat,lng){
@@ -591,7 +614,7 @@
 
         function placeMarker(location) {
                 var marker = new google.maps.Marker({
-                    position: location, 
+                    position: location,
                     map: map
                 });
                 markers.push(marker);
@@ -618,7 +641,7 @@
             hideMarkers();
             markers = [];
         }
-        
+
         /* END MAP SECTION */
 
         function submitForm(status,btn_id){
@@ -633,10 +656,10 @@
                 var well_types = [];
                 var well_type_text='';
                 $('input[name="well_type_option"]:checked').each(function() {
-                    well_types.push(this.value); 
+                    well_types.push(this.value);
                     well_type_text=well_type_text+"/"+this.value;
                 });
-                
+
                 if(well_types.length==0){
                     //alert("Please select well type.");
                     error_message.push("{% trans 'validation_well_type' %}");
@@ -664,7 +687,7 @@
                     error_message.push("{% trans 'validation_well_status_reason' %}");
                 }
 
-            }    
+            }
             /* END WELL SECTION */
             //START PIPE Section
             else if ($('#water_supply_type').val()==2 || $('#water_supply_type').val()==6){
@@ -718,7 +741,7 @@
                 $('#error_message_panel').empty();
                 $('#myForm').submit();
             }
-            
+
         }
 
         function getLocation() {
@@ -728,7 +751,7 @@
                 alert("Geolocation is not supported by this browser.");
             }
             }
-            
+
         function showPosition(position) {
             var lat = position.coords.latitude;
             var lng = position.coords.longitude;
@@ -743,7 +766,7 @@
         }
 
         function inititalDistrictDropdownList(province_id){
-            
+
             $('#district').empty().append('<option value="0">{% trans "select_option" %} </option>');
             $('#commune').empty();
             $('#village').empty();
@@ -753,14 +776,19 @@
                 url: "{% url 'ajax_get_district' %}",
                 data: {"province_id":province_id },
                 success: function (response) {
-                    
+
                     if(!response["valid"]){
                         console.log(response);
                         $.each(response.district,function(ind,dis){
-                            $('#district').append("<option value='"+dis.id+"'>"+dis.name_kh+"</option>");
+                            {% if CURRENT_LANGUAGE == 'en' %}
+                                $('#district').append("<option value='"+dis.id+"'>"+dis.name_en+"</option>");
+                            {% else %}
+                                $('#district').append("<option value='"+dis.id+"'>"+dis.name_kh+"</option>");
+                            {% endif %}
+
                         });
-                        //alert("You cannot create a friend with same nick name");   
-                                            
+                        //alert("You cannot create a friend with same nick name");
+
                     }
                 },
                 error: function (response) {
@@ -779,15 +807,20 @@
                 url: "{% url 'ajax_get_commune_list' %}",
                 data: {"district_id":district_id },
                 success: function (response) {
-                    
+
                     if(!response["valid"]){
                         console.log(response);
                         $.each(response.communes,function(ind,commune){
-                            $('#commune').append("<option value='"+commune.id+"'>"+commune.name_kh+"</option>");
+                            {% if CURRENT_LANGUAGE == 'en' %}
+                                $('#commune').append("<option value='"+commune.id+"'>"+commune.name_en+"</option>");
+                            {% else %}
+                                $('#commune').append("<option value='"+commune.id+"'>"+commune.name_kh+"</option>");
+                            {% endif %}
+
 
 
                         });
-                        //alert("You cannot create a friend with same nick name");                        
+                        //alert("You cannot create a friend with same nick name");
                     }
                 },
                 error: function (response) {
@@ -805,13 +838,18 @@
                 url: "{% url 'ajax_get_village_list' %}",
                 data: {"commune_id":commune_id },
                 success: function (response) {
-                    
+
                     if(!response["valid"]){
                         console.log(response);
                         $.each(response.villages,function(ind,village){
-                            $('#village').append("<option value='"+village.id+"'>"+village.name_kh+"</option>");
+                            {% if CURRENT_LANGUAGE == 'en' %}
+                                $('#village').append("<option value='"+village.id+"'>"+village.name_en+"</option>");
+                            {% else %}
+                                $('#village').append("<option value='"+village.id+"'>"+village.name_kh+"</option>");
+                            {% endif %}
+
                         });
-                        //alert("You cannot create a friend with same nick name");                        
+                        //alert("You cannot create a friend with same nick name");
                     }
                 },
                 error: function (response) {
@@ -860,7 +898,7 @@
             //get utm-zone from longitude degrees
             return parseInt(((lon_deg+180)/6)%60)+1;
         }
-        
+
         function proj4_setdef(lon_deg) {
             //get UTM projection definition from longitude
             const utm_zone = utmzone_from_lon(lon_deg);
@@ -888,7 +926,7 @@
             re_initial_map_v2(latlng[0],latlng[1]);
         }
 
-        
+
         function validation_on_save(){
             var error_messages=[];
                 /* master Data */

@@ -1,9 +1,16 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
+{% get_current_language as CURRENT_LANGUAGE %}
 
 {% block first_breadcrums %}
-<li class="breadcrumb-item">{{ watersupply.water_supply_type_id.name_en }}</li>
+<li class="breadcrumb-item">
+    {% if CURRENT_LANGUAGE == 'en' %}
+    {{ watersupply.water_supply_type_id.name_en }}
+    {% else %}
+    {{ watersupply.water_supply_type_id.name_kh }}
+    {% endif %}
+</li>
 <li class="breadcrumb-item active" aria-current="page">{% trans 'title_edit_water_supply' %}</li>
 {% endblock %}
 
@@ -38,44 +45,49 @@
                         <div class="col-md-8">
                             <select class='form-control select2' id="province" name="province"​​ style="width: 100% !important;">
                                 {% for province in provinces %}
-                                    <option value="{{ province.id }}">{{ province.name_kh }}
+                                    <option value="{{ province.id }}">
+                                        {% if CURRENT_LANGUAGE == 'en' %}
+                                            {{ province.name_en }}
+                                        {% else %}
+                                            {{ province.name_kh }}
+                                        {% endif %}
                                 {% endfor %}
                             </select>
-                        </div>             
+                        </div>
                     </div>
                     <div class="form-group row">
                         <label class='col-md-4 control-label'>{% trans 'district' %} <strong class="text-danger">*</strong></label>
                         <div class="col-md-8">
                             <select class='form-control select2' id="district" name="district" style="width: 100% !important;">
-                                
+
                             </select>
                         </div>
-                    </div>     
+                    </div>
                     <div class="form-group row">
                         <label class='col-md-4 control-label'>{% trans 'commune' %} <strong class="text-danger">*</strong></label>
                         <div class="col-md-8">
                             <select class='form-control select2' id="commune" name="commune" style="width: 100% !important;">
-                                
+
                             </select>
                         </div>
-                        
+
                     </div>
                     <div class="form-group row">
                         <label class='col-md-4 control-label'>{% trans 'village' %} <strong class="text-danger">*</strong></label>
                         <div class="col-md-8">
                             <select class='form-control select2' id="village" name="village" style="width: 100% !important;">
-                                
+
                             </select>
                         </div>
                     </div>
 
                     <div class="form-group row">
-                        <label class="control-label col-md-4">ខ្នាតផែនទី</label>
+                        <label class="control-label col-md-4">{% trans 'map_unit' %}</label>
                         <div class="col-md-8">
                             <select class="form-control" id="map_unit" name="map_unit">
                                 <option value="1">UTM</option>
-                                <option value="2">Decimal Degress</option>
-                                <option value="3">Degreee Minute Seconds</option>
+                                <option value="2">{% trans 'decimal_degree' %}</option>
+                                <option value="3">{% trans 'degree_minute_seconds' %}</option>
                             </select>
                         </div>
                     </div>
@@ -84,14 +96,14 @@
                         <div class="form-group row">
                             <label class='col-md-4 control-label'>{% trans 'decimal_degree_x' %} </label>
                             <div class="col-md-8">
-                                <input type="number" class="form-control map_number" name="decimal_degress_lat" id="utm_x" value="{{ watersupply.decimal_degress_lat }}" min="0" step="any" onblur="re_initial_map()"/> 
+                                <input type="number" class="form-control map_number" name="decimal_degress_lat" id="utm_x" value="{{ watersupply.decimal_degress_lat }}" min="0" step="any" onblur="re_initial_map()"/>
                             </div>
-                           
+
                         </div>
                         <div class="form-group row">
                             <label class='col-md-4 control-label'>{% trans 'decimal_degree_y' %} </label>
                             <div class="col-md-8">
-                                <input type="number" class="form-control map_number" name="decimal_degress_lng" id="utm_y" value="{{ watersupply.decimal_degress_lng }}" min="0" step="any" onblur="re_initial_map()"/>  
+                                <input type="number" class="form-control map_number" name="decimal_degress_lng" id="utm_y" value="{{ watersupply.decimal_degress_lng }}" min="0" step="any" onblur="re_initial_map()"/>
                             </div>
                         </div>
                     </div>
@@ -101,30 +113,30 @@
                             <label class="col-md-4 control-label">{% trans 'decimal_degree_x' %}</label>
                             <div class="col-md-2">
                                 <input type="number" class="form-control map_number" name="mds_x_degress" id="map_mds_x_degree" min="0" step="any" value="{{ watersupply.mds_x_degress }}"/>
-                                <small>Degree</small>
+                                <small>{% trans 'degree' %}</small>
                             </div>
                             <div class="col-md-2">
                                 <input type="number" class="form-control map_number" name="mds_x_minute" id="map_mds_x_minute" min="0" step="any" value="{{ watersupply.mds_x_minute }}"/>
-                                <small>Minute (')</small>
+                                <small>{% trans 'degree_minute' %}</small>
                             </div>
                             <div class="col-md-3">
                                 <input type="number" class="form-control map_number" name="mds_x_second" id="map_mds_x_second" min="0" step="any" value="{{ watersupply.mds_x_second }}"/>
-                                <small>Second ('')</small>
+                                <small>{% trans 'degree_seconds' %}</small>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label class="col-md-4 control-label">{% trans 'decimal_degree_y' %}</label>
                             <div class="col-md-2">
                                 <input type="number" class="form-control map_number" name="mds_y_degress" id="map_mds_y_degress" min="0" step="any" value="{{ watersupply.mds_y_degress }}"/>
-                                <small>Degree</small>
+                                <small>{% trans 'degree' %}</small>
                             </div>
                             <div class="col-md-2">
                                 <input type="number" class="form-control map_number" name="mds_y_minute" id="map_mds_y_minute" min="0" step="any" value="{{ watersupply.mds_y_minute }}"/>
-                                <small>Minute (')</small>
+                                <small>{% trans 'degree_minute' %}</small>
                             </div>
                             <div class="col-md-3">
                                 <input type="number" class="form-control map_number" name="mds_y_second" id="map_mds_y_second" min="0" step="any" value="{{ watersupply.mds_y_second }}"/>
-                                <small>Second ('')</small>
+                                <small>{% trans 'degree_seconds' %}</small>
                             </div>
                         </div>
                     </div>
@@ -133,24 +145,24 @@
                         <div class="form-group row">
                             <label class='col-md-4 control-label'>{% trans 'utm_x' %} </label>
                             <div class="col-md-8">
-                                <input type="number" class="form-control map_number" name="utm_x" id="map_utm_x" value="{{ watersupply.utm_x }}" min="0" step="any" onblur="convert_utm_to_latlng()"/> 
+                                <input type="number" class="form-control map_number" name="utm_x" id="map_utm_x" value="{{ watersupply.utm_x }}" min="0" step="any" onblur="convert_utm_to_latlng()"/>
                             </div>
-                           
+
                         </div>
                         <div class="form-group row">
                             <label class='col-md-4 control-label'>{% trans 'utm_y' %} </label>
                             <div class="col-md-8">
-                                <input type="number" class="form-control map_number" name="utm_y" id="map_utm_y" value="{{ watersupply.utm_y }}" min="0" step="any" onblur="convert_utm_to_latlng()"/>  
+                                <input type="number" class="form-control map_number" name="utm_y" id="map_utm_y" value="{{ watersupply.utm_y }}" min="0" step="any" onblur="convert_utm_to_latlng()"/>
                             </div>
                         </div>
                     </div>
-                    
+
 
                 </div>
                 <div class="col-md-6">
                     <div class="form-group row">
-                        <div class="pageholder">                     
-                        
+                        <div class="pageholder">
+
                             <div class="linkholder">
                                 <div id="map"></div>
                             </div>
@@ -158,19 +170,19 @@
                     </div>
                 </div>
             </div>
-             
-        
+
+
             <div class="form-group row">
                 <label class='col-md-2 control-label'>{% trans 'total_family' %} </label>
                 <div class="col-md-4">
-                    <input type="number" class="form-control" name="total_family" id="total_family" value="{{ watersupply.total_family }}" min="0"/> 
+                    <input type="number" class="form-control" name="total_family" id="total_family" value="{{ watersupply.total_family }}" min="0"/>
                 </div>
                 <label class='col-md-2 control-label'>{% trans 'water_supply_code' %} </label>
                 <div class="col-md-4">
-                    <input type="text" class="form-control" name="water_supply_code" id="water_supply_code" value="{{ watersupply.water_supply_code }}" /> 
+                    <input type="text" class="form-control" name="water_supply_code" id="water_supply_code" value="{{ watersupply.water_supply_code }}" />
                 </div>
-            </div>          
-        
+            </div>
+
             <div class="form-group row">
                 <label class='col-md-2 control-label'>{% trans 'is_risk_enviroment_area' %} <strong class="text-danger">*</strong></label>
                 <div class="col-md-4">
@@ -199,12 +211,12 @@
                     </div>
                 </div>
             </div>
-        
+
             <div class="form-group row">
-                
+
                 <label class="col-md-2 control-label">{% trans 'source_budget' %} <strong class="text-danger">*</strong></label>
                 <div class="col-md-4">
-                    <!-- <div class="form-check form-check-inline">       
+                    <!-- <div class="form-check form-check-inline">
                         <input class="form-check-input" name="source_budget_option" type="checkbox" id="source_budget_state" value="0">
                         <label class="form-check-label" for="source_budget_state">{% trans 'source_budget_state' %}</label>
                       </div> -->
@@ -220,7 +232,7 @@
                     <input type="text" class="form-control" id="constructed_by" name="constructed_by" value="{{ watersupply.constructed_by }}"/>
                 </div>
             </div>
-        
+
             <div class="form-group row">
                 <label class='col-md-2 control-label'>{% trans 'management_type' %} <strong class="text-danger">*</strong></label>
                 <div class="col-md-4">
@@ -232,7 +244,7 @@
                         {% endif %}
                       </label>
                       <label class="radio-inline">
-                        
+
                         {% if watersupply.management_type == 0 %}
                         <input type="radio" name="management_type" value='1'>{% trans 'management_type_personal' %}
                         {% elif watersupply.management_type == 1 %}
@@ -245,7 +257,7 @@
                     <input type="text" class="form-control" id="managed_by" name="managed_by" value="{{ watersupply.managed_by }}"/>
                 </div>
             </div>
-        
+
             <div class="form-group row">
                 <label class="control-label col-md-2">{% trans 'beneficiary_total_people' %} <span class="text-danger">*</span></label>
                 <div class="col-md-4">
@@ -255,7 +267,7 @@
                 <div class="col-md-4">
                     <input type="number" class="form-control" id="beneficiary_total_women" name="beneficiary_total_women" min="0" value="{{ watersupply.beneficiary_total_women }}"/>
                 </div>
-                
+
             </div>
             <div class="form-group row">
                 <label class="control-label col-md-2">{% trans 'beneficiary_total_family' %} <span class="text-danger">*</span></label>
@@ -265,7 +277,7 @@
                 <label class="control-label col-md-2">{% trans 'beneficiary_total_family_poor_1' %} <span class="text-danger">*</span></label>
                 <div class="col-md-4">
                     <input type="number" class="form-control" id="beneficiary_total_family_poor_1" name="beneficiary_total_family_poor_1" min="0" value="{{ watersupply.beneficiary_total_family_poor_1 }}"/>
-                </div>      
+                </div>
             </div>
             <div class="form-group row">
                 <label class="control-label col-md-2">{% trans 'beneficiary_total_family_poor_2' %} <span class="text-danger">*</span></label>
@@ -275,7 +287,7 @@
                 <label class="control-label col-md-2">{% trans 'beneficiary_total_family_vulnerable' %} <span class="text-danger">*</span></label>
                 <div class="col-md-4">
                     <input type="number" class="form-control" id="beneficiary_total_family_vulnerable" name="beneficiary_total_family_vulnerable" min="0" value="{{ watersupply.beneficiary_total_family_vulnerable }}"/>
-                </div>      
+                </div>
             </div>
             <div class="form-group row">
                 <label class="control-label col-md-2">{% trans 'beneficiary_total_family_indigenous' %} <span class="text-danger">*</span></label>
@@ -283,10 +295,16 @@
                     <input type="number" class="form-control" id="beneficiary_total_family_indigenous" name="beneficiary_total_family_indigenous" min="0" value="{{ watersupply.beneficiary_total_family_indigenous }}"/>
                 </div>
             </div>
-        
+
             <div class="form-group row">
-                {% for item in watersupplytypeoptions %}              
-                   <label class='col-md-2 control-label' id="label_{{ item.water_supply_option_id.field_name }}">{{ item.water_supply_option_id.name_kh }} 
+                {% for item in watersupplytypeoptions %}
+                   <label class='col-md-2 control-label' id="label_{{ item.water_supply_option_id.field_name }}">
+                       {% if CURRENT_LANGUAGE == 'en' %}
+                            {{ item.water_supply_option_id.name_en }}
+                        {% else %}
+                            {{ item.water_supply_option_id.name_kh }}
+                        {% endif %}
+
                     {% if item.water_supply_option_id.is_required %}
                     <strong class="text-danger">*</strong>
                     {% endif %}
@@ -298,16 +316,30 @@
                         {% if item.water_supply_option_id.data_type == 'choice' %}
                             <input type="hidden" name="{{ item.water_supply_option_id.field_name }}" id="{{ item.water_supply_option_id.field_name }}"/>
                             {% for ov in item.water_supply_option_id.watersupplyoption_value %}
-                            <div class="form-check form-check-inline">       
+                            <div class="form-check form-check-inline">
                                 <input class="form-check-input" name="{{ item.water_supply_option_id.field_name }}_option" type="checkbox" id="{{ ov.water_supply_option_id }}{{ov.code}}{{ov.id}}" value="{{ ov.id }}">
-                                <label class="form-check-label" for="{{ ov.water_supply_option_id }}{{ov.code}}{{ov.id}}">{{ ov.code }} - {{ ov.name_en }}</label>
+                                <label class="form-check-label" for="{{ ov.water_supply_option_id }}{{ov.code}}{{ov.id}}">
+                                    {% if CURRENT_LANGUAGE == 'en' %}
+                                        {{ ov.code }} - {{ ov.name_en }}
+                                    {% else %}
+                                        {{ ov.code }} - {{ ov.name_kh }}
+                                    {% endif %}
+
+                                </label>
                               </div>
                             {% endfor %}
                         {% else %}
                            <select class="form-control" id="{{ item.water_supply_option_id.field_name }}" name="{{ item.water_supply_option_id.field_name }}">
                             <option value="-1">{% trans 'select_option' %}</option>
                                 {% for ov in item.water_supply_option_id.watersupplyoption_value %}
-                                    <option value="{{ ov.id }}">{{ ov.code }} - {{ ov.name_en }}</option>
+                                    <option value="{{ ov.id }}">
+                                        {% if CURRENT_LANGUAGE == 'en' %}
+                                            {{ ov.code }} - {{ ov.name_en }}
+                                        {% else %}
+                                            {{ ov.code }} - {{ ov.name_kh }}
+                                        {% endif %}
+
+                                    </option>
                                 {% endfor %}
                            </select>
                         {% endif %}
@@ -319,7 +351,7 @@
                            {% endif %}
                        {% endif %}
                    </div>
-               
+
                {% endfor %}
             </div>
 
@@ -327,7 +359,7 @@
             {% if watersupply.watersupplywell_watersupply|length > 0 %}
                 {% for well_type in watersupply.watersupplywell_watersupply.0.well_type_obj %}
                     <input type="hidden" class="well_type_selected" value="{{ well_type.value_obj.0.id }}"/>
-                        
+
                 {% endfor %}
             {% endif %}
             {% if watersupply.watersupplyairwater_watersupply|length > 0 %}
@@ -365,7 +397,7 @@
             <div class="table-responsive" id="panel_water_quanlity_check">
                 <table id="table_water_quanlity_check" class="table table-bordered">
                     <thead>
-                        <tr>                        
+                        <tr>
                             <th>{% trans 'thead_parameter_code' %}</th>
                             <th>{% trans 'thead_parameter' %}</th>
                             <th>{% trans 'thead_unit' %}</th>
@@ -383,39 +415,39 @@
                             <td>
                                 <input type="hidden" name="water_quality_check_param_id[]" value="{{ water_quality_check_parameter.id }}" />
                                 {% if water_quality_check_parameter.id == 1 %}
-                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param1_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/> 
+                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param1_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/>
                                 {% elif water_quality_check_parameter.id == 2 %}
                                     <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param2_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/>
                                 {% elif water_quality_check_parameter.id == 3 %}
-                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param3_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/> 
+                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param3_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/>
                                 {% elif water_quality_check_parameter.id == 4 %}
-                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param4_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/> 
+                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param4_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/>
                                 {% elif water_quality_check_parameter.id == 5 %}
-                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param5_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/> 
+                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param5_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/>
                                 {% elif water_quality_check_parameter.id == 6 %}
-                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param6_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/> 
+                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param6_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/>
                                 {% elif water_quality_check_parameter.id == 7 %}
-                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param7_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/> 
+                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param7_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/>
                                 {% elif water_quality_check_parameter.id == 8 %}
-                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param8_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/> 
+                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param8_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/>
                                 {% elif water_quality_check_parameter.id == 9 %}
-                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param9_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/> 
+                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param9_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/>
                                 {% elif water_quality_check_parameter.id == 10 %}
-                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param10_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/> 
+                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param10_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/>
                                 {% elif water_quality_check_parameter.id == 11 %}
-                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param11_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/> 
+                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param11_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/>
                                 {% elif water_quality_check_parameter.id == 12 %}
-                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param12_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/> 
+                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param12_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/>
                                 {% elif water_quality_check_parameter.id == 13 %}
-                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param13_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/> 
+                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param13_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/>
                                 {% elif water_quality_check_parameter.id == 14 %}
-                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param14_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/> 
+                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param14_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/>
                                 {% elif water_quality_check_parameter.id == 15 %}
-                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param15_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/> 
+                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param15_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/>
                                 {% elif water_quality_check_parameter.id == 16 %}
-                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param16_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/>  
+                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="{{ watersupply.wqc_param16_obj.0.value }}" step="any" data-id="{{ water_quality_check_parameter.id }}"/>
                                 {% else %}
-                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="0" step="any" data-id="{{ water_quality_check_parameter.id }}"/> 
+                                    <input type="number" class="form-control water_supply_quality_check_params" name="{{ water_quality_check_parameter.field_name }}" value="0" step="any" data-id="{{ water_quality_check_parameter.id }}"/>
                                 {% endif %}
                             </td>
                         </tr>
@@ -424,10 +456,10 @@
                 </table>
             </div>
 
-            <div id="error_message_panel" style="color:red !important;"> 
+            <div id="error_message_panel" style="color:red !important;">
 
             </div>
-        
+
             <div class="form-group row">
                 <div class="col-md-2"></div>
                 <div class="col-md-10">
@@ -435,8 +467,8 @@
                     <button class="btn btn-outline-primary" type="button" onclick="submitForm(1, 'btn_submit')" id="btn_submit"><i class="fa fa-save"></i> {% trans 'btn_submit' %}</button>
                     <a href="javascript:history.back()" class="btn btn-outline-primary">{% trans 'btn_back' %}</a>
                 </div>
-                
-            </div> 
+
+            </div>
 
         </form>
     </div>
@@ -500,10 +532,10 @@
                 var province_id = $(this).val();
                 inititalDistrictDropdownList(province_id);
 
-            });   
-            
+            });
+
             $('#district').change(function(e){
-                initialCommuneDropdownList($(this).val()); 
+                initialCommuneDropdownList($(this).val());
             });
 
             $('#commune').change(function(e){
@@ -569,7 +601,7 @@
                 $.each(kiosk_source_water_selected,function(index,item){
                     $('input[type="checkbox"][name="source_type_of_water_option"][value="'+$(item).val()+'"]').attr("checked","checked");
                 });
-                $('#abilty_of_produce_water').val('{{ watersupply.watersupplyKiosk_watersupply.0.abilty_of_produce_water }}'); 
+                $('#abilty_of_produce_water').val('{{ watersupply.watersupplyKiosk_watersupply.0.abilty_of_produce_water }}');
                 $('#filter_system').val('{{ watersupply.watersupplyKiosk_watersupply.0.filter_system_obj.0.id }}');
                 $('#water_quality_checking').val('{{ watersupply.watersupplyKiosk_watersupply.0.water_quality_checking_obj.0.id }}');
                 $('#status').val('{{ watersupply.watersupplyKiosk_watersupply.0.status_obj.0.id }}');
@@ -637,7 +669,7 @@
         });
 
         function inititalDistrictDropdownList(province_id,district_id){
-            
+
             $('#district').empty().append('<option value="0">{% trans "select_option" %} </option>');
             $('#commune').empty();
             $('#village').empty();
@@ -647,18 +679,21 @@
                 url: "{% url 'ajax_get_district' %}",
                 data: {"province_id":province_id },
                 success: function (response) {
-                    
+
                     if(!response["valid"]){
                         //console.log(response);
                         $.each(response.district,function(ind,dis){
-                            $('#district').append("<option value='"+dis.id+"'>"+dis.name_kh+"</option>");
-
+                            {% if CURRENT_LANGUAGE == 'en' %}
+                                $('#district').append("<option value='"+dis.id+"'>"+dis.name_en+"</option>");
+                            {% else %}
+                                $('#district').append("<option value='"+dis.id+"'>"+dis.name_kh+"</option>");
+                            {% endif %}
 
                         });
                         if(district_id!=null)
                             $('#district').val(district_id);//.trigger('change');
-                        //alert("You cannot create a friend with same nick name");   
-                                            
+                        //alert("You cannot create a friend with same nick name");
+
                     }
                 },
                 error: function (response) {
@@ -678,17 +713,20 @@
                 url: "{% url 'ajax_get_commune_list' %}",
                 data: {"district_id":district_id },
                 success: function (response) {
-                    
+
                     if(!response["valid"]){
                         console.log(response);
                         $.each(response.communes,function(ind,commune){
-                            $('#commune').append("<option value='"+commune.id+"'>"+commune.name_kh+"</option>");
-
+                            {% if CURRENT_LANGUAGE == 'en' %}
+                                $('#commune').append("<option value='"+commune.id+"'>"+commune.name_en+"</option>");
+                            {% else %}
+                                $('#commune').append("<option value='"+commune.id+"'>"+commune.name_kh+"</option>");
+                            {% endif %}
 
                         });
                         if(commune_id!=null)
                             $('#commune').val(commune_id);//.trigger('change');
-                        //alert("You cannot create a friend with same nick name");                        
+                        //alert("You cannot create a friend with same nick name");
                     }
                 },
                 error: function (response) {
@@ -706,15 +744,20 @@
                 url: "{% url 'ajax_get_village_list' %}",
                 data: {"commune_id":commune_id },
                 success: function (response) {
-                    
+
                     if(!response["valid"]){
                         console.log(response);
                         $.each(response.villages,function(ind,village){
-                            $('#village').append("<option value='"+village.id+"'>"+village.name_kh+"</option>");
+                            {% if CURRENT_LANGUAGE == 'en' %}
+                                $('#village').append("<option value='"+village.id+"'>"+village.name_en+"</option>");
+                            {% else %}
+                                $('#village').append("<option value='"+village.id+"'>"+village.name_kh+"</option>");
+                            {% endif %}
+
                         });
                         if(village_id!=null)
                             $('#village').val(village_id);//.trigger('change');
-                        //alert("You cannot create a friend with same nick name");                        
+                        //alert("You cannot create a friend with same nick name");
                     }
                 },
                 error: function (response) {
@@ -735,10 +778,10 @@
                 var well_types = [];
                 var well_type_text='';
                 $('input[name="well_type_option"]:checked').each(function() {
-                    well_types.push(this.value); 
+                    well_types.push(this.value);
                     well_type_text=well_type_text+"/"+this.value;
                 });
-                
+
                 if(well_types.length==0){
                     //alert("Please select well type.");
                     error_message.push("{% trans 'validation_well_type' %}");
@@ -758,8 +801,8 @@
                 if($('#well_status').val()==13 && $("#well_status_reason").val().trim().length==0){
                     error_message.push("{% trans 'validation_well_status_reason' %}");
                 }
-            }         
-            //START PIPE SECION 
+            }
+            //START PIPE SECION
             else if ($('#water_supply_type').val()== 2 || $('#water_supply_type').val()== 6){
                 var pipe_source_waters=[];
                 $('input[name="source_type_of_water_option"]:checked').each(function(){
@@ -812,7 +855,7 @@
                 $('#error_message_panel').empty();
                 $('#myForm').submit();
             }
-            
+
         }
 
         function visible_control(id_name,is_visible){
@@ -909,7 +952,7 @@
                 $('#utm_y').val(lng);
             }
         function initMap() {
-            
+
             var map_unit = '{{ watersupply.map_unit }}';
             if(map_unit==2){
                 //alert(map_unit);
@@ -932,8 +975,8 @@
             else{
                 getLocation();
             }
-            
-            
+
+
         }
 
         function re_initial_map(){
@@ -950,12 +993,12 @@
             });
 
             markers.push(marker);
-            
+
         }
 
         function placeMarker(location) {
                 var marker = new google.maps.Marker({
-                    position: location, 
+                    position: location,
                     map: map
                 });
                 markers.push(marker);
@@ -982,7 +1025,7 @@
             hideMarkers();
             markers = [];
         }
-        
+
         /* END MAP SECTION */
 
 

@@ -9,7 +9,7 @@
 
 {% block content %}
 <div class="card" style="width:100%">
-    <div class="card-header"><h4>{% trans 'title_create_new_water_supply' %}</h4></div>
+    <div class="card-header"><h4>{% trans 'menu_import_rural_water_supply' %}</h4></div>
     <div class="card-body">
         <form method="post" id="myForm" enctype="multipart/form-data">
             {% csrf_token %}
@@ -29,17 +29,17 @@
             {% if empexceldata.empty %}
                 <p>Empty</p>
             {% else %}
-                <p>Total Data : <b>{{ empexceldata|length }}</b></p> 
+                <p>{% trans 'total_data' %} : <b>{{ empexceldata|length }}</b></p>
                 
             {% endif %}
 
             {% if successimported.empty %}
                 <p></p>
             {% else %}
-                <p>Success Imported Data : <b>{{ successimported|length }}</b></p>
+                <p>{% trans 'success_imported_data' %} : <b>{{ successimported|length }}</b></p>
             {% endif %}
 
-            <p class="text-danger">Village Error Imported {{ villageerrorimported|length }}</p>
+            <p class="text-danger">{% trans 'village_error_import' %} {{ villageerrorimported|length }}</p>
             <div class="table-responsive">
                 <table class="table table-border">
                     {% for exc in villageerrorimported  %}
@@ -88,7 +88,7 @@
                 </table>
             </div> 
 
-            <p class="text-danger">Error Imported {{ errorimported|length }}</p>
+            <p class="text-danger">{% trans 'error_imported' %} {{ errorimported|length }}</p>
             <div class="table-responsive">
                 <table class="table table-border">
                     {% for exc in errorimported  %}
