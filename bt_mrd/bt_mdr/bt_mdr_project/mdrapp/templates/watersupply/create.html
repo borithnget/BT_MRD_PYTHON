@@ -4,7 +4,14 @@
 {% load static %}
 
 {% block first_breadcrums %}
-<li class="breadcrumb-item">{{ watersupplytype.name_kh }}</li>
+<li class="breadcrumb-item">
+    {% if CURRENT_LANGUAGE == 'en' %}
+        {{ watersupplytype.name_en }}
+    {% else %}
+        {{ watersupplytype.name_kh }}
+    {% endif %}
+
+</li>
 <li class="breadcrumb-item active" aria-current="page">{% trans 'title_create_new_water_supply' %}</li>
 {% endblock %}
 
